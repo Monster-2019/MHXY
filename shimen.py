@@ -22,7 +22,10 @@ class Shimen:
                 self.B.RBtn()
                 self.cutScreen()
             else:
+                self.B.MBtn(900, 300)
+                self.B.VBtn(1, 10)
                 sleep(0.5)
+
                 while True:
                     self.cutScreen()
                     temCoor = self.matchTem('sygb')
@@ -45,8 +48,7 @@ class Shimen:
 
         self.B.MBtn(590, 330)
 
-        for n in range(21):
-            self.B.VBtn(1)
+        self.B.VBtn(1, 21)
         sleep(0.5)
 
         for n in range(21):
@@ -59,8 +61,7 @@ class Shimen:
             else:
                 self.B.VBtn(-1)
         
-        for n in range(21):
-            self.B.VBtn(1)
+        self.B.VBtn(1, 21)
         sleep(0.5)
 
         if not complete:
@@ -85,8 +86,7 @@ class Shimen:
 
                     break
                 else:
-                    for i in range(10):
-                        self.B.VBtn(-1)
+                    self.B.VBtn(-1, 10)
                     count+=1
                     sleep(0.5)
                     if count == 2:

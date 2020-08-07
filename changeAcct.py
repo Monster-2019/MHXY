@@ -108,6 +108,14 @@ class ChangeAcct(object):
             hwndChildList = []
             win32gui.EnumChildWindows(self.hwnd, lambda hwnd, param: param.append(hwnd), hwndChildList)
             self.hwnd = hwndChildList[len(hwndChildList) - 1]
+        
+        else:
+            pass
+
+        if self.hwnd != 0:
+            return 1
+        else:
+            return 0
 
     def startGame(self, arr):
         if len(arr) > 0:
@@ -139,14 +147,14 @@ class ChangeAcct(object):
     def login(self, arr):
         if len(arr) > 0:
             os.system('start D:\\software\\dnplayer2\\dnplayer.exe')
-            sleep(10)
+            sleep(3)
 
-            try:
-                self.setWindow('mnq')
-            except Exception as e:
-                log(e)
-                sleep(10)
-                self.setWindow('mnq')
+            while True:
+                res = self.setWindow('mnq')
+                if res == 1:
+                    break
+
+            sleep(5)
             
             sleep(0.5)
 

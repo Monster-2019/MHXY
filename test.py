@@ -39,6 +39,9 @@ class ChangeAcct(object):
     def start(self, pythonCode):
         exec(pythonCode)
 
+    def close(self):
+        os.system('taskkill /F /IM mymain.exe')
+
 if __name__ == '__main__':
-    ChangeAcct().gaizhuang()
+    ChangeAcct().close()
     # ChangeAcct().start('print(123)')

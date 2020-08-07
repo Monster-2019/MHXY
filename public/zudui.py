@@ -80,6 +80,8 @@ class Zudui(object):
             self.B.RBtn()
 
             self.B.Hotkey('hy')
+            sleep(1)
+            self.smc('lxr', sleepT=0.5)
 
             n = 0
             while n < 3:

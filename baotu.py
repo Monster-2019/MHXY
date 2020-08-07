@@ -22,6 +22,10 @@ class Baotu:
             if btnCoor == 0:
                 self.B.RBtn()
             else:
+                self.B.MBtn(900, 300)
+                self.B.VBtn(1, 10)
+                sleep(0.5)
+
                 temCoor = self.matchTem('bt_btrw')
                 if temCoor != 0:
                     processing = True
