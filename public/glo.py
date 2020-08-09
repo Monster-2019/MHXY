@@ -1,7 +1,7 @@
 import sys
 sys.path.append('..')
-
 import config
+import numpy as np
 
 class Glo:
     obj = {
@@ -10,13 +10,12 @@ class Glo:
         "level": 0,
         "gold": 0,
         "silver": 0,
-        "Till": 0,
         'TeamStatus': False,
         'count': 0,
         'lock': None,
-        'z': None,
         'config': None,
-        "request_url": "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic"
+        'oldCoor': [],
+        'newCoor': []
     }
     def __init__(self):
         pass
@@ -32,6 +31,12 @@ class Glo:
 
     def get(self, key):
         return self.obj[key]
+
+    def compare(self):
+        a = np.array(self.get('oldCoor'))
+        b = np.array(self.get('newCoor'))
+        c = (a==b).all()
+        return c
 
 if __name__ == '__main__':
     g = Glo()

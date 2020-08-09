@@ -47,7 +47,7 @@ class OCR():
         f = open('./images/screen' + self.g.get('windowClass') +'.jpg',  'rb')
         img = base64.b64encode(f.read())
 
-        request_url = self.g.get('request_url') + "?access_token=" + token
+        request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=" + token
         headers = {'content-type': 'application/x-www-form-urlencoded'}
         param = {"image": img}
         res = requests.post(request_url, data=param, headers=headers)

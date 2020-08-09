@@ -2,16 +2,18 @@ from time import sleep
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
+from public.glo import Glo
+from public.log import log
 
 class SJQY:
     def __init__(self):
+        self.name = Glo().get('name')
         self.B = Btn()
-        C = CScreen()
-        self.cutScreen = C.cutScreen
-        M = Match()
-        self.matchTem = M.matchTem
+        self.cutScreen = CScreen().cutScreen
+        self.matchTem = Match().matchTem
 
     def start(self):
+        log(f"账号: { self.name } 开始三界奇缘任务")
         complete = False
 
         while True:
@@ -40,6 +42,7 @@ class SJQY:
                 self.cutScreen()
                 temCoor = self.matchTem('sj_wc', simi=0.95) or self.matchTem('sj_wc1', simi=0.95)
                 if temCoor != 0:
+                    log(f"账号: { self.name } 三界奇缘任务已完成")
                     complete = True
                     break
             else:
@@ -50,6 +53,7 @@ class SJQY:
         sleep(0.5)
         
         if not complete:
+            log(f"账号: { self.name } 三界奇缘任务进行中")
             count = 0
             while True:
                 self.cutScreen()
@@ -67,6 +71,7 @@ class SJQY:
                         self.B.VBtn(-1)
                     sleep(0.5)
                     if count == 2:
+                        log(f"账号: { self.name } 三界奇缘任务完成")
                         complete = True
                         break
 
@@ -95,6 +100,7 @@ class SJQY:
             sleep(0.5)
 
         if complete:
+            log(f"账号: { self.name } 三界奇缘任务结束")
             return 1
         else:
             self.start()

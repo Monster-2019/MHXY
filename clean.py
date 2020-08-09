@@ -86,7 +86,7 @@ class Clean(object):
 
 		page = 0
 		while True:
-			res = self.smc('bb_dq1') or self.smc('bb_zz')
+			res = self.smc('bb_dq1') or self.smc('bb_dq2') or self.smc('bb_zz')
 			if res == 1:
 				self.smc('bb_dq', sleepT=0.5)
 				self.smc('qd', sleepT=0.5)

@@ -13,7 +13,7 @@ import time
 import pdb
 import os
 
-from public.log import log
+from public.log import log, clearFile
 from guajiang import Guajiang
 from public.getInfo import Info
 from zhuogui import Zhuogui
@@ -26,9 +26,6 @@ from yunbiao import Yunbiao
 from sjqy import SJQY
 from kjxs import KJXS
 from lqhyd import LQHYD
-from bangpai import Bangpai
-from gongfang import Gongfang
-from huan import Huan
 from upgrade import Upgrade
 from gengzhong import GengZhong
 from clean import Clean
@@ -76,46 +73,46 @@ class Run(object):
         level = self.g.get('level')
 
         res = Guajiang().start()
-        if res == 1: log(f'账号:{name}  ---  刮奖完成')
+        # if res == 1: log(f'账号:{name}  ---  刮奖完成')
 
         res = GengZhong().start()
-        if res == 1: log(f"账号：{name}  ---  耕种完成")
+        # if res == 1: log(f"账号：{name}  ---  耕种完成")
 
         if myDict['ZG']:
             res = Zhuogui().start()
-            if res == 1: log(f'账号:{name}  ---  捉鬼完成')
+            # if res == 1: log(f'账号:{name}  ---  捉鬼完成')
 
         if myDict['FB']:
             res = LLSPT().start()
-            if res == 1: log(f'账号：{name}  ---  琉璃碎普通副本完成')
+            # if res == 1: log(f'账号：{name}  ---  琉璃碎普通副本完成')
 
         res = Lidui().start()
-        if res == 1: log(f'账号：{name}  ---  已离队')
+        # if res == 1: log(f'账号：{name}  ---  已离队')
 
         res = GengZhong().start()
-        if res == 1: log(f"账号：{name}  ---  耕种完成")
+        # if res == 1: log(f"账号：{name}  ---  耕种完成")
             
         res = Shimen().start()
-        if res == 1: log(f"账号：{name}  ---  师门任务完成")
+        # if res == 1: log(f"账号：{name}  ---  师门任务完成")
 
         res = Baotu().start()
-        if res == 1: log(f"账号：{name}  ---  宝图任务完成")
+        # if res == 1: log(f"账号：{name}  ---  宝图任务完成")
 
         res = Mijing().start()
-        if res == 1: log(f"账号：{name}  ---  秘境任务完成")
+        # if res == 1: log(f"账号：{name}  ---  秘境任务完成")
 
         currentHour = int(time.strftime('%H', time.localtime()))
         if currentHour >= 11:
             res = SJQY().start()
-            if res == 1: log(f"账号：{name}  ---  三界奇缘任务完成")
+            # if res == 1: log(f"账号：{name}  ---  三界奇缘任务完成")
 
         currentHour = int(time.strftime('%H', time.localtime()))
         if currentWeek > 0 and currentWeek <= 5 and currentHour >= 17:
             res = KJXS().start()
-            if res == 1: log(f"账号：{name}  ---  科举乡试任务完成")
+            # if res == 1: log(f"账号：{name}  ---  科举乡试任务完成")
 
         res = Yunbiao().start()
-        if res == 1: log(f"账号：{name}  ---  运镖任务完成")
+        # if res == 1: log(f"账号：{name}  ---  运镖任务完成")
 
         res = LQHYD().start()
         if res == 1: log(f"账号：{name}  ---  活跃度领取完成")
@@ -123,27 +120,7 @@ class Run(object):
         log(f'账号：{name}  ---  日常任务已完成')
 
         res = GengZhong().start()
-        if res == 1: log(f"账号：{name}  ---  耕种完成")
-
-        # if (currentWeek - groupNo) % 3 == 2:
-        # if groupNo % 2 == 0:
-        #     res = Bangpai().start()
-        #     if res == 1: log(f"账号：{name}  ---  帮派任务完成")
-
-            # if int(level) != 0 and int(level) >= 60:
-            #     res = Gongfang().start()
-            #     if res == 1: log(f"账号：{name}  ---  工坊任务完成")
-
-        # if (currentWeek - groupNo) % 3 == 1:
-        #     if int(level) != 0 and int(level) >= 50 and int(level) < 69 :
-        #         res = Huan().start()
-        #         if res == 1: log(f"账号：{name}  ---  经验环完成")
-
-        #         res = GengZhong().start()
-        #         if res == 1: log(f"账号：{name}  ---  耕种完成")
-
-        #     else:
-        #         log(f'账号：{name}，当前等级{level}，不跑经验环')
+        # if res == 1: log(f"账号：{name}  ---  耕种完成")
 
         currentHour = int(time.strftime('%H', time.localtime()))
         if int(level) < 69 and currentHour >= 8:
@@ -170,6 +147,7 @@ class Run(object):
             # currentHour = int(time.strftime('%H', time.localtime()))
             # if currentHour < 8:
                 # os.system(f'schtasks /Create /SC ONCE /TN guanji /TR "shutdown /s" /ST 06:00')
+            clearFile()
             log('----------------------------------------------------------------------------------------')
             log('多进程已开启')
 
@@ -224,4 +202,3 @@ if __name__ == "__main__":
             Run().start()
     except Exception as e:
         log(e)
-    

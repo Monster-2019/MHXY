@@ -1,5 +1,5 @@
 from time import sleep
-from datetime import datetime, date
+from datetime import datetime
 from public.cutScreen import CScreen
 from public.matchTem import Match
 from public.zudui import Zudui
@@ -11,6 +11,7 @@ from public.log import log
 class Zhuogui:
     def __init__(self):
         self.g = Glo()
+        self.name = self.g.get('name')
         self.B = Btn()
         self.smc = SMC().smc
         self.matchTem = Match().matchTem
@@ -19,6 +20,7 @@ class Zhuogui:
         self.weekday = datetime.today().weekday()
 
     def leader(self):
+        log(f"账号: { self.name } 队长开始捉鬼任务")
         complete = False
 
         while True:
@@ -41,6 +43,7 @@ class Zhuogui:
                 self.cutScreen()
                 temCoor = self.matchTem('zg_wc', simi=0.98) or self.matchTem('zg_wc1', simi=0.98)
                 if temCoor != 0:
+                    log(f"捉鬼任务已完成")
                     complete = True
                     self.g.setObj('config', 'ZG_WC', True)
                     break
@@ -69,6 +72,7 @@ class Zhuogui:
 
         # 匹配捉鬼任务
         if not complete and self.g.getObj('config', 'ZG_COUNT') != 0:
+            log(f"捉鬼任务进行中")
             while True:
                 self.cutScreen()
                 temCoor = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
@@ -109,6 +113,7 @@ class Zhuogui:
                                 btnCoor = self.matchTem('qx')
                                 if btnCoor != 0:
                                     self.B.LBtn(btnCoor)
+                                    log(f"捉鬼任务完成")
                                     complete = True
                                     self.g.setObj('config', 'ZG_WC', True)
                                     break
@@ -117,6 +122,11 @@ class Zhuogui:
                             self.B.LBtn(btnCoor)
                             self.B.LBtn(btnCoor)
                             sleep(30)
+
+                    else:
+                        if item == 'zg_zg':
+                            self.B.MBtn(900, 300)
+                            self.B.VBtn(1, 10)
                             
         else:
             self.B.RBtn()
@@ -141,6 +151,7 @@ class Zhuogui:
             return 0
 
     def start(self):
+        log(f"账号: { self.name } 开始捉鬼任务")
         complete = False
         res = 0
         if int(self.index) == 0:
@@ -155,6 +166,7 @@ class Zhuogui:
                 res = 1
 
         if res == 1:
+            log(f"账号: { self.name } 开始捉鬼结束")
             return 1
         else:
             raise

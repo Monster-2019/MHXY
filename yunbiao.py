@@ -2,25 +2,25 @@ from time import sleep
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
+from public.glo import Glo
 from public.log import log
 
 class Yunbiao:
     def __init__(self):
+        self.name = Glo().get('name')
         self.B = Btn()
-        C = CScreen()
-        self.cutScreen = C.cutScreen
-        M = Match()
-        self.matchTem = M.matchTem
+        self.cutScreen = CScreen().cutScreen
+        self.matchTem = Match().matchTem
 
     def start(self):
+        log(f"账号: { self.name } 开始运镖任务")
         complete = False
-        self.cutScreen()
 
         while True:
+            self.cutScreen()
             btnCoor = self.matchTem('hd')
             if btnCoor == 0:
                 self.B.RBtn()
-                self.cutScreen()
             else: 
                 self.B.Hotkey('hd')
                 sleep(0.5)
@@ -42,6 +42,7 @@ class Yunbiao:
                 self.cutScreen()
                 temCoor = self.matchTem('yb_wc', simi=0.95) or self.matchTem('yb_wc1', simi=0.95)
                 if temCoor != 0:
+                    log(f"账号: { self.name } 运镖任务已完成")
                     complete = True
                     break
             self.B.VBtn(-1)
@@ -51,6 +52,7 @@ class Yunbiao:
         sleep(0.5)
 
         if not complete:
+            log(f"账号: { self.name } 运镖任务进行中")
             count = 0
             while True:
                 self.cutScreen()
@@ -93,7 +95,7 @@ class Yunbiao:
                                             else:
                                                 count+=1
                                                 ysStatus = True
-                                                log(f'正在进行第{count}轮运镖')
+                                                log(f'账号: { self.name } 正在进行第{ count }轮运镖')
                                                 sleep(2)
                                                 break
 
@@ -112,6 +114,7 @@ class Yunbiao:
                             if temCoor != 0:
                                 btnCoor = self.matchTem('yb_ys')
                                 if btnCoor == 0:
+                                    log(f"账号: { self.name } 运镖任务完成")
                                     complete = True
                                     break
                 sleep(1)
@@ -120,6 +123,7 @@ class Yunbiao:
             self.B.RBtn()
 
         if complete:
+            log(f"账号: { self.name } 运镖任务结束")
             return 1
         else:
             self.start()

@@ -3,16 +3,17 @@ from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
 from public.log import log
+from public.glo import Glo
 
 class Guajiang:
     def __init__(self):
+        self.name = Glo().get('name')
         self.B = Btn()
-        C = CScreen()
-        self.cutScreen = C.cutScreen
-        M = Match()
-        self.matchTem = M.matchTem
+        self.cutScreen = CScreen().cutScreen
+        self.matchTem = Match().matchTem
 
     def start(self):
+        log(f"账号: { self.name } 开始刮奖")
         while True:
             self.cutScreen()
             btnCoor = self.matchTem('fl_dkggl')
@@ -58,7 +59,7 @@ class Guajiang:
             else: 
                 break
         
-        log('刮奖完成')
+        log(f"账号: { self.name } 刮奖完成")
 
 if __name__ == '__main__':
     Guajiang().start()

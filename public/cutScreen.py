@@ -5,9 +5,9 @@ import win32gui, win32ui, win32con, win32api
 from ctypes import windll
 from PIL import Image
 from time import sleep
-import cv2
-import numpy
 from public.glo import Glo
+import cv2 as cv
+import numpy as np
 
 class CScreen(object):
     Coor = ()
@@ -17,14 +17,15 @@ class CScreen(object):
         "name": ((197, 136), (210, 35)),
         "gold": ((106, 634), (130, 24)),
         "silver": ((300, 634), (160, 24)),
-        "bb": ((513, 202), (407, 407))
+        "bb": ((513, 202), (407, 407)),
+        "gfbt": ((647, 207), (306, 461))
     }
 
     def __init__(self):
         # 初始化窗口的句柄
         super(CScreen, self).__init__()
-        g = Glo()
-        self.index = g.get('windowClass')
+        self.g = Glo()
+        self.index = self.g.get('windowClass')
         self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
 
     def cutScreen(self, infoKey=""):
@@ -64,6 +65,11 @@ class CScreen(object):
         mfcDC.DeleteDC()
         win32gui.ReleaseDC(self.hwnd, hwndDC)
         sleep(0.01)
+
+        if infoKey == "":
+            img = cv.imread('./images/screen' + self.index  + '.jpg')
+            self.g.set('oldCoor', self.g.get('newCoor'))
+            self.g.set('newCoor', [img[200, 150], img[200, 500], img[700, 85], img[700, 550]])
 
 if __name__ == '__main__':
     CScreen().cutScreen()

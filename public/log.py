@@ -1,5 +1,6 @@
 import logging
 import datetime
+import os
 today = datetime.date.today()
 logger = logging.getLogger(__name__)
 logger.setLevel(level = logging.INFO)
@@ -19,3 +20,9 @@ def log(msg, err = False):
         logger.warning(msg)
     else:
         logger.info(msg)
+
+def clearFile():
+    file = open(str(today) + '.txt', 'w')
+    file.truncate()
+
+clearFile()

@@ -2,24 +2,25 @@ from time import sleep
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
+from public.glo import Glo
+from public.log import log
 
 class Mijing:
     def __init__(self):
+        self.name = Glo().get('name')
         self.B = Btn()
-        C = CScreen()
-        self.cutScreen = C.cutScreen
-        M = Match()
-        self.matchTem = M.matchTem
+        self.cutScreen = CScreen().cutScreen
+        self.matchTem = Match().matchTem
 
     def start(self):
+        log(f"账号: { self.name } 开始秘境任务")
         complete = False
-        self.cutScreen()
 
         while True:
+            self.cutScreen()
             btnCoor = self.matchTem('hd')
             if btnCoor == 0:
                 self.B.RBtn()
-                self.cutScreen()
             else: 
                 self.B.Hotkey('hd')
                 sleep(0.5)
@@ -41,6 +42,7 @@ class Mijing:
                 self.cutScreen()
                 temCoor = self.matchTem('hd_mjxy', simi=0.97) or self.matchTem('hd_mjxy1', simi=0.98)
                 if temCoor == 0:
+                    log(f"账号: { self.name } 秘境任务已完成")
                     complete = True
                     break
                 else:
@@ -53,6 +55,7 @@ class Mijing:
 
         # 匹配秘境降妖
         if not complete:
+            log(f"账号: { self.name } 秘境任务进行中")
             isStart = False
             count = 0
             while True:
@@ -73,6 +76,7 @@ class Mijing:
                         self.B.VBtn(-1)
                     sleep(0.5)
                     if count == 2:
+                        log(f"账号: { self.name } 秘境任务完成")
                         complete = True
                         isStart = True
                         break
@@ -123,6 +127,7 @@ class Mijing:
                                 if btnCoor != 0:
                                     self.B.LBtn(btnCoor, sleepT=0.5)
                                 else:
+                                    log(f"账号: { self.name } 秘境任务完成")
                                     complete = True
                                     break
 
@@ -136,6 +141,7 @@ class Mijing:
                                     if btnCoor != 0:
                                         self.B.LBtn(btnCoor, sleepT=0.5)
                                     else:
+                                        log(f"账号: { self.name } 秘境任务完成")
                                         complete = True
                                         break
                             else:
@@ -160,6 +166,7 @@ class Mijing:
             sleep(0.5)
 
         if complete:
+            log(f"账号: { self.name } 秘境任务结束")
             return 1
         else:
             self.start()
