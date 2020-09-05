@@ -1,4 +1,5 @@
 import sys
+sys.path.append('.')
 sys.path.append('..')
 import cv2 as cv
 import numpy as np
@@ -60,4 +61,4 @@ class Match():
 
 if __name__ == '__main__':
     CScreen().cutScreen()
-    Match().matchTem('bb_gms')
+    Match().matchTem('hy_max')

@@ -5,69 +5,74 @@ from public.zudui import Zudui
 from public.btn import Btn
 from public.glo import Glo
 from public.smc import SMC
-
+from public.log import log
 
 class LLSPT:
     def __init__(self):
         self.g = Glo()
+        self.name = self.g.get('name')
         self.B = Btn()
         self.smc = SMC().smc
         self.matchTem = Match().matchTem
         self.cutScreen = CScreen().cutScreen
         self.index = self.g.get('windowClass')
 
-    def leader(self):
+    def isComplete(self):
         complete = False
+        self.B.Hotkey('hd')
 
-        while True:
-            self.cutScreen()
-            btnCoor = self.matchTem('hd')
-            if btnCoor == 0:
-                self.B.RBtn()
-            else: 
-                self.B.Hotkey('hd')
-                break
+        self.smc('rchd', sleepT=0.5)
 
-        self.smc('rchd')
-            
         self.B.MBtn(590, 330)
-
         self.B.VBtn(1, 21)
+        sleep(0.5)
 
-        for i in range(21):
-            if i % 10 == 0:
-                self.cutScreen()
-                temCoor = self.matchTem('fb_llspt_wc', simi=0.95) or self.matchTem('fb_llspt_wc1', simi=0.95)
-                if temCoor != 0:
+        for n in range(21):
+            if n % 10 == 0:
+                sleep(0.5)
+                res = self.smc(['fb_llspt_wc', 'fb_llspt_wc1'], simi=0.95, count=0)
+                if res != 0:
                     complete = True
                     self.g.setObj('config', 'FB_WC', True)
+                    log(f"副本任务已完成")
                     break
-            self.B.VBtn(-1)
+            else:
+                self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
         self.B.RBtn()
+
+        return complete
+
+    def leader(self):
+        log(f"开始副本任务")
+        complete = False
+        processing = False
+
+        while True:
+            res = self.smc('hd', count=0)
+            if res == 0:
+                self.B.RBtn()
+            else: 
+                break
+
+        complete = self.isComplete()
 
         if not complete:
             if not self.g.getObj('config', 'TeamStatus'):
                 Zudui().start()
 
-        self.B.Hotkey('zz')
-
-        self.B.LBtn('zr1')
-        self.B.LBtn('zr2')
-
-        sleep(0.5)
+        self.B.Hotkey('zz', sleepT=1)
+        self.B.LBtn('zr1', sleepT=0.5)
+        self.B.LBtn('zr2', sleepT=0.5)
         self.B.RBtn()
 
-        self.B.Hotkey('hd')
-
-        self.smc('rchd')
-
-        self.B.MBtn(590, 330)
-
-        self.B.VBtn(1, 21)
-
         if not complete:
+            log(f"副本任务进行中")
+
+            self.B.Hotkey('hd')
+            self.smc('rchd', sleepT=0.5)
+            page = 1
             while True:
                 self.cutScreen()
                 temCoor = self.matchTem('hd_lls_pt') or self.matchTem('hd_lls_pt1')
@@ -78,12 +83,11 @@ class LLSPT:
                         self.B.LBtn(newCoor)
 
                         while True:
-                            self.cutScreen()
-                            btnCoor = self.matchTem('fb_xzfb')
-                            if btnCoor != 0:
-                                self.B.LBtn(btnCoor, sleepT=0.5)
+                            res = self.smc('fb_xzfb')
+                            if res != 0:
                                 break
                         
+                        clickStatus = False
                         while True:
                             self.cutScreen()
                             temCoor = self.matchTem('fb_lls_pt')
@@ -92,28 +96,38 @@ class LLSPT:
                                 newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                                 if btnCoor != 0:
                                     self.B.LBtn(newCoor)
-                                    break
+                                    processing = True
+                                    clickStatus = True
+
+                            elif temCoor == 0 and clickStatus:
+                                break
 
                         break
 
                 else:
+                    page += 1
                     self.B.VBtn(-1 ,10)
                     sleep(0.5)
+                    if page == 4:
+                        break
+            if not processing:
+                self.B.RBtn()
 
             fbList = ['sb', 'fb_tgjq', 'fb_lls', 'dh', 'djjx', 'hd']
 
-            while not complete:
+            while processing:
                 for item in fbList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item)
-
                     if btnCoor != 0:
                         if item == 'fb_lls':
                             self.B.LBtn(btnCoor, sleepT=3)
 
                         elif item == 'hd':
                             complete = True
+                            processing = False
                             self.g.setObj('config', 'FB_WC', True)
+                            log(f"副本任务完成")
                             break
 
                         elif item == 'dh':
@@ -129,51 +143,54 @@ class LLSPT:
 
                         elif item == 'djjx':
                             while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem('djjx')
-                                if btnCoor != 0:
-                                    self.B.LBtn(btnCoor)
-                                else:
+                                res = self.smc('djjx', sleepT=0.3)
+                                if res == 0:
                                     break
 
                         else:
                             self.B.LBtn(btnCoor)
 
-        else:
-            self.B.RBtn()
-
         if complete:
+            log(f"副本任务结束")
             return 1
         else:
-            return 0
+            self.leader()
 
     def palyer(self):
         complete = False
         Zudui().start()
-        while not complete:
-            sleep(3)
-            complete = self.g.getObj('config', 'FB_WC')
+        while not self.g.getObj('config', 'FB_WC'):
+            sleep(5)
+
+        complete = True
 
         if complete:
             return 1
         else:
-            return 0
+            self.palyer()
 
     def start(self):
-        complete = False
-        res = 0
-        if int(self.index) == 0:
-            res = self.leader()
-        else:
-            while self.g.getObj('config', 'FB_WC') == None:
-                sleep(3)
-
-            if not self.g.getObj('config', 'FB_WC'):
-                res = self.palyer()
+        try:
+            complete = False
+            res = 0
+            if int(self.index) == 0:
+                res = self.leader()
             else:
-                res = 1
+                while self.g.getObj('config', 'FB_WC') == None:
+                    sleep(3)
+                    
+                if not self.g.getObj('config', 'FB_WC'):
+                    res = self.palyer()
+                else:
+                    res = 1
 
-        if res == 1:
-            return 1
-        else:
-            raise
+            if res != 0:
+                return 1
+            else:
+                self.start()
+
+        except Exception as e:
+            log(e, True)
+
+if __name__ == "__main__":
+    LLSPT().start()

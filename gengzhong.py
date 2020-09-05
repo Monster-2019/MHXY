@@ -7,6 +7,7 @@ from public.smc import SMC
 from public.btn import Btn
 from public.glo import Glo
 from public.log import log
+import traceback
 
 class GengZhong:
     def __init__(self):
@@ -20,15 +21,13 @@ class GengZhong:
 
     def sell(self):
         while True:
-            self.cutScreen()
-            btnCoor = self.matchTem('hd')
-            if btnCoor == 0:
+            res = self.smc('hd', count=0)
+            if res == 0:
                 self.B.RBtn()
             else:
                 break
 
         self.B.Hotkey('bb')
-        sleep(0.5)
         self.smc('bb_zl', sleepT=0.5)
         self.B.MBtn(720, 440)
         self.B.VBtn(1, 30)
@@ -36,22 +35,18 @@ class GengZhong:
 
         page = 1
         while True:
-            self.cutScreen()
-            btnCoor = self.matchTem('bb_jyh')
-            if btnCoor != 0:
-                self.B.LBtn(btnCoor, sleepT=0.5)
-
-                self.smc('bb_gd')
-
+            res = self.smc('bb_jyh', sleepT=0.5)
+            if res != 0:
+                self.smc('bb_gd', sleepT=0.5)
                 self.smc('bb_gfbt', sleepT=1)
                 self.B.RBtn()
-
                 break
+
             else:
                 self.B.MBtn(720, 440)
                 self.B.VBtn(-1, 6)
                 page += 1
-                if page == 4:
+                if page == 6:
                     log(f"账号: { self.name } 无金银花")
                     self.B.RBtn()
                     break
@@ -86,78 +81,77 @@ class GengZhong:
             else:
                 complete = True
                 break
+
+        self.B.RBtn()
+        self.B.RBtn()
+
         log(f"账号：{self.name} 上架{count}组金银花")
 
         return complete
 
     def start(self):
-        complete = False
-        isTill = True
-        
-        while True:
+        try:
+            log(f"账号: { self.name } 开始耕种")
+            complete = False
+            isTill = True
+            
+            while True:
+                res = self.smc('hd', count=0)
+                if res == 0:
+                    self.B.RBtn()
+                else:
+                    break
+
+            self.B.Hotkey('jy', sleepT=1)
+
+            self.smc('jy_hj', sleepT=3)
+
             self.cutScreen()
-            btnCoor = self.matchTem('hd')
-            if btnCoor == 0:
-                self.B.RBtn()
-            else:
-                break
+            btnCoor = self.matchTem('gz_sh')
+            temCoor = self.matchTem('gz_td')
+            if btnCoor == 0 and temCoor == 0:
+                isTill = False
+                complete = True
 
-        self.B.Hotkey('jy', sleepT=1)
+            xhList = ['gz_sh', 'sh', 'gz_td', 'gz_td1', 'gz_prve', 'gz_jyh', 'gz_zz']
 
-        self.cutScreen()
-        btnCoor = self.matchTem('jy_hj')
-        if btnCoor != 0:
-            self.B.LBtn(btnCoor, sleepT=3)
-
-        self.cutScreen()
-        btnCoor = self.matchTem('gz_sh')
-        temCoor = self.matchTem('gz_td')
-        if btnCoor == 0 and temCoor == 0:
-            isTill = False
-            complete = True
-
-        xhList = ['gz_sh', 'sh', 'gz_td', 'gz_td1', 'gz_jyh', 'gz_lk', 'gz_zz']
-
-        while isTill:
-            for item in xhList:
-                self.cutScreen()
-                btnCoor = self.matchTem(item)
-                if btnCoor != 0:
-                    if item == 'gz_jyh' or item == 'gz_lk':
-                        tCoor = self.matchTem('gz_prve')
-                        if tCoor != 0:
-                            self.B.LBtn(tCoor)
-                        sleep(0.5)
-                        temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')
-                        newCoor = ((btnCoor[0][0] + temCoor[0][0], btnCoor[0][1] + temCoor[0][1]), temCoor[1])
-                        while True:
-                            self.cutScreen()
-                            temCoor = self.matchTem('gz_max')
-                            if temCoor == 0:
+            while isTill:
+                for item in xhList:
+                    self.cutScreen()
+                    btnCoor = self.matchTem(item)
+                    if btnCoor != 0:
+                        if item == 'gz_jyh':
+                            temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')
+                            newCoor = ((btnCoor[0][0] + temCoor[0][0], btnCoor[0][1] + temCoor[0][1]), temCoor[1])
+                            for n in range(10):
                                 self.B.LBtn(newCoor)
-                            else:
-                                break
-                    
-                    elif item == 'gz_zz':
-                        self.B.LBtn(btnCoor, sleepT=0.5)
-                        self.cutScreen()
-                        temCoor = self.matchTem('gf_nothl')
-                        if temCoor != 0:
-                            self.B.RBtn()
-                        isTill = False
-                        complete = True
-                    
-                    else:
-                        self.B.LBtn(btnCoor)
-                    sleep(0.4)
+                                sleep(0.1)
+                            
+                        elif item == 'gz_zz':
+                            self.B.LBtn(btnCoor, sleepT=0.5)
+                            self.cutScreen()
+                            temCoor = self.matchTem('gf_nothl')
+                            if temCoor != 0:
+                                self.B.RBtn()
+                            isTill = False
+                            complete = True
+                        
+                        else:
+                            self.B.LBtn(btnCoor)
+                        sleep(0.4)
 
-        if self.weekday == 3 or self.weekday == 6:
-            self.sell()
+            if self.weekday % 2 == 0:
+                self.sell()
 
-        if complete:
-            return 1
-        else:
-            self.start()
+            if complete:
+                log(f"账号: { self.name } 耕种完成")
+                return 1
+            else:
+                self.start()
+        except Exception as e:
+            # print(e)
+            # traceback.print_exc()
+            log(e, True)
 
 if __name__ == "__main__":
-    GengZhong().sell()
+    GengZhong().start()

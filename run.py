@@ -12,6 +12,7 @@ import random
 import time
 import pdb
 import os
+import traceback
 
 from public.log import log, clearFile
 from guajiang import Guajiang
@@ -47,7 +48,7 @@ class Run(object):
         self.m = int((totalTime % 3600) / 60)
         self.s = (totalTime % 3600) % 60
 
-    def psuhMsg(self, times=30):
+    def psuhMsg(self, shutdown=False, times=30):
         self.runOver()
         url = 'https://sc.ftqq.com/SCU69656T782d340ca550c446fba0708c1436e3af5e2aadb811f2f.send'
         msg = '共用' + str(self.h) + '时' + str(self.m) + '分' + str(self.s) + '秒，' + '已自动关机'
@@ -56,8 +57,7 @@ class Run(object):
         }
         requests.post(url, param)
         currentHour = int(time.strftime('%H', time.localtime()))
-        if currentHour < 8:
-            os.system('shutdown -a')
+        if currentHour < 8 or shutdown:
             os.system(f'shutdown -s -t {times}')
 
     def richang(self, windowClass, lock, myDict, groupNo):
@@ -72,81 +72,77 @@ class Run(object):
         name = self.g.get('name')
         level = self.g.get('level')
 
-        res = Guajiang().start()
+        Guajiang().start()
         # if res == 1: log(f'账号:{name}  ---  刮奖完成')
 
-        res = GengZhong().start()
+        if level >= 60:
+            GengZhong().start()
         # if res == 1: log(f"账号：{name}  ---  耕种完成")
 
         if myDict['ZG']:
-            res = Zhuogui().start()
+            Zhuogui().start()
             # if res == 1: log(f'账号:{name}  ---  捉鬼完成')
 
         if myDict['FB']:
-            res = LLSPT().start()
+            LLSPT().start()
             # if res == 1: log(f'账号：{name}  ---  琉璃碎普通副本完成')
 
-        res = Lidui().start()
+        Lidui().start()
         # if res == 1: log(f'账号：{name}  ---  已离队')
 
-        res = GengZhong().start()
+        if level >= 60:
+            GengZhong().start()
         # if res == 1: log(f"账号：{name}  ---  耕种完成")
             
-        res = Shimen().start()
+        Shimen().start()
         # if res == 1: log(f"账号：{name}  ---  师门任务完成")
 
-        res = Baotu().start()
+        Baotu().start()
         # if res == 1: log(f"账号：{name}  ---  宝图任务完成")
 
-        res = Mijing().start()
+        Mijing().start()
         # if res == 1: log(f"账号：{name}  ---  秘境任务完成")
 
         currentHour = int(time.strftime('%H', time.localtime()))
         if currentHour >= 11:
-            res = SJQY().start()
+            SJQY().start()
             # if res == 1: log(f"账号：{name}  ---  三界奇缘任务完成")
 
         currentHour = int(time.strftime('%H', time.localtime()))
         if currentWeek > 0 and currentWeek <= 5 and currentHour >= 17:
-            res = KJXS().start()
+            KJXS().start()
             # if res == 1: log(f"账号：{name}  ---  科举乡试任务完成")
 
-        res = Yunbiao().start()
+        Yunbiao().start()
         # if res == 1: log(f"账号：{name}  ---  运镖任务完成")
 
-        res = LQHYD().start()
-        if res == 1: log(f"账号：{name}  ---  活跃度领取完成")
+        LQHYD().start()
 
-        log(f'账号：{name}  ---  日常任务已完成')
-
-        res = GengZhong().start()
+        if level >= 60:
+            GengZhong().start()
         # if res == 1: log(f"账号：{name}  ---  耕种完成")
 
-        currentHour = int(time.strftime('%H', time.localtime()))
-        if int(level) < 69 and currentHour >= 8:
-            res = Upgrade().start()
-            if res == 1: log(f"账号：{name}  ---  剧情完成")
+        # currentHour = int(time.strftime('%H', time.localtime()))
+        # if int(level) < 69 and currentHour >= 8:
+        #     Upgrade().start()
+        #     if res == 1: log(f"账号：{name}  ---  剧情完成")
 
-        res = Clean().start()
-        if res == 1: log(f"账号：{name}  ---  背包清理完成")
+        Clean().start()
 
         count = self.g.get('count')
-        log(f'账号：{name},当前等级{level}, 调用{count}次接口')
+        log(f'账号：{name}, 当前等级{level}, 调用{ count }次接口')
 
         log(f'账号：{name}开始背包整理时间')
-        sleep(60)
+        sleep(30)
         log(f'账号：{name}背包整理时间结束')
 
-        res = Logout().start(myDict['NEXT'])
-        if res == 1: log(f"账号：{name}  ---  已登出")
+        Logout().start(myDict['NEXT'])
+        # if res == 1: log(f"账号：{name}  ---  已登出")
 
     def start(self):
         try:
             import pythoncom
             pythoncom.CoInitialize()
-            # currentHour = int(time.strftime('%H', time.localtime()))
-            # if currentHour < 8:
-                # os.system(f'schtasks /Create /SC ONCE /TN guanji /TR "shutdown /s" /ST 06:00')
             clearFile()
             log('----------------------------------------------------------------------------------------')
             log('多进程已开启')
@@ -166,7 +162,7 @@ class Run(object):
                 p = Pool(5)
                 for i in config.ACCT_LIST:
                     p.apply_async(self.richang, args=(i, lock, d, index))
-                    sleep(2)
+                    sleep(1)
                 p.close()
                 p.join()
 
@@ -179,7 +175,7 @@ class Run(object):
 
             self.psuhMsg()
         except Exception as e:
-            self.psuhMsg(300)
+            self.psuhMsg(True)
 
     def timingStart(self, timingTime):
         time = timingTime.split(':')
@@ -201,4 +197,5 @@ if __name__ == "__main__":
         else:
             Run().start()
     except Exception as e:
-        log(e)
+        traceback.print_exc()
+        log(e, True)

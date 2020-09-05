@@ -24,7 +24,7 @@ class SMC(object):
                 Coor = ((imgCoor[0] + Coor[0][0], imgCoor[1] + Coor[0][1]), Coor[1])
             self.B.LBtn(Coor, count=count)
             sleep(sleepT)
-            return 1
+            return Coor
         return 0
 
 if __name__ == '__main__':

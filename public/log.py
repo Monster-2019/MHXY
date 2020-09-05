@@ -24,5 +24,3 @@ def log(msg, err = False):
 def clearFile():
     file = open(str(today) + '.txt', 'w')
     file.truncate()
-
-clearFile()

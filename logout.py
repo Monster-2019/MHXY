@@ -1,11 +1,14 @@
 from time import sleep
 from public.smc import SMC
 from public.btn import Btn
+from public.glo import Glo
+from public.log import log
 
 class Logout(object):
 	"""docstring for Logout"""
 	def __init__(self):
 		super(Logout, self).__init__()
+		self.name = Glo().get('name')
 		self.smc = SMC().smc
 		self.B = Btn()
 
@@ -16,7 +19,6 @@ class Logout(object):
 			res = self.smc('hd', count=0)
 			if res == 0:
 				self.B.RBtn()
-				sleep(1)
 			else:
 				break
 
@@ -27,14 +29,15 @@ class Logout(object):
 			while not complete:
 				for item in xhList:
 					res = self.smc(item)
-					if res == 1:
-						if item == 'dc':
-							complete = True
-							break
+					if res != 0 and item == 'dc':
+						complete = True
+						break
+
 		else:
 			complete = True
 
 		if complete:
+			log(f"账号: { self.name } 登出")
 			return 1
 		else:
 			self.start()

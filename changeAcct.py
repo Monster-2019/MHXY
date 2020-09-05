@@ -156,13 +156,12 @@ class ChangeAcct(object):
 
             sleep(5)
             
-            sleep(0.5)
-
             while True:
                 self.cut()
-                btn = self.matchTem('mnq_ds')
+                btn = self.matchTem('mnq_ds') or self.matchTem('mnq_ds1')
                 if btn != 0:
                     self.LBtn(btn)
+                    sleep(5)
                     break
 
             for i in arr:
@@ -179,35 +178,48 @@ class ChangeAcct(object):
                 self.mymatchTem = Match().matchTem
                 self.B = Btn()
 
+                # 设置并前置模拟器
                 smCom = False
                 self.setWindow('mnq')
+                # self.SetForegroundWindowMy(self.hwnd)
                 sleep(0.5)
+
                 while not smCom:
-                    for item in ['mnq_sm', 'mnq_sm1', 'mnq_sys']:
+                    for item in ['mnq_sm2', 'mnq_sm3', 'mnq_sm4', 'mnq_sys1']:
+                    # for item in ['mnq_sm', 'mnq_sm1', 'mnq_sys']:
                         self.cut()
                         btn = self.matchTem(item, simi=0.8)
                         if btn != 0:
-                            if item == 'mnq_sys':
-                                self.setWindow('mnqSM')
+                            if item == 'mnq_sm2' or item == 'mnq_sm3' or item == 'mnq_sm4':
+                                self.LBtn(btn)
                                 sleep(0.5)
                                 self.cut()
-                                btn = self.matchTem('mnq_ssjt')
-                                if btn != 0:
-                                    self.LBtn(btn)
-                                    sleep(0.5)
-                                    smCom = True
-                                    break
-                            else:
-                                self.LBtn(btn)
+                                tem = self.matchTem('xjqx1')
+                                # tem = self.matchTem('xjqx')
+                                if tem !=0:
+                                    self.LBtn(tem)
+                            elif item == 'mnq_sys1':
+                                while True:
+                                    temHwnd = self.setWindow('mnqSM')
+                                    if temHwnd != 0:
+                                        self.cut()
+                                        btn = self.matchTem('mnq_ssjt')
+                                        if btn != 0:
+                                            self.LBtn(btn)
+                                            smCom = True
+                                            sleep(1)
+                                    else:
+                                        break
                             sleep(0.5)
 
                 # 前置游戏窗口
                 win32api.SendMessage(self.hwnd,win32con.WM_KEYDOWN, 27, 0)
                 self.SetForegroundWindowMy(hwnd)
-                # sleep(0.5)
+                sleep(0.5)
 
                 # 游戏登陆窗口
                 self.setWindow('gameLogin')
+                # sleep(0.5)
 
                 self.cut()
                 btn = self.matchTem('dl_smwc')
@@ -216,50 +228,52 @@ class ChangeAcct(object):
                         btn = self.matchTem('dl_sx')
                         if btn != 0:
                             self.LBtn(btn)
-                            sleep(1)
+                            sleep(0.5)
 
                         self.cut()
                         tem = self.matchTem('dl_smwc')
+                        # print(f"tem { tem }")
                         if tem != 0:
                             sleep(0.5)
                             break
 
                 self.setWindow('mnq')
-                sleep(0.5)
+                # sleep(0.5)
 
                 # 模拟器登陆账号
-                xhList = ['mnq_dl', 'mnq_xzzh']
+                xhList = ['mnq_other_acct1', 'mnq_xzzh1', 'mnq_sm2', 'mnq_sm3', 'mnq_sm4']
+                # xhList = ['mnq_other_acct', 'mnq_xzzh', 'mnq_sm', 'mnq_sm1']
                 dlStatus = False
                 while not dlStatus:
                     for item in xhList:
                         self.cut()
                         btn = self.matchTem(item, simi=0.8)
                         if btn != 0:
-                            if item == 'mnq_dl':
-                                self.LBtn(((228, 518), (116, 23)))
-
-                            elif item == 'mnq_xzzh':
+                            # if item == 'mnq_dl':
+                            #     self.LBtn(((228, 518), (116, 23)))
+                            if item == 'mnq_xzzh1':
                                 self.LBtn(dlCoor)
+                                sleep(2)
+                                break
+
+                            elif item == 'mnq_sm2' or item == 'mnq_sm3' or item == 'mnq_sm4':
                                 dlStatus = True
                                 break
+
+                            else:
+                                self.LBtn(btn)
                                 
                             sleep(0.5)
 
-                while True:
-                    self.cut()
-                    btn = self.matchTem('mnq_sm', simi=0.8) or self.matchTem('mnq_sm1', simi=0.8)
-                    if btn != 0:
-                        break
-                    else:
-                        btn = self.matchTem('mnq_fh', simi=0.8)
-                        if btn != 0:
-                            self.LBtn(btn)
+                self.cut()
+                btn = self.matchTem('mnq_fh', simi=0.8)
+                if btn != 0:
+                    self.LBtn(btn)
+                log('模拟器登陆完成')
 
                 # 前置游戏窗口
-                # sleep(1)
                 self.SetForegroundWindowMy(hwnd)
-                log('模拟器登陆完成')
-                sleep(2)
+                sleep(1)
 
                 # 游戏登陆
                 xhList = ['dl_djxf', 'dl_yyjs', dlServer]
@@ -291,7 +305,7 @@ class ChangeAcct(object):
 
                 log('游戏登陆完成')
 
-            sleep(10)
+            sleep(5)
             os.system('taskkill /F /IM dnplayer.exe')
 
     def filtter(self, hwnd, lparam):

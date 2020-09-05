@@ -1,4 +1,5 @@
 import sys
+sys.path.append('.')
 sys.path.append('..')
 from time import sleep
 import win32api, win32con, win32gui
@@ -108,14 +109,7 @@ class Btn:
 
 if __name__ == "__main__":
     t = Btn()
-    # t.MBtn(700, 400)
-    # for i in range(13):
-    #     t.VBtn(-1)
-    #     print(i)
-# t = Btn('0')
-# t.DBtn((533, 396), (850, 485))
-# t.LBtn(((220, 45), (2, 2)))
-    t.DBtn((560, 380), (560, 190))
-    # t.LBtn(((151, 306), (58, 22)))
-    # t.Hotkey('hd')
-    # t.DBtn((560, 380), (560, 190))
+    # t.MBtn(715, 410)
+    # t.VBtn(-1, 10)
+    # t.MBtn(572, 360)
+    # t.VBtn(-1, 5)

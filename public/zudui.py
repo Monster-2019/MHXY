@@ -46,16 +46,16 @@ class Zudui(object):
             self.smc('dw_sq')
 
             n = 0
-            startT = time.time()
-            endT = time.time()
+            # startT = time.time()
+            # endT = time.time()
             while n < 4:
                 res = self.smc('dw_js')
-                if res == 1:
+                if res != 0:
                     n+=1
-                endT = time.time()
-                if endT > startT + 30:
-                    break
-                sleep(1)
+                # endT = time.time()
+                # if endT > startT + 30:
+                    # break
+                sleep(0.5)
 
             self.g.setObj('config', 'TeamStatus', True)
 
@@ -79,12 +79,11 @@ class Zudui(object):
             self.smc('gj_lq')
             self.B.RBtn()
 
-            self.B.Hotkey('hy')
-            sleep(1)
-            self.smc('lxr', sleepT=0.5)
+            # n = 0
+            while True:
+                self.B.Hotkey('hy')
+                self.smc('lxr', sleepT=0.5)
 
-            n = 0
-            while n < 3:
                 self.cutScreen()
                 temCoor = self.matchTem('dz')
                 if temCoor != 0:
@@ -93,15 +92,15 @@ class Zudui(object):
                         newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                         self.B.LBtn(newCoor, sleepT=1)
 
-                        res = self.smc('sqrd') or self.smc('yqrd', count=0)
-                        if res == 1:
+                        res = self.smc('sqrd')
+                        if res != 0:
                             break
 
-                else:
-                    n+=1
-                    self.B.MBtn(260, 440)
-                    self.B.VBtn(-1, 5)
-                    sleep(0.5)
+                # else:
+                #     n+=1
+                #     self.B.MBtn(260, 440)
+                #     self.B.VBtn(-1, 5)
+                #     sleep(0.5)
 
             self.B.RBtn()
             self.B.RBtn()

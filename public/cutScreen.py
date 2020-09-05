@@ -57,7 +57,18 @@ class CScreen(object):
         saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
 
         # 将截图保存到文件中
-        saveBitMap.SaveBitmapFile(saveDC, "./images/screen" + self.index + '.jpg')
+        try:
+            # saveBitMap.SaveBitmapFile(saveDC, "./images/screen" + self.index + '.jpg')
+            ###获取位图信息
+            bmpinfo = saveBitMap.GetInfo()
+            bmpstr = saveBitMap.GetBitmapBits(True)
+            ###生成图像
+            im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+            ###PrintWindow成功,保存到文件,显示到屏幕
+            im_PIL.save("./images/screen" + self.index + '.jpg') #保存
+            # im_PIL.show() #显示
+        except Exception as e:
+            print(f'报错{e}')
 
         # 释放内存
         win32gui.DeleteObject(saveBitMap.GetHandle())
@@ -69,7 +80,7 @@ class CScreen(object):
         if infoKey == "":
             img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            self.g.set('newCoor', [img[200, 150], img[200, 500], img[700, 85], img[700, 550]])
+            self.g.set('newCoor', [img[253, 253], img[706, 706]])
 
 if __name__ == '__main__':
     CScreen().cutScreen()

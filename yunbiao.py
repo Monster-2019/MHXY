@@ -2,6 +2,7 @@ from time import sleep
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
+from public.smc import SMC
 from public.glo import Glo
 from public.log import log
 
@@ -11,119 +12,119 @@ class Yunbiao:
         self.B = Btn()
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
+        self.smc = SMC().smc
 
-    def start(self):
-        log(f"账号: { self.name } 开始运镖任务")
+    def isComplete(self):
         complete = False
+        self.B.Hotkey('hd')
 
-        while True:
-            self.cutScreen()
-            btnCoor = self.matchTem('hd')
-            if btnCoor == 0:
-                self.B.RBtn()
-            else: 
-                self.B.Hotkey('hd')
-                sleep(0.5)
-                break
+        self.smc('rchd', sleepT=0.5)
 
-        self.cutScreen()
-        btnCoor = self.matchTem('rchd')
-        if btnCoor != 0:
-            self.B.LBtn(btnCoor)
-            
         self.B.MBtn(590, 330)
-
-        for n in range(21):
-            self.B.VBtn(1)
+        self.B.VBtn(1, 21)
         sleep(0.5)
 
         for n in range(21):
             if n % 10 == 0:
-                self.cutScreen()
-                temCoor = self.matchTem('yb_wc', simi=0.95) or self.matchTem('yb_wc1', simi=0.95)
-                if temCoor != 0:
+                sleep(0.5)
+                res = self.smc(['yb_wc', 'yb_wc1'], simi=0.95, count=0)
+                if res != 0:
                     log(f"账号: { self.name } 运镖任务已完成")
                     complete = True
                     break
-            self.B.VBtn(-1)
-        
-        for n in range(21):
-            self.B.VBtn(1)
-        sleep(0.5)
+            else:
+                self.B.VBtn(-1)
 
-        if not complete:
-            log(f"账号: { self.name } 运镖任务进行中")
-            count = 0
+        self.B.VBtn(1, 21)
+
+        self.B.RBtn()
+
+        return complete
+
+    def start(self):
+        try:
+            log(f"账号: { self.name } 开始运镖任务")
+            complete = False
+            processing = False
+
             while True:
-                self.cutScreen()
-                temCoor = self.matchTem('hd_yb', simi=0.95)
-                if temCoor != 0:
-                    btnCoor = self.matchTem('cj', 'imgTem/hd_yb')
-                    newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                    if btnCoor != 0:
-                        self.B.LBtn(newCoor)
-                        break
+                res = self.smc('hd', count=0)
+                if res == 0:
+                    self.B.RBtn()
                 else:
-                    count += 1
-                    for i in range(10):
-                        self.B.VBtn(-1)
-                    sleep(0.5)
-                    if count == 2:
-                        complete = True
-                        break
+                    break
 
-            count = 0
-            xhList = ['yb_ys', 'qd']
-            while True:
-                self.cutScreen()
-                temCoor = self.matchTem('hd')
-                if temCoor != 0:
-                    btnCoor = self.matchTem('yb_ys')
-                    if btnCoor != 0:
-                        ysStatus = False
-                        while not ysStatus:
-                            for item in xhList:
-                                self.cutScreen()
-                                btnCoor = self.matchTem(item)
-                                if btnCoor != 0:
-                                    if item == 'qd':
-                                        while True:
-                                            self.cutScreen()
-                                            btnCoor = self.matchTem(item)
-                                            if btnCoor != 0:
-                                                self.B.LBtn(btnCoor, sleepT=0.5)
-                                            else:
-                                                count+=1
-                                                ysStatus = True
-                                                log(f'账号: { self.name } 正在进行第{ count }轮运镖')
-                                                sleep(2)
-                                                break
+            complete = self.isComplete()
 
-                                        while True:
-                                            self.cutScreen()
-                                            temCoor = self.matchTem('hd')
-                                            if temCoor != 0:
-                                                break
+            if not complete:
+                log(f"账号: { self.name } 运镖任务进行中")
 
-                                    else:
-                                        self.B.LBtn(btnCoor, sleepT=0.5)
-
+                self.B.Hotkey('hd')
+                self.smc('rchd', sleepT=0.5)
+                page = 1
+                while True:
+                    self.cutScreen()
+                    temCoor = self.matchTem('hd_yb', simi=0.95)
+                    if temCoor != 0:
+                        btnCoor = self.matchTem('cj', 'imgTem/hd_yb')
+                        newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                        if btnCoor != 0:
+                            self.B.LBtn(newCoor)
+                            processing = True
+                            break
                     else:
-                        if count != 0:
-                            temCoor = self.matchTem('hd')
-                            if temCoor != 0:
-                                btnCoor = self.matchTem('yb_ys')
-                                if btnCoor == 0:
-                                    log(f"账号: { self.name } 运镖任务完成")
-                                    complete = True
-                                    break
-                sleep(1)
+                        page += 1
+                        self.B.VBtn(-1, 10)
+                        sleep(0.5)
+                        if page == 4:
+                            break
+                if not processing:
+                    self.B.RBtn()
 
-        else:
-            self.B.RBtn()
+                count = 0
+                xhList = ['yb_ys', 'qd']
+                while processing:
+                    res = self.smc('hd', count=0)
+                    if res != 0:
+                        btnCoor = self.matchTem('yb_ys')
+                        if btnCoor != 0:
+                            ysStatus = False
+                            while not ysStatus:
+                                for item in xhList:
+                                    res = self.smc(item, sleepT=0.5)
+                                    if res != 0 and item == 'qd':
+                                        sleep(3)
+                                        count+=1
+                                        ysStatus = True
+                                        log(f'账号: { self.name } 正在进行第{ count }轮运镖')
+                                        sleep(60)
 
-        if complete:
-            log(f"账号: { self.name } 运镖任务结束")
-            return 1
-        else:
-            self.start()
+                                        while True:
+                                            res = self.smc('hd', count=0)
+                                            if res != 0:
+                                                break
+
+
+                        else:
+                            if count != 0:
+                                temCoor = self.matchTem('hd')
+                                if temCoor != 0:
+                                    btnCoor = self.matchTem('yb_ys')
+                                    if btnCoor == 0:
+                                        log(f"账号: { self.name } 运镖任务完成")
+                                        complete = True
+                                        processing = False
+                                        break
+                    sleep(3)
+
+            if complete:
+                log(f"账号: { self.name } 运镖任务结束")
+                return 1
+            else:
+                self.start()
+
+        except Exception as e:
+            log(e, True)
+
+if __name__ == '__main__':
+    Yunbiao().start()

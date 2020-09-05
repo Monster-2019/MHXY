@@ -1,5 +1,5 @@
 import sys
-# sys.path.append('..')
+sys.path.append('..')
 import requests
 import base64
 from public.glo import Glo
@@ -40,7 +40,7 @@ class OCR():
     @retry(retry_on_result=retry_if_result_none, stop_max_attempt_number=2, wait_random_min=1000, wait_random_max=2000)
     def ocr(self):
         result = ""
-        token = "24.1955e80a58e3178fb35ec4da5185756a.2592000.1598806051.282335-18542329"
+        token = "24.bf0191d86ce8e3a1cbe55ca4c872e6a7.2592000.1601427153.282335-18542329"
         # request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic"
         # request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic"
 
