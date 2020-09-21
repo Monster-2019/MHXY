@@ -113,15 +113,18 @@ class LLSPT:
             if not processing:
                 self.B.RBtn()
 
-            fbList = ['sb', 'fb_tgjq', 'fb_lls', 'dh', 'djjx', 'hd']
+            fbList = ['sb', 'hd', 'fb_tgjq', 'fb_lls', 'dh', 'djjx']
 
             while processing:
                 for item in fbList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item)
                     if btnCoor != 0:
-                        if item == 'fb_lls':
-                            self.B.LBtn(btnCoor, sleepT=3)
+                        if item == 'sb':
+                            self.B.LBtn(btnCoor)
+                            self.B.Hotkey('dt')
+                            self.smc('dt_cac', sleepT=0.5)
+                            break
 
                         elif item == 'hd':
                             complete = True
@@ -129,6 +132,9 @@ class LLSPT:
                             self.g.setObj('config', 'FB_WC', True)
                             log(f"副本任务完成")
                             break
+
+                        elif item == 'fb_lls':
+                            self.B.LBtn(btnCoor, sleepT=3)
 
                         elif item == 'dh':
                             while True:

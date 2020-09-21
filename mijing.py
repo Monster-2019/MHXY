@@ -65,28 +65,27 @@ class Mijing:
             if not complete:
                 log(f"账号: { self.name } 秘境任务进行中")
 
-                self.B.Hotkey('hd')
-                self.smc('rchd', sleepT=0.5)
-                page = 1
-                while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd_mjxy', simi=0.97) or self.matchTem('hd_mjxy1', simi=0.98)
-                    if temCoor != 0:
-                        btnCoor = self.matchTem('cj', 'imgTem/hd_mjxy') or self.matchTem('cj', 'imgTem/hd_mjxy1')
-                        newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                        if btnCoor != 0:
-                            self.B.LBtn(newCoor)
-                            processing = True
-                            break
-
-                    else:
-                        page += 1
-                        self.B.VBtn(-1, 10)
-                        sleep(0.5)
-                        if page == 4:
-                            break
                 if not processing:
-                    self.B.RBtn()
+                    self.B.Hotkey('hd')
+                    self.smc('rchd', sleepT=0.5)
+                    page = 1
+                    while True:
+                        self.cutScreen()
+                        temCoor = self.matchTem('hd_mjxy', simi=0.97) or self.matchTem('hd_mjxy1', simi=0.98)
+                        if temCoor != 0:
+                            btnCoor = self.matchTem('cj', 'imgTem/hd_mjxy') or self.matchTem('cj', 'imgTem/hd_mjxy1')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            if btnCoor != 0:
+                                self.B.LBtn(newCoor)
+                                processing = True
+                                break
+
+                        else:
+                            page += 1
+                            self.B.VBtn(-1, 10)
+                            sleep(0.5)
+                            if page == 4:
+                                break
 
                 xhList = ['mj_mjxy', 'mj_mrh', 'mj_tz']
                 if processing:
@@ -99,7 +98,7 @@ class Mijing:
 
                     processing = True
 
-                xhList = ['hd', 'mj_17', 'sb', 'mj_mjxyrw', 'mj_jrzd', 'mj_lq', 'mj_gb']
+                xhList = ['hd', 'mj_tg', 'sb', 'mj_mjxyrw', 'mj_jrzd', 'mj_lq', 'mj_gb']
                 
                 while processing:
                     for item in xhList:
@@ -111,7 +110,7 @@ class Mijing:
                                 processing = False
                                 break
                                 
-                            elif item == 'sb' or item == 'mj_17':
+                            elif item == 'sb' or item == 'mj_tg':
                                 if item == 'sb':
                                     self.B.LBtn(btnCoor)
                                     sleep(0.5)
@@ -123,16 +122,16 @@ class Mijing:
                                         break
 
                             elif item == 'mj_jrzd':
-                                sleep(0.5)
-                                res = self.smc('mj_18')
-                                if res != 0:
-                                    while True:
-                                        res = self.smc('mj_lk', sleepT=0.5)
-                                        if res == 0:
-                                            break
+                                # sleep(0.5)
+                                # res = self.smc('mj_18')
+                                # if res != 0:
+                                #     while True:
+                                #         res = self.smc('mj_lk', sleepT=0.5)
+                                #         if res == 0:
+                                #             break
 
-                                else:
-                                    self.B.LBtn(btnCoor)
+                                # else:
+                                self.B.LBtn(btnCoor)
 
                             else:
                                 self.B.LBtn(btnCoor)

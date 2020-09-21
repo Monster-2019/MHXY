@@ -23,7 +23,7 @@ class Baotu:
         self.smc('bb_zl')
 
         self.B.MBtn(720, 440)
-        self.B.VBtn(1, 30)
+        self.B.VBtn(1, 50)
         sleep(1)
 
         useComplete = False
@@ -89,6 +89,9 @@ class Baotu:
                         timer2 = time.time()
                         startTime = time.time()
                         endTime = time.time()
+                        res = self.smc('sy')
+                        if res != 0:
+                            self.B.RBtn()
 
                     if timer2 - timer1 >= 8 or endTime - startTime >= 60:
                         useComplete = True
@@ -153,9 +156,9 @@ class Baotu:
             if not complete:
                 print(f"账号: { self.name } 宝图任务进行中")
 
-                self.B.Hotkey('hd')
-                self.smc('rchd', sleepT=0.5)
                 if not processing:
+                    self.B.Hotkey('hd')
+                    self.smc('rchd', sleepT=0.5)
                     page = 1
                     while True:
                         self.cutScreen()
@@ -173,8 +176,6 @@ class Baotu:
                             sleep(0.5)
                             if page == 4:
                                 break
-                if not processing:
-                    self.B.RBtn()
 
                 xhList = ['bt_cbthdwc', 'bt_ttwf', 'bt_btrw']
                 sTime = time.time()

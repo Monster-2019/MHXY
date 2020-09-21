@@ -61,4 +61,4 @@ class Match():
 
 if __name__ == '__main__':
     CScreen().cutScreen()
-    Match().matchTem('hy_max')
+    Match().matchTem('fb_llspt_wc2')

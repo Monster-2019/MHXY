@@ -30,10 +30,10 @@ class Zudui(object):
                     break
 
             # 领取双倍
-            self.B.Hotkey('gj')
-            self.smc('gj_lq')
-            self.B.RBtn()
-            sleep(0.5)
+            # self.B.Hotkey('gj')
+            # self.smc('gj_lq')
+            # self.B.RBtn()
+            # sleep(0.5)
 
             self.B.Hotkey('dw')
 
@@ -75,9 +75,9 @@ class Zudui(object):
                     break
 
             # 领取双倍
-            self.B.Hotkey('gj')
-            self.smc('gj_lq')
-            self.B.RBtn()
+            # self.B.Hotkey('gj')
+            # self.smc('gj_lq')
+            # self.B.RBtn()
 
             # n = 0
             while True:

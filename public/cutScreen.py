@@ -14,7 +14,7 @@ class CScreen(object):
     WH = ()
     infoCoor = {
         "btgm": ((412, 258), (135, 25)),
-        "name": ((197, 136), (210, 35)),
+        "name": ((197, 136), (190, 35)),
         "gold": ((106, 634), (130, 24)),
         "silver": ((300, 634), (160, 24)),
         "bb": ((513, 202), (407, 407)),
@@ -80,7 +80,8 @@ class CScreen(object):
         if infoKey == "":
             img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            self.g.set('newCoor', [img[253, 253], img[706, 706]])
+            self.g.set('newCoor', [img[130, 250], img[130, 700]])
+            # print([img[130, 250], img[130, 700]])
 
 if __name__ == '__main__':
-    CScreen().cutScreen()
+    CScreen().cutScreen('name')

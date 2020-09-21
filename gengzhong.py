@@ -17,7 +17,7 @@ class GengZhong:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
-        self.weekday = datetime.today().weekday()
+        self.weekday = datetime.today().isoweekday()
 
     def sell(self):
         while True:
@@ -140,7 +140,7 @@ class GengZhong:
                             self.B.LBtn(btnCoor)
                         sleep(0.4)
 
-            if self.weekday % 2 == 0:
+            if (self.weekday - 1) % 3 == 0:
                 self.sell()
 
             if complete:

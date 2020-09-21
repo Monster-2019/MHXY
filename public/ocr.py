@@ -1,4 +1,5 @@
 import sys
+sys.path.append('.')
 sys.path.append('..')
 import requests
 import base64
@@ -55,6 +56,7 @@ class OCR():
         self.g.set('count', count)
         res = res.json()
         if len(res['words_result']) > 0:
+            # print(res['words_result'][0]['words'])
             return res['words_result'][0]['words']
         else:
             return None

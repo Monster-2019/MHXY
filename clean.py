@@ -23,11 +23,11 @@ class Clean(object):
 
 			self.B.Hotkey('bb')
 			self.B.MBtn(710, 410)
-			self.B.VBtn(1, 30)
+			self.B.VBtn(1, 50)
 			self.smc('bb_zl')
 			self.smc('ck', sleepT=0.5)
 
-			ckList = ['bb_qls', 'bb_bhs', 'bb_zqs', 'bb_xws', 'bb_gms', 'bb_tys', 'bb_yls', 'bb_sls', 'bb_fcs', 'bb_hbs', 'bb_hws', 'bb_sms', 'bb_kls']
+			ckList = ['bb_qls', 'bb_bhs', 'bb_zqs', 'bb_xws', 'bb_tys', 'bb_yls', 'bb_sls', 'bb_fcs', 'bb_hbs', 'bb_kls']
 			page = 1
 			while True:
 				res = self.smc(ckList, simi=0.9, infoKey='bb', count=2, sleepT=0.5)
@@ -39,20 +39,38 @@ class Clean(object):
 					self.B.VBtn(-1, 6)
 					sleep(0.5)
 					page+=1
-					if page == 6:
+					if page == 8:
 						self.B.RBtn()
 						break
 
 			self.B.Hotkey('bb')
 			self.smc('bb_zl')
 			self.B.MBtn(710, 410)
-			self.B.VBtn(1, 30)
+			self.B.VBtn(1, 50)
+			sleep(0.5)
+
+			syList = ['bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4']
+			page = 1
+			while True:
+				res = self.smc(syList, count=2, sleepT=0.5)
+				if res == 0:
+					self.B.MBtn(710, 410)
+					self.B.VBtn(-1, 6)
+					sleep(0.5)
+					page+=1
+					if page == 8:
+						break
+
+			self.smc('bb_zl')
+			self.B.MBtn(710, 410)
+			self.B.VBtn(1, 50)
 			sleep(0.5)
 
 			page = 1
 			while True:
-				res = self.smc(['bb_jt', 'bb_zzs'], sleepT=0.5)
+				res = self.smc(['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1'], sleepT=0.5)
 				if res != 0:
+					self.smc('bb_gd', sleepT=0.5)
 					self.smc('bb_smcs', sleepT=0.5)
 					self.smc('bb_add_max', sleepT=0.5)
 					self.smc('bb_cs', sleepT=0.5)
@@ -63,14 +81,14 @@ class Clean(object):
 					self.B.VBtn(-1, 6)
 					sleep(0.5)
 					page+=1
-					if page == 6:
+					if page == 8:
 						break
 
 			self.B.MBtn(710, 410)
-			self.B.VBtn(1, 30)
+			self.B.VBtn(1, 50)
 			sleep(0.5)
 
-			dqList = ['bb_dq1', 'bb_dq2', 'bb_dq_fu1', 'bb_dq_fu2', 'bb_dq_fu3', 'bb_dq_zz1', 'bb_dq_zz2', 'bb_dq_zz3', 'bb_dq_zz4', 'bb_dq_zz5', 'bb_dq_zz6']
+			dqList = ['bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1', 'bb_dq_zz2', 'bb_dq_zz3', 'bb_dq_zz4', 'bb_dq_zz5', 'bb_dq_zz6'] # 'bb_dq_fu1', 'bb_dq_fu2', 'bb_dq_fu3', 
 			page = 1
 			while True:
 				res = self.smc(dqList)
@@ -84,7 +102,7 @@ class Clean(object):
 					self.B.VBtn(-1, 6)
 					sleep(0.5)
 					page+=1
-					if page == 6:
+					if page == 8:
 						self.B.RBtn()
 						break
 

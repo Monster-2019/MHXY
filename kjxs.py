@@ -59,28 +59,27 @@ class KJXS:
             if not complete:
                 log(f"账号: { self.name } 科举乡试任务进行中")
 
-                self.B.Hotkey('hd')
-                self.smc('rchd', sleepT=0.5)
-                page = 1
-                while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd_kjxs', simi=0.95) or self.matchTem('hd_kjxs2', simi=0.95)
-                    if temCoor != 0:
-                        btnCoor = self.matchTem('cj', 'imgTem/hd_kjxs') or self.matchTem('cj', 'imgTem/hd_kjxs2')
-                        newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                        if btnCoor != 0:
-                            self.B.LBtn(newCoor)
-                            processing = True
-                            sleep(2)
-                            break
-                    else:
-                        page += 1
-                        self.B.VBtn(-1, 10)
-                        sleep(0.5)
-                        if page == 4:
-                            break
                 if not processing:
-                    self.B.RBtn()
+                    self.B.Hotkey('hd')
+                    self.smc('rchd', sleepT=0.5)
+                    page = 1
+                    while True:
+                        self.cutScreen()
+                        temCoor = self.matchTem('hd_kjxs', simi=0.95) or self.matchTem('hd_kjxs2', simi=0.95)
+                        if temCoor != 0:
+                            btnCoor = self.matchTem('cj', 'imgTem/hd_kjxs') or self.matchTem('cj', 'imgTem/hd_kjxs2')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            if btnCoor != 0:
+                                self.B.LBtn(newCoor)
+                                processing = True
+                                sleep(2)
+                                break
+                        else:
+                            page += 1
+                            self.B.VBtn(-1, 10)
+                            sleep(0.5)
+                            if page == 4:
+                                break
 
                 while processing:
                     res = self.smc(['kj_dw', 'kj_dw1'], count=0)

@@ -17,7 +17,7 @@ class Zhuogui:
         self.matchTem = Match().matchTem
         self.cutScreen = CScreen().cutScreen
         self.index = self.g.get('windowClass')
-        self.weekday = datetime.today().weekday()
+        self.weekday = datetime.today().isoweekday()
 
     def isComplete(self):
         complete = False
@@ -58,7 +58,9 @@ class Zhuogui:
 
         complete = self.isComplete()
 
-        if self.g.getObj('config', 'ZG_COUNT') == 0:
+        ZG_COUNT = int(self.g.getObj('config', 'ZG_COUNT'))
+
+        if ZG_COUNT == 0:
             complete = True
             self.g.setObj('config', 'ZG_WC', True)
 
@@ -67,7 +69,7 @@ class Zhuogui:
                 Zudui().start()
 
         # 匹配捉鬼任务
-        if not complete and self.g.getObj('config', 'ZG_COUNT') != 0:
+        if not complete and ZG_COUNT != 0:
             print(f"捉鬼任务进行中")
 
             self.B.Hotkey('hd')
@@ -95,9 +97,10 @@ class Zhuogui:
 
             xlList = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
             total = 0
-            # if self.weekday >= 5:
-                # total -= 1
             count = 0
+            totalMax = 0
+            if self.weekday > 5:
+                totalMax = 1
 
             while processing:
                 for item in xlList:
@@ -107,14 +110,16 @@ class Zhuogui:
                         if item == 'zg_zgrw':
                             self.B.LBtn(btnCoor, sleepT=0.5)
                             self.B.RBtn()
-                            total+=1
+                            total += 1
+                            count = 0
                             print(f'开始刷第{total}轮鬼')
 
                         elif item == 'zg_zgwc':
-                            if total < int(self.g.getObj('config', 'ZG_COUNT')):
+                            if total < ZG_COUNT or (total == ZG_COUNT and totalMax != 0):
                                 btnCoor = self.matchTem('qd')
                                 if btnCoor != 0:
                                     self.B.LBtn(btnCoor)
+
                             else:
                                 btnCoor = self.matchTem('qx')
                                 if btnCoor != 0:
@@ -126,10 +131,26 @@ class Zhuogui:
                                     break
 
                         elif item == 'zg_zg':
-                            self.B.LBtn(btnCoor)
                             count+=1
-                            print(f'开始刷第{count}层鬼')
-                            sleep(60)
+                            if total > ZG_COUNT:
+                                if count > totalMax:
+                                    self.B.LBtn(((520, 380), (10, 10)))
+                                    self.B.LBtn(((520, 380), (10, 10)))
+                                    complete = True
+                                    processing = False
+                                    self.g.setObj('config', 'ZG_WC', True)
+                                    log(f"捉鬼任务完成")
+                                    sleep(3)
+                                    break
+                                else:
+                                    self.B.LBtn(btnCoor)
+                                    print(f'开始刷第{count}次鬼')
+                                    sleep(60)
+
+                            else:
+                                self.B.LBtn(btnCoor)
+                                print(f'开始刷第{count}次鬼')
+                                sleep(60)
 
                     else:
                         if item == 'zg_zg':

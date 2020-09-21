@@ -20,6 +20,7 @@ class ChangeAcct(object):
         self.g = Glo()
         self.shell = win32com.client.Dispatch("WScript.Shell")
         self.hwnd = 0
+        self.groupNo = -1
 
     def LBtn(self, btnCoor):
         x = btnCoor[0][0] + random.randint(1, btnCoor[1][0] )
@@ -73,7 +74,18 @@ class ChangeAcct(object):
         saveDC.BitBlt((0, 0), (WH[0], WH[1]), mfcDC, (0, 0), win32con.SRCCOPY)
 
         # 将截图保存到文件中
-        saveBitMap.SaveBitmapFile(saveDC, './images/mnq.jpg')
+        try:
+            # saveBitMap.SaveBitmapFile(saveDC, './images/mnq.jpg')
+            ###获取位图信息
+            bmpinfo = saveBitMap.GetInfo()
+            bmpstr = saveBitMap.GetBitmapBits(True)
+            ###生成图像
+            im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
+            ###PrintWindow成功,保存到文件,显示到屏幕
+            im_PIL.save('./images/mnq.jpg') #保存
+            # im_PIL.show() #显示
+        except Exception as e:
+            print(f'报错{e}')
 
         # 释放内存
         win32gui.DeleteObject(saveBitMap.GetHandle())
@@ -167,8 +179,8 @@ class ChangeAcct(object):
             for i in arr:
                 # 登陆用户名和区
                 status = False
-                dlCoor = config.ACCTZU[0]['acctList'][i]['coor']
-                dlServer = config.ACCTZU[0]['acctList'][i]['server']
+                dlCoor = config.ACCTZU[self.groupNo]['acctList'][i]['coor']
+                dlServer = config.ACCTZU[self.groupNo]['acctList'][i]['server']
 
                 # 数据初始化
                 self.g.set('windowClass', str(i))
@@ -314,9 +326,10 @@ class ChangeAcct(object):
             if style and win32con.WS_EX_APPWINDOW:
                 self.hwnd = hwnd
 
-    def start(self):
+    def start(self, groupNo):
         try:
-            arr = config.ACCTZU[0]['acctList']
+            self.groupNo = groupNo
+            arr = config.ACCTZU[self.groupNo]['acctList']
             windowArr = []
             loginArr = []
             for index, item in enumerate(arr):

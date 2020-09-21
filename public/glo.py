@@ -35,7 +35,8 @@ class Glo:
     def compare(self):
         a = np.array(self.get('oldCoor'))
         b = np.array(self.get('newCoor'))
-        c = (a==b).all()
+        # c = (a==b).all()
+        c = (a==b).any()
         return c
 
 if __name__ == '__main__':

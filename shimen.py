@@ -70,36 +70,35 @@ class Shimen:
             if not complete:
                 print(f"账号: { self.name } 师门任务未完成")
 
-                self.B.Hotkey('hd')
-                self.smc('rchd', sleepT=0.5)
-                page = 1
-                while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd_smrw', simi=0.95) or self.matchTem('hd_smrw1', simi=0.95)
-                    if temCoor != 0:
-                        btnCoor = self.matchTem('cj', 'imgTem/hd_smrw') or self.matchTem('cj', 'imgTem/hd_smrw1')
-                        newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                        if btnCoor != 0:
-                            self.B.LBtn(newCoor)
-
-                            # 去完成或继续任务
-                            while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem('sm_qwc') or self.matchTem('sm_jxrw')
-                                if btnCoor != 0:
-                                    self.B.LBtn(btnCoor)
-                                    processing = True
-                                    break
-
-                            break
-                    else:
-                        page += 1
-                        self.B.VBtn(-1, 10)
-                        sleep(0.5)
-                        if page == 4:
-                            break
                 if not processing:
-                    self.B.RBtn()
+                    self.B.Hotkey('hd')
+                    self.smc('rchd', sleepT=0.5)
+                    page = 1
+                    while True:
+                        self.cutScreen()
+                        temCoor = self.matchTem('hd_smrw', simi=0.95) or self.matchTem('hd_smrw1', simi=0.95)
+                        if temCoor != 0:
+                            btnCoor = self.matchTem('cj', 'imgTem/hd_smrw') or self.matchTem('cj', 'imgTem/hd_smrw1')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            if btnCoor != 0:
+                                self.B.LBtn(newCoor)
+
+                                # 去完成或继续任务
+                                while True:
+                                    self.cutScreen()
+                                    btnCoor = self.matchTem('sm_qwc') or self.matchTem('sm_jxrw')
+                                    if btnCoor != 0:
+                                        self.B.LBtn(btnCoor)
+                                        processing = True
+                                        break
+
+                                break
+                        else:
+                            page += 1
+                            self.B.VBtn(-1, 10)
+                            sleep(0.5)
+                            if page == 4:
+                                break
 
                 smList = ['sm_gb', 'sm_sm', 'djjx', 'dh', 'dhda', 'gm', 'btgm', 'gfgm', 'sj', 'sy', 'sm_hdwp', 'sm_rwdh']
 

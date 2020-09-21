@@ -59,27 +59,26 @@ class Yunbiao:
             if not complete:
                 log(f"账号: { self.name } 运镖任务进行中")
 
-                self.B.Hotkey('hd')
-                self.smc('rchd', sleepT=0.5)
-                page = 1
-                while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd_yb', simi=0.95)
-                    if temCoor != 0:
-                        btnCoor = self.matchTem('cj', 'imgTem/hd_yb')
-                        newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                        if btnCoor != 0:
-                            self.B.LBtn(newCoor)
-                            processing = True
-                            break
-                    else:
-                        page += 1
-                        self.B.VBtn(-1, 10)
-                        sleep(0.5)
-                        if page == 4:
-                            break
                 if not processing:
-                    self.B.RBtn()
+                    self.B.Hotkey('hd')
+                    self.smc('rchd', sleepT=0.5)
+                    page = 1
+                    while True:
+                        self.cutScreen()
+                        temCoor = self.matchTem('hd_yb', simi=0.95)
+                        if temCoor != 0:
+                            btnCoor = self.matchTem('cj', 'imgTem/hd_yb')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            if btnCoor != 0:
+                                self.B.LBtn(newCoor)
+                                processing = True
+                                break
+                        else:
+                            page += 1
+                            self.B.VBtn(-1, 10)
+                            sleep(0.5)
+                            if page == 4:
+                                break
 
                 count = 0
                 xhList = ['yb_ys', 'qd']
