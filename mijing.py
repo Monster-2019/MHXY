@@ -98,7 +98,7 @@ class Mijing:
 
                     processing = True
 
-                xhList = ['hd', 'mj_tg', 'sb', 'mj_mjxyrw', 'mj_jrzd', 'mj_lq', 'mj_gb']
+                xhList = ['hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_jrzd', 'mj_lq', 'mj_gb']
                 
                 while processing:
                     for item in xhList:
@@ -110,52 +110,43 @@ class Mijing:
                                 processing = False
                                 break
                                 
-                            elif item == 'sb' or item == 'mj_tg':
-                                if item == 'sb':
-                                    self.B.LBtn(btnCoor)
-                                    sleep(0.5)
+                            elif item == 'sb' or item == 'mj_18' or item == 'mj_tg':
+                                self.B.LBtn(((520, 380), (10, 10)))
+                                self.B.LBtn(((520, 380), (10, 10)))
 
-                                # self.B.LBtn(((520, 380), (10, 10)))
                                 while True:
                                     res = self.smc('mj_lk', sleepT=0.5)
                                     if res == 0:
                                         break
 
                             elif item == 'mj_jrzd':
-                                # sleep(0.5)
-                                # res = self.smc('mj_18')
-                                # if res != 0:
-                                #     while True:
-                                #         res = self.smc('mj_lk', sleepT=0.5)
-                                #         if res == 0:
-                                #             break
+                                res = self.smc('mj_18')
+                                if res != 0:
+                                    while True:
+                                        res = self.smc('mj_lk', sleepT=0.5)
+                                        if res == 0:
+                                            break
 
-                                # else:
-                                self.B.LBtn(btnCoor)
+                                else:
+                                    self.B.LBtn(btnCoor)
 
                             else:
                                 self.B.LBtn(btnCoor)
 
-                            sleep(5)
+                            sleep(2)
 
                 sleep(0.5)
                 while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd')
-                    btnCoor = self.matchTem('sy')
-                    if temCoor != 0 and btnCoor != 0:
-                        self.B.LBtn(btnCoor, sleepT=0.5)
-                    elif temCoor != 0 and btnCoor == 0:
+                    res = self.smc('sy', sleepT=0.5)
+                    if res == 0:
                         break
-                    else:
-                        self.B.RBtn()
-                    sleep(0.5)
 
             if complete:
                 log(f"账号: { self.name } 秘境任务结束")
                 return 1
             else:
                 self.start()
+
         except Exception as e:
             log(e, True)
         

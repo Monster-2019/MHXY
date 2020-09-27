@@ -126,9 +126,9 @@ class Run(object):
 
         Clean().start()
 
-        if myDict['CJMY']:
-            Bangpai().start()
-            Trading().start()
+        # if myDict['CJMY']:
+        #     Bangpai().start()
+        #     Trading().start()
 
         count = self.g.get('count')
         log(f'账号：{name}, 当前等级{level}, 调用{ count }次接口')

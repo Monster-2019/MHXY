@@ -154,8 +154,15 @@ class Zhuogui:
 
                     else:
                         if item == 'zg_zg':
-                            self.B.MBtn(900, 300)
-                            self.B.VBtn(1, 10)
+                            res = self.smc('hd', count=0)
+                            if res != 0:
+                                tem = self.smc('fb_tgjq', count=0)
+                                if tem != 0:
+                                    self.B.Hotkey('dt')
+                                    self.smc('dt_cac', sleepT=1)
+                                else:
+                                    self.B.MBtn(900, 300)
+                                    self.B.VBtn(1, 10)
 
         if complete:
             log(f"捉鬼任务结束")

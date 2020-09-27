@@ -42,17 +42,17 @@ class LQHYD:
                         break
 
             sleep(0.5)
-            count = self.smc('hy_max', count=0, simi=0.98)
+            # count = self.smc('hy_max', count=0, simi=0.98)
             self.B.RBtn()
 
-            hy_str = ''
-            if count != 0:
-                hy_str = '----------------------------------------------------已满'
-            else:
-                hy_str = '------------------------未满'
+            # hy_str = ''
+            # if count != 0:
+            #     hy_str = '----------------------------------------------------已满'
+            # else:
+            #     hy_str = '------------------------未满'
 
             if complete:
-                log(f"账号: { self.name } 活跃度 { hy_str } ")
+                log(f"账号: { self.name } 活跃度领取完成")
                 return 1
             else:
                 self.start()

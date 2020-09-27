@@ -211,16 +211,16 @@ class ChangeAcct(object):
                                 if tem !=0:
                                     self.LBtn(tem)
                             elif item == 'mnq_sys1':
-                                while True:
-                                    temHwnd = self.setWindow('mnqSM')
-                                    if temHwnd != 0:
-                                        self.cut()
-                                        btn = self.matchTem('mnq_ssjt')
-                                        if btn != 0:
-                                            self.LBtn(btn)
-                                            smCom = True
-                                            sleep(1)
-                                    else:
+                                # while True:
+                                temHwnd = self.setWindow('mnqSM')
+                                if temHwnd != 0:
+                                    self.cut()
+                                    btn = self.matchTem('mnq_ssjt')
+                                    if btn != 0:
+                                        self.LBtn(btn)
+                                        smCom = True
+                                            # sleep(1)
+                                    # else:
                                         break
                             sleep(0.5)
 

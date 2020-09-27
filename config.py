@@ -2,10 +2,10 @@ from datetime import datetime
 WEEKDAY = datetime.today().isoweekday()
 HOUR = datetime.today().hour
 CJMY_STATUS = False
-if (WEEKDAY == 4 or WEEKDAY == 5) and HOUR >= 8:
-    CJMY_STATUS = True
+# if (WEEKDAY == 4 or WEEKDAY == 5) and HOUR >= 8:
+    # CJMY_STATUS = True
 
-DEFAULT_CLASS = '0'
+DEFAULT_CLASS = '1'
 
 ACCT_LIST = ['0', '1', '2', '3', '4']
 # ACCT_LIST = ['0', '4']

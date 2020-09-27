@@ -61,4 +61,4 @@ class Match():
 
 if __name__ == '__main__':
     CScreen().cutScreen()
-    Match().matchTem('fb_llspt_wc2')
+    Match().matchTem('gm_1')
