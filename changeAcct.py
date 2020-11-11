@@ -197,19 +197,15 @@ class ChangeAcct(object):
                 sleep(0.5)
 
                 while not smCom:
-                    for item in ['mnq_sm2', 'mnq_sm3', 'mnq_sm4', 'mnq_sys1']:
+                    for item in ['mnq_sm2', 'mnq_sm3', 'mnq_sm4', 'xjqx1', 'mnq_sys1']:
                     # for item in ['mnq_sm', 'mnq_sm1', 'mnq_sys']:
                         self.cut()
                         btn = self.matchTem(item, simi=0.8)
                         if btn != 0:
-                            if item == 'mnq_sm2' or item == 'mnq_sm3' or item == 'mnq_sm4':
+                            if item == 'mnq_sm2' or item == 'mnq_sm3' or item == 'mnq_sm4' or item == 'xjqx1':
                                 self.LBtn(btn)
                                 sleep(0.5)
-                                self.cut()
-                                tem = self.matchTem('xjqx1')
-                                # tem = self.matchTem('xjqx')
-                                if tem !=0:
-                                    self.LBtn(tem)
+
                             elif item == 'mnq_sys1':
                                 # while True:
                                 temHwnd = self.setWindow('mnqSM')

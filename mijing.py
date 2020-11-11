@@ -5,6 +5,7 @@ from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
+import threading
 
 class Mijing:
     def __init__(self):
@@ -13,16 +14,12 @@ class Mijing:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.complete = False
 
     def isComplete(self):
         complete = False
         self.B.Hotkey('hd')
-
-        self.cutScreen()
-        btnCoor = self.matchTem('rchd')
-        if btnCoor != 0:
-            self.B.LBtn(btnCoor)
-
+        self.smc('rchd', sleepT=0.5)
         self.B.MBtn(590, 330)
         self.B.VBtn(1, 21)
         sleep(0.5)
@@ -31,13 +28,14 @@ class Mijing:
             if n % 10 == 0:
                 sleep(0.5)
                 self.cutScreen()
-                temCoor = self.matchTem('hd_mjxy', simi=0.97) or self.matchTem('hd_mjxy1', simi=0.98)
-                if temCoor == 0:
-                    log(f"账号: { self.name } 秘境任务已完成")
-                    complete = True
-                    break
-                else:
-                    break
+                res = self.matchTem('hd_mjxy') or self.matchTem('hd_mjxy1')
+                if res != 0:
+                    self.cutScreen(res)
+                    res = self.matchTem('hd_no', simi=0.97)
+                    if res == 0:
+                        complete = True
+                        log(f"账号: { self.name } 秘境任务已完成")
+                        break
             self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
@@ -46,10 +44,14 @@ class Mijing:
 
         return complete
 
+    def timing(self):
+        self.complete = True
+
     def start(self):
         try:
+            t = threading.Timer(900, self.timing)
+            t.start()
             log(f"账号: { self.name } 开始秘境任务")
-            complete = False
             processing = False
 
             while True:
@@ -59,10 +61,10 @@ class Mijing:
                 else:
                     break
 
-            complete = self.isComplete()
+            self.complete = self.isComplete()
 
             # 匹配秘境降妖
-            if not complete:
+            if not self.complete:
                 log(f"账号: { self.name } 秘境任务进行中")
 
                 if not processing:
@@ -71,7 +73,7 @@ class Mijing:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_mjxy', simi=0.97) or self.matchTem('hd_mjxy1', simi=0.98)
+                        temCoor = self.matchTem('hd_mjxy', simi=0.9) or self.matchTem('hd_mjxy1', simi=0.9)
                         if temCoor != 0:
                             btnCoor = self.matchTem('cj', 'imgTem/hd_mjxy') or self.matchTem('cj', 'imgTem/hd_mjxy1')
                             newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
@@ -85,6 +87,8 @@ class Mijing:
                             self.B.VBtn(-1, 10)
                             sleep(0.5)
                             if page == 4:
+                                self.complete = True
+                                processing = False
                                 break
 
                 xhList = ['mj_mjxy', 'mj_mrh', 'mj_tz']
@@ -98,19 +102,20 @@ class Mijing:
 
                     processing = True
 
-                xhList = ['hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_jrzd', 'mj_lq', 'mj_gb']
-                
+                xhList = ['hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_lq', 'mj_gb']
+
+                wheel = 0
                 while processing:
                     for item in xhList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item, simi=0.8)
                         if btnCoor != 0:
                             if item == 'hd':
-                                complete = True
+                                self.complete = True
                                 processing = False
                                 break
                                 
-                            elif item == 'sb' or item == 'mj_18' or item == 'mj_tg':
+                            elif item == 'sb' or item == 'mj_18' or item == 'mj_tg' or wheel >=3:
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.B.LBtn(((520, 380), (10, 10)))
 
@@ -119,7 +124,12 @@ class Mijing:
                                     if res == 0:
                                         break
 
+                            elif item == 'mj_lb':
+                                self.B.LBtn(btnCoor, sleepT=5)
+                                wheel += 1
+
                             elif item == 'mj_jrzd':
+                                sleep(1)
                                 res = self.smc('mj_18')
                                 if res != 0:
                                     while True:
@@ -135,14 +145,15 @@ class Mijing:
 
                             sleep(2)
 
-                sleep(0.5)
                 while True:
-                    res = self.smc('sy', sleepT=0.5)
+                    res = self.smc('sy')
                     if res == 0:
                         break
+                    sleep(0.5)
 
-            if complete:
+            if self.complete:
                 log(f"账号: { self.name } 秘境任务结束")
+                t.cancel()
                 return 1
             else:
                 self.start()

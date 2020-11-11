@@ -89,7 +89,7 @@ class GengZhong:
 
         return complete
 
-    def start(self):
+    def start(self, isSell=False):
         try:
             log(f"账号: { self.name } 开始耕种")
             complete = False
@@ -140,7 +140,7 @@ class GengZhong:
                             self.B.LBtn(btnCoor)
                         sleep(0.4)
 
-            if (self.weekday - 1) % 3 == 0:
+            if ((self.weekday - 1) % 2 == 0) and isSell:
                 self.sell()
 
             if complete:

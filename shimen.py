@@ -5,6 +5,7 @@ from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
+import threading
 
 class Shimen:
     def __init__(self):
@@ -14,6 +15,7 @@ class Shimen:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.complete = False
 
     def isComplete(self):
         complete = False
@@ -41,11 +43,15 @@ class Shimen:
         self.B.RBtn()
 
         return complete
+    
+    def timing(self):
+        self.complete = True
 
     def start(self):
         try:
+            t = threading.Timer(600, self.timing)
+            t.start()
             log(f"账号: { self.name } 开始师门任务")
-            complete = False
             processing = False
 
             while True:
@@ -65,9 +71,9 @@ class Shimen:
                 if res == 0:
                     break
 
-            complete = self.isComplete()
+            self.complete = self.isComplete()
 
-            if not complete:
+            if not self.complete:
                 print(f"账号: { self.name } 师门任务未完成")
 
                 if not processing:
@@ -100,8 +106,9 @@ class Shimen:
                             if page == 4:
                                 break
 
-                smList = ['sm_gb', 'sm_sm', 'djjx', 'dh', 'dhda', 'gm', 'btgm', 'gfgm', 'sj', 'sy', 'sm_hdwp', 'sm_rwdh']
+                smList = ['sm_gb', 'sm_sm', 'djjx', 'dh', 'dhda', 'gm', 'btgm', 'gfgm', 'sj', 'sy', 'sm_hdwp', 'sm_rwdh', 'jm_gb']
 
+                cleanBB = False
                 while processing:
                     for item in smList:
                         self.cutScreen()
@@ -131,9 +138,19 @@ class Shimen:
                                 self.B.LBtn(btnCoor)
                                 self.cutScreen()
                                 btnCoor = self.matchTem('gmsb')
+                                btnCoor1 = self.matchTem('bb_max') or self.matchTem('bb_max1')
                                 if btnCoor != 0:
                                     newCoor = ((308, 245), (294, 75))
                                     self.B.LBtn(newCoor)
+                                elif btnCoor1 != 0:
+                                    if not cleanBB:
+                                        from clean import Clean
+                                        Clean().start()
+                                        cleanBB = True
+                                    else:
+                                        self.complete = True
+                                        processing = False
+                                        break
                                 else:
                                     break
 
@@ -145,7 +162,7 @@ class Shimen:
                                 self.B.LBtn(btnCoor)
                                 print(f"账号: { self.name } 师门任务完成")
                                 processing = False
-                                complete = True
+                                self.complete = True
                                 break
 
                             else:
@@ -172,8 +189,9 @@ class Shimen:
                         break
                     sleep(0.5)
 
-            if complete:
+            if self.complete:
                 log(f"账号: { self.name } 师门任务结束")
+                t.cancel()
                 return 1
             else:
                 self.start()

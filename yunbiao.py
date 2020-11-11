@@ -5,6 +5,7 @@ from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
+import threading
 
 class Yunbiao:
     def __init__(self):
@@ -13,6 +14,7 @@ class Yunbiao:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.complete = False
 
     def isComplete(self):
         complete = False
@@ -41,10 +43,14 @@ class Yunbiao:
 
         return complete
 
+    def timing(self):
+        self.complete = True
+
     def start(self):
         try:
+            t = threading.Timer(600, self.timing)
+            t.start()
             log(f"账号: { self.name } 开始运镖任务")
-            complete = False
             processing = False
 
             while True:
@@ -54,9 +60,9 @@ class Yunbiao:
                 else:
                     break
 
-            complete = self.isComplete()
+            self.complete = self.isComplete()
 
-            if not complete:
+            if not self.complete:
                 log(f"账号: { self.name } 运镖任务进行中")
 
                 if not processing:
@@ -111,13 +117,14 @@ class Yunbiao:
                                     btnCoor = self.matchTem('yb_ys')
                                     if btnCoor == 0:
                                         log(f"账号: { self.name } 运镖任务完成")
-                                        complete = True
+                                        self.complete = True
                                         processing = False
                                         break
                     sleep(3)
 
-            if complete:
+            if self.complete:
                 log(f"账号: { self.name } 运镖任务结束")
+                t.cancel()
                 return 1
             else:
                 self.start()

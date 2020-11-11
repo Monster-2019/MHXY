@@ -6,6 +6,7 @@ from public.btn import Btn
 from public.glo import Glo
 from public.smc import SMC
 from public.log import log
+import time
 
 class LLSPT:
     def __init__(self):
@@ -20,24 +21,33 @@ class LLSPT:
     def isComplete(self):
         complete = False
         self.B.Hotkey('hd')
-
         self.smc('rchd', sleepT=0.5)
-
         self.B.MBtn(590, 330)
         self.B.VBtn(1, 21)
         sleep(0.5)
+        page = 1
 
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc(['fb_llspt_wc', 'fb_llspt_wc1'], simi=0.95, count=0)
+                self.cutScreen()
+                res = self.matchTem('hd_lls_pt') or self.matchTem('hd_lls_pt1')
                 if res != 0:
-                    complete = True
-                    self.g.setObj('config', 'FB_WC', True)
-                    log(f"副本任务已完成")
-                    break
-            else:
-                self.B.VBtn(-1)
+                    self.cutScreen(res)
+                    res = self.matchTem('hd_no', simi=0.98)
+                    if res == 0:
+                        complete = True
+                        self.g.setObj('config', 'FB_WC', True)
+                        log(f"副本任务已完成")
+                        break
+                else:
+                    page += 1
+                    if page >= 4:
+                        complete = True
+                        self.g.setObj('config', 'FB_WC', True)
+                        log(f"副本任务已完成")
+                        break
+            self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
         self.B.RBtn()
@@ -74,8 +84,14 @@ class LLSPT:
             self.smc('rchd', sleepT=0.5)
             page = 1
             while True:
-                self.cutScreen()
-                temCoor = self.matchTem('hd_lls_pt') or self.matchTem('hd_lls_pt1')
+                sTime = time.time()
+                eTime = time.time()
+                while True:
+                    self.cutScreen()
+                    temCoor = self.matchTem('hd_lls_pt') or self.matchTem('hd_lls_pt1')
+                    eTime = time.time()
+                    if temCoor != 0 or eTime - sTime >= 8:
+                        break
                 if temCoor != 0:
                     btnCoor = self.matchTem('cj', 'imgTem/hd_lls_pt') or self.matchTem('cj', 'imgTem/hd_lls_pt1')
                     newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
@@ -110,6 +126,7 @@ class LLSPT:
                     sleep(0.5)
                     if page == 4:
                         break
+
             if not processing:
                 self.B.RBtn()
 
@@ -199,4 +216,4 @@ class LLSPT:
             log(e, True)
 
 if __name__ == "__main__":
-    LLSPT().start()
+    LLSPT().leader()

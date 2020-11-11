@@ -30,16 +30,19 @@ class Zhuogui:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc(['zg_wc', 'zg_wc1'], simi=0.98, count=0)
+                self.cutScreen()
+                res = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
                 if res != 0:
-                    complete = True
-                    self.g.setObj('config', 'ZG_WC', True)
-                    log(f"捉鬼任务已完成")
-                    break
+                    self.cutScreen(res)
+                    res = self.matchTem('hd_no', simi=0.9)
+                    if res == 0:
+                        complete = True
+                        log(f"捉鬼任务已完成")
+                        self.g.setObj('config', 'ZG_WC', True)
+                        break
             self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
-
         self.B.RBtn()
 
         return complete
@@ -99,6 +102,7 @@ class Zhuogui:
             total = 0
             count = 0
             totalMax = 0
+            start = False
             if self.weekday > 5:
                 totalMax = 1
 
@@ -114,11 +118,40 @@ class Zhuogui:
                             count = 0
                             print(f'开始刷第{total}轮鬼')
 
+                        elif item == 'zg_zg':
+                            count+=1
+                            if total > ZG_COUNT:
+                                if count > totalMax:
+                                    self.B.LBtn(((520, 380), (10, 10)))
+                                    self.B.LBtn(((520, 380), (10, 10)))
+                                    res = self.g.compare(5)
+                                    if res:
+                                        complete = True
+                                        processing = False
+                                        self.g.setObj('config', 'ZG_WC', True)
+                                        log(f"捉鬼任务完成")
+                                        sleep(2)
+                                        break
+                                else:
+                                    if not start:
+                                        self.B.LBtn(btnCoor)
+                                        start = True
+                                    print(f'开始刷第{count}次鬼')
+                                    sleep(60)
+
+                            else:
+                                if not start:
+                                    self.B.LBtn(btnCoor)
+                                    start = True
+                                print(f'开始刷第{count}次鬼')
+                                sleep(60)
+
                         elif item == 'zg_zgwc':
                             if total < ZG_COUNT or (total == ZG_COUNT and totalMax != 0):
                                 btnCoor = self.matchTem('qd')
                                 if btnCoor != 0:
                                     self.B.LBtn(btnCoor)
+                                    start = False
 
                             else:
                                 btnCoor = self.matchTem('qx')
@@ -129,28 +162,6 @@ class Zhuogui:
                                     self.g.setObj('config', 'ZG_WC', True)
                                     log(f"捉鬼任务完成")
                                     break
-
-                        elif item == 'zg_zg':
-                            count+=1
-                            if total > ZG_COUNT:
-                                if count > totalMax:
-                                    self.B.LBtn(((520, 380), (10, 10)))
-                                    self.B.LBtn(((520, 380), (10, 10)))
-                                    complete = True
-                                    processing = False
-                                    self.g.setObj('config', 'ZG_WC', True)
-                                    log(f"捉鬼任务完成")
-                                    sleep(3)
-                                    break
-                                else:
-                                    self.B.LBtn(btnCoor)
-                                    print(f'开始刷第{count}次鬼')
-                                    sleep(60)
-
-                            else:
-                                self.B.LBtn(btnCoor)
-                                print(f'开始刷第{count}次鬼')
-                                sleep(60)
 
                     else:
                         if item == 'zg_zg':
@@ -174,7 +185,8 @@ class Zhuogui:
         complete = False
         Zudui().start()
         while not self.g.getObj('config', 'ZG_WC'):
-            sleep(5)
+            self.smc('xszk_gb')
+            sleep(3)
 
         complete = True
 
@@ -246,4 +258,4 @@ class Zhuogui:
             log(e, True)
 
 if __name__ == '__main__':
-    Zhuogui().loop()
+    Zhuogui().leader()

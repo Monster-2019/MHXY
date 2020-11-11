@@ -118,7 +118,7 @@ class Run(object):
         LQHYD().start()
 
         if level >= 60:
-            GengZhong().start()
+            GengZhong().start(True)
 
         # currentHour = int(time.strftime('%H', time.localtime()))
         # if int(level) < 69 and currentHour >= 8:

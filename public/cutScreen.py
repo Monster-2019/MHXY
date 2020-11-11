@@ -1,5 +1,4 @@
 import sys
-sys.path.append('.')
 sys.path.append('..')
 import win32gui, win32ui, win32con, win32api
 from ctypes import windll
@@ -32,9 +31,12 @@ class CScreen(object):
         # 获取句柄窗口的大小信息
         # 可以通过修改该位置实现自定义大小截图
         left, top, right, bot = win32gui.GetWindowRect(self.hwnd)
-        if infoKey != "":
+        if (infoKey != "" and isinstance(infoKey, str)):
             self.Coor = self.infoCoor[infoKey][0]
             self.WH = self.infoCoor[infoKey][1]
+        elif (infoKey != "" and isinstance(infoKey, tuple)):
+            self.Coor = infoKey[0]
+            self.WH = infoKey[1]
         else:
             self.Coor = (0, 0)
             self.WH = (right - left - 17, bot - top - 39)

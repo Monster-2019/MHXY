@@ -49,17 +49,25 @@ class Clean(object):
 			self.B.VBtn(1, 50)
 			sleep(0.5)
 
-			syList = ['bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4']
+			syList = ['bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4', 'bb_sy5', 'bb_sy6', 'bb_sy7', 'bb_sy8', 'bb_sy9', 'bb_jr']
 			page = 1
 			while True:
 				res = self.smc(syList, count=2, sleepT=0.5)
 				if res == 0:
-					self.B.MBtn(710, 410)
-					self.B.VBtn(-1, 6)
-					sleep(0.5)
-					page+=1
-					if page == 8:
-						break
+					rs = self.smc('hd', count=0)
+					if rs != 0:
+						self.B.Hotkey('bb')
+					res = self.smc('bb_zl', count=0)
+					if res == 0:
+						self.B.RBtn()
+						sleep(0.5)
+					else:
+						self.B.MBtn(710, 410)
+						self.B.VBtn(-1, 6)
+						sleep(0.5)
+						page+=1
+						if page == 8:
+							break
 
 			self.smc('bb_zl')
 			self.B.MBtn(710, 410)
@@ -68,7 +76,7 @@ class Clean(object):
 
 			page = 1
 			while True:
-				res = self.smc(['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1'], sleepT=0.5)
+				res = self.smc(['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf'], sleepT=0.5)
 				if res != 0:
 					self.smc('bb_gd', sleepT=0.5)
 					self.smc('bb_smcs', sleepT=0.5)

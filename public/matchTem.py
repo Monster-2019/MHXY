@@ -52,7 +52,8 @@ class Match():
         # cv.waitKey(0)
         # cv.destroyAllWindows()
 
-        # print(max_val, max_loc)
+        # if tem == 'hd_no':
+            # print(max_val, max_loc)
         if max_val > self.simi:
             w, h = newTem.shape[::-1]
             return (max_loc, (w, h))
@@ -60,5 +61,5 @@ class Match():
             return 0
 
 if __name__ == '__main__':
-    CScreen().cutScreen()
-    Match().matchTem('gm_1')
+    # CScreen().cutScreen()
+    Match().matchTem('hd_no')
