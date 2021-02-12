@@ -49,7 +49,7 @@ class Clean(object):
 			self.B.VBtn(1, 50)
 			sleep(0.5)
 
-			syList = ['bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4', 'bb_sy5', 'bb_sy6', 'bb_sy7', 'bb_sy8', 'bb_sy9', 'bb_jr']
+			syList = ['bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4', 'bb_sy5', 'bb_sy6', 'bb_sy7', 'bb_sy8', 'bb_sy9'] #'bb_jr'
 			page = 1
 			while True:
 				res = self.smc(syList, count=2, sleepT=0.5)

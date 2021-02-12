@@ -15,6 +15,7 @@ class Mijing:
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
         self.complete = False
+        self.processing = False
 
     def isComplete(self):
         complete = False
@@ -49,10 +50,9 @@ class Mijing:
 
     def start(self):
         try:
-            t = threading.Timer(900, self.timing)
+            t = threading.Timer(1200, self.timing)
             t.start()
             log(f"账号: { self.name } 开始秘境任务")
-            processing = False
 
             while True:
                 res = self.smc('hd', count=0)
@@ -67,7 +67,7 @@ class Mijing:
             if not self.complete:
                 log(f"账号: { self.name } 秘境任务进行中")
 
-                if not processing:
+                if not self.processing:
                     self.B.Hotkey('hd')
                     self.smc('rchd', sleepT=0.5)
                     page = 1
@@ -79,7 +79,7 @@ class Mijing:
                             newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
-                                processing = True
+                                self.processing = True
                                 break
 
                         else:
@@ -88,41 +88,39 @@ class Mijing:
                             sleep(0.5)
                             if page == 4:
                                 self.complete = True
-                                processing = False
+                                self.processing = False
                                 break
 
-                xhList = ['mj_mjxy', 'mj_mrh', 'mj_tz']
-                if processing:
-                    while processing:
+                xhList = ['mj_mjxy', 'mj_jr', 'qd', 'mj_mrh', 'mj_nz', 'mj_tz']
+                if self.processing:
+                    while self.processing:
                         for item in xhList:
                             res = self.smc(item, sleepT=1)
                             if res != 0 and item == 'mj_tz':
-                                processing = False
+                                self.processing = False
                                 break
 
-                    processing = True
+                    self.processing = True
 
                 xhList = ['hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_lq', 'mj_gb']
 
                 wheel = 0
-                while processing:
+                while self.processing:
+                    if self.complete:
+                        self.smc('mj_lk')
+                            
                     for item in xhList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item, simi=0.8)
                         if btnCoor != 0:
                             if item == 'hd':
-                                self.complete = True
-                                processing = False
+                                self.processing = False
                                 break
-                                
+
                             elif item == 'sb' or item == 'mj_18' or item == 'mj_tg' or wheel >=3:
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.B.LBtn(((520, 380), (10, 10)))
-
-                                while True:
-                                    res = self.smc('mj_lk', sleepT=0.5)
-                                    if res == 0:
-                                        break
+                                self.complete = True
 
                             elif item == 'mj_lb':
                                 self.B.LBtn(btnCoor, sleepT=5)
@@ -132,10 +130,7 @@ class Mijing:
                                 sleep(1)
                                 res = self.smc('mj_18')
                                 if res != 0:
-                                    while True:
-                                        res = self.smc('mj_lk', sleepT=0.5)
-                                        if res == 0:
-                                            break
+                                    self.complete = True
 
                                 else:
                                     self.B.LBtn(btnCoor)

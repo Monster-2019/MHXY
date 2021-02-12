@@ -34,7 +34,7 @@ class Zhuogui:
                 res = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
                 if res != 0:
                     self.cutScreen(res)
-                    res = self.matchTem('hd_no', simi=0.9)
+                    res = self.matchTem('hd_no', simi=0.95)
                     if res == 0:
                         complete = True
                         log(f"捉鬼任务已完成")
@@ -98,82 +98,87 @@ class Zhuogui:
             if not processing:
                 self.B.RBtn()
 
-            xlList = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
-            total = 0
+            xlList = ['zg_zg', 'zg_zgwc']
             count = 0
+            total = 0
             totalMax = 0
             start = False
-            if self.weekday > 5:
-                totalMax = 1
+            if self.weekday > 5 and ZG_COUNT < 2:
+                totalMax = 5
 
             while processing:
-                for item in xlList:
-                    self.cutScreen()
-                    btnCoor = self.matchTem(item)
-                    if btnCoor != 0:
-                        if item == 'zg_zgrw':
-                            self.B.LBtn(btnCoor, sleepT=0.5)
-                            self.B.RBtn()
-                            total += 1
-                            count = 0
-                            print(f'开始刷第{total}轮鬼')
+                if not start:
+                    res = self.smc('zg_zgrw')
+                    if res != 0:
+                        self.B.RBtn()
+                        self.B.RBtn()
+                        count = 0
+                        total += 1
+                        start = True
 
-                        elif item == 'zg_zg':
-                            count+=1
-                            if total > ZG_COUNT:
-                                if count > totalMax:
-                                    self.B.LBtn(((520, 380), (10, 10)))
-                                    self.B.LBtn(((520, 380), (10, 10)))
-                                    res = self.g.compare(5)
-                                    if res:
-                                        complete = True
-                                        processing = False
-                                        self.g.setObj('config', 'ZG_WC', True)
-                                        log(f"捉鬼任务完成")
-                                        sleep(2)
-                                        break
-                                else:
-                                    if not start:
-                                        self.B.LBtn(btnCoor)
-                                        start = True
-                                    print(f'开始刷第{count}次鬼')
-                                    sleep(60)
-
-                            else:
-                                if not start:
-                                    self.B.LBtn(btnCoor)
-                                    start = True
-                                print(f'开始刷第{count}次鬼')
-                                sleep(60)
-
-                        elif item == 'zg_zgwc':
-                            if total < ZG_COUNT or (total == ZG_COUNT and totalMax != 0):
-                                btnCoor = self.matchTem('qd')
-                                if btnCoor != 0:
-                                    self.B.LBtn(btnCoor)
-                                    start = False
-
-                            else:
-                                btnCoor = self.matchTem('qx')
-                                if btnCoor != 0:
-                                    self.B.LBtn(btnCoor)
+                else:
+                    for item in xlList:
+                        self.cutScreen()
+                        btnCoor = self.matchTem(item)
+                        if btnCoor != 0:
+                            if item == 'zg_zg':
+                                count+=1
+                                if total > ZG_COUNT and count > totalMax:
+                                    self.B.LBtn(((511, 384), (2, 2)))
+                                    self.B.LBtn(((511, 384), (2, 2)))
+                                    isHC = False
+                                    while True:
+                                        self.B.Hotkey('dt')
+                                        hc = self.smc('dt_cac', sleepT=2)
+                                        isHC = isHC == True or (isHC == False and hc != 0)
+                                        res = self.smc('hd', count=0)
+                                        if hc and res != 0:
+                                            break
+                                            
+                                    sleep(3)
+                                    
                                     complete = True
                                     processing = False
                                     self.g.setObj('config', 'ZG_WC', True)
                                     log(f"捉鬼任务完成")
+                                    sleep(2)
                                     break
 
-                    else:
-                        if item == 'zg_zg':
-                            res = self.smc('hd', count=0)
-                            if res != 0:
-                                tem = self.smc('fb_tgjq', count=0)
-                                if tem != 0:
-                                    self.B.Hotkey('dt')
-                                    self.smc('dt_cac', sleepT=1)
                                 else:
-                                    self.B.MBtn(900, 300)
-                                    self.B.VBtn(1, 10)
+                                    self.B.LBtn(btnCoor)
+                                    print(f'开始刷第{count}次鬼')
+                                    sleep(30)
+
+                            elif item == 'zg_zgwc':
+                                if total < ZG_COUNT or (total == ZG_COUNT and totalMax != 0):
+                                    btnCoor = self.matchTem('qd')
+                                    if btnCoor != 0:
+                                        self.B.LBtn(btnCoor)
+                                        start = False
+
+                                else:
+                                    btnCoor = self.matchTem('qx')
+                                    if btnCoor != 0:
+                                        self.B.LBtn(btnCoor)
+                                        complete = True
+                                        processing = False
+                                        self.g.setObj('config', 'ZG_WC', True)
+                                        log(f"捉鬼任务完成")
+                                        break
+
+                        else:
+                            if item == 'zg_zg' and start == True:
+                                res = self.smc('hd', count=0)
+                                if res != 0:
+                                    # self.B.LBtn(((511, 384), (2, 2)))
+                                    # self.B.LBtn(((511, 384), (2, 2)))
+                                    tem = self.smc('fb_tgjq', count=0)
+                                    if tem != 0:
+                                        self.B.Hotkey('dt')
+                                        self.smc('dt_cac', sleepT=1)
+                                    else:
+                                        self.B.MBtn(900, 300)
+                                        self.B.VBtn(1, 10)
 
         if complete:
             log(f"捉鬼任务结束")

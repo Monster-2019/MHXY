@@ -56,7 +56,7 @@ class Info():
             tem = self.setOcr('js', 'name')
 
             if tem != None:
-                name = re.findall(r"[a-zA-Z_\u4e00-\u9fa5]+", tem)
+                name = re.findall(r"[1-5a-zA-Z_\u4e00-\u9fa5]+", tem)
                 name = name[0]
                 self.g.set("name", name)
                 level = re.findall(r"\d+", tem)

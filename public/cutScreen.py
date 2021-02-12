@@ -9,6 +9,7 @@ import cv2 as cv
 import numpy as np
 
 class CScreen(object):
+    login = False
     Coor = ()
     WH = ()
     infoCoor = {
@@ -20,12 +21,16 @@ class CScreen(object):
         "gfbt": ((647, 207), (306, 461))
     }
 
-    def __init__(self):
+    def __init__(self, hwnd=False):
         # 初始化窗口的句柄
         super(CScreen, self).__init__()
         self.g = Glo()
         self.index = self.g.get('windowClass')
-        self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
+        if hwnd:
+            self.hwnd = hwnd
+            self.login = True
+        else:
+            self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
 
     def cutScreen(self, infoKey=""):
         # 获取句柄窗口的大小信息
@@ -79,7 +84,7 @@ class CScreen(object):
         win32gui.ReleaseDC(self.hwnd, hwndDC)
         sleep(0.01)
 
-        if infoKey == "":
+        if infoKey == "" and not self.login:
             img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
             self.g.set('newCoor', [img[130, 250], img[130, 700]])

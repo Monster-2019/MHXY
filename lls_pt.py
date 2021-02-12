@@ -34,7 +34,7 @@ class LLSPT:
                 res = self.matchTem('hd_lls_pt') or self.matchTem('hd_lls_pt1')
                 if res != 0:
                     self.cutScreen(res)
-                    res = self.matchTem('hd_no', simi=0.98)
+                    res = self.matchTem('hd_no1', simi=0.9) or self.matchTem('hd_no2', simi=0.9)
                     if res == 0:
                         complete = True
                         self.g.setObj('config', 'FB_WC', True)
@@ -138,9 +138,13 @@ class LLSPT:
                     btnCoor = self.matchTem(item)
                     if btnCoor != 0:
                         if item == 'sb':
-                            self.B.LBtn(btnCoor)
-                            self.B.Hotkey('dt')
-                            self.smc('dt_cac', sleepT=0.5)
+                            while True:
+                                self.smc('sb', sleepT=0.5)
+                                self.B.Hotkey('dt', sleepT=1)
+                                hc = self.smc('dt_cac', sleepT=2)
+                                res = self.smc('hd', count=0)
+                                if hc != 0 and res != 0:
+                                    break
                             break
 
                         elif item == 'hd':

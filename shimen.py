@@ -5,6 +5,7 @@ from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
+from sendMsg import SendMsg
 import threading
 
 class Shimen:
@@ -148,6 +149,8 @@ class Shimen:
                                         Clean().start()
                                         cleanBB = True
                                     else:
+                                        msg = '账号：' + self.name + ' 背包已满.'
+                                        SendMsg(msg)
                                         self.complete = True
                                         processing = False
                                         break

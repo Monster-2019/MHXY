@@ -29,10 +29,12 @@ class Btn:
         'zr3': ((890, 515), (40, 40))
     }
     
-    def __init__(self):
+    def __init__(self, hwnd=False):
         self.g = Glo()
-        # self.hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-        self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.g.get('windowClass'), '《梦幻西游》手游')
+        if hwnd:
+            self.hwnd = hwnd
+        else:
+            self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.g.get('windowClass'), '《梦幻西游》手游')
 
     def LBtn(self, btnCoor, sleepT=0.1, count=1):
         Coor = self.fixedCoor.get(btnCoor)

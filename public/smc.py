@@ -9,11 +9,11 @@ class SMC(object):
     bb = (513, 202)
     gfbt = (647, 207)
 
-    def __init__(self):
+    def __init__(self, hwnd=False):
         super(SMC, self).__init__()
-        self.cutScreen = CScreen().cutScreen
+        self.cutScreen = CScreen(hwnd).cutScreen
         self.matchTem = Match().matchTem
-        self.B = Btn()
+        self.B = Btn(hwnd)
 
     def smc(self, tem, infoKey="", simi=0.85, sleepT=0, count=1):
         self.cutScreen(infoKey=infoKey)

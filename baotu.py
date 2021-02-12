@@ -17,6 +17,7 @@ class Baotu:
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
         self.complete = False
+        self.processing = False
 
     def empty(self):
         self.B.Hotkey("bb")
@@ -73,6 +74,7 @@ class Baotu:
                             if btnCoor[0][0] + btnCoor[1][0] < 920:
                                 # print('使用藏宝图中')
                                 count += 1
+                                log('使用一张藏宝图')
                                 self.B.LBtn(btnCoor)
                                 sleep(4)
                                 timer1 = time.time()
@@ -91,11 +93,11 @@ class Baotu:
                         # print('打怪中')
                         timer1 = time.time()
                         timer2 = time.time()
-                        res = self.smc('sy', sleepT=4)
+                        res = self.smc('sy')
                         if res != 0:
                             self.B.RBtn()
 
-                    if timer2 - timer1 >= 10:
+                    if timer2 - timer1 >= 12:
                         useComplete = True
                         break
 
@@ -133,13 +135,13 @@ class Baotu:
 
     def timing(self):
         self.complete = True
+        self.processing = False
 
     def start(self):
         try:
             t = threading.Timer(900, self.timing)
             t.start()
             log(f"账号: { self.name } 开始宝图任务")
-            processing = False
 
             while True:
                 res = self.smc('hd', count=0)
@@ -153,7 +155,7 @@ class Baotu:
                     temCoor = self.matchTem('bt_btrw')
                     if temCoor != 0:
                         print(f"账号: { self.name } 已领取宝图任务")
-                        processing = True
+                        self.processing = True
                     sleep(0.5)
                     break
 
@@ -162,19 +164,19 @@ class Baotu:
             if not self.complete:
                 print(f"账号: { self.name } 宝图任务进行中")
 
-                if not processing:
+                if not self.processing:
                     self.B.Hotkey('hd')
                     self.smc('rchd', sleepT=0.5)
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_btrw', simi=0.9)
+                        temCoor = self.matchTem('hd_btrw', simi=0.7) or self.matchTem('hd_btrw1', simi=0.7)
                         if temCoor != 0:
-                            btnCoor = self.matchTem('cj', 'imgTem/hd_btrw')
+                            btnCoor = self.matchTem('cj', 'imgTem/hd_btrw') or self.matchTem('cj', 'imgTem/hd_btrw1')
                             newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
-                                processing = True
+                                self.processing = True
                                 break
                         else:
                             page += 1
@@ -187,7 +189,7 @@ class Baotu:
                 # sTime = time.time()
                 # eTime = time.time()
 
-                while processing:
+                while self.processing:
                     self.cutScreen()
                     temCoor = self.matchTem('hd')
                     if temCoor != 0:
@@ -219,7 +221,7 @@ class Baotu:
                                 if res == 0:
                                     self.complete = self.isComplete()
                                     if self.complete:
-	                                    processing = not self.complete
+	                                    self.processing = not self.complete
 	                                    log(f"账号: { self.name } 宝图任务完成")
 	                                    break
                                 
@@ -235,21 +237,21 @@ class Baotu:
                     #     eTime = time.time()
 
                 sleep(0.5)
-                count = 0
-                while True:
-                    if count >= 10:
-                        break
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd')
-                    btnCoor = self.matchTem('sy')
-                    if temCoor != 0 and btnCoor != 0:
-                        count += 1
-                        self.B.LBtn(btnCoor, sleepT=0.5)
-                    elif temCoor != 0 and btnCoor == 0:
-                        break
-                    else:
-                        self.B.RBtn()
-                    sleep(0.5)
+                # count = 0
+                # while True:
+                #     if count >= 4:
+                #         break
+                #     self.cutScreen()
+                #     temCoor = self.matchTem('hd')
+                #     btnCoor = self.matchTem('sy')
+                #     if temCoor != 0 and btnCoor != 0:
+                #         count += 1
+                #         self.B.LBtn(btnCoor, sleepT=0.5)
+                #     elif temCoor != 0 and btnCoor == 0:
+                #         break
+                #     else:
+                #         self.B.RBtn()
+                #     sleep(0.5)
 
             self.dig()
 

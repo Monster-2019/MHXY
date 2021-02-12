@@ -36,7 +36,7 @@ class Lidui:
 
         self.B.Hotkey('dw')
         while True:
-            self.smc('tcdw', sleepT=0.5)
+            self.smc('tcdw', sleepT=2)
             res = self.smc('cjdw', count=0)
             if res != 0:
                 break

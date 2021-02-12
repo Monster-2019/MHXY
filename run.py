@@ -29,7 +29,8 @@ from bangpai import Bangpai
 from trading import Trading
 from clean import Clean
 from logout import Logout
-from changeAcct import ChangeAcct
+from login import Login
+from sendMsg import SendMsg
 import config
 
 from public.glo import Glo
@@ -48,28 +49,20 @@ class Run(object):
 
     def pushMsg(self, groupNo, shutdown=False):
         self.runOver()
-        url = 'https://sc.ftqq.com/SCU69656T782d340ca550c446fba0708c1436e3af5e2aadb811f2f.send'
         msg = '完成第' + str(groupNo) + '组号, 用时' + str(self.m) + '分钟'
-        param = {
-            'text': msg
-        }
-        requests.post(url, param)
+        SendMsg(msg)
         self.startTime = datetime.now()
             
         if groupNo == len(config.ACCTZU):
-            url = 'https://sc.ftqq.com/SCU69656T782d340ca550c446fba0708c1436e3af5e2aadb811f2f.send'
-            msg = '全部完成，共用时' + str(self.totalTime) + '分钟'
-            param = {
-                'text': msg
-            }
-            requests.post(url, param)
             currentHour = datetime.today().hour
             currentWeek = datetime.today().isoweekday()
             if currentHour <= 6 or ((currentWeek == 1 or currentWeek == 4 or currentWeek == 5) and currentHour <= 17):
                 shutdown = True
 
         if shutdown:
-            os.system(f'shutdown -s -t 3')
+            msg = '全部完成，关机'
+            SendMsg(msg)
+            os.system(f'shutdown -s -t 300')
 
     def richang(self, windowClass, lock, myDict):
         currentHour = datetime.today().hour
@@ -135,7 +128,7 @@ class Run(object):
 
         Logout().start(myDict['NEXT'])
 
-    def start(self):
+    def start(self, shutdown=False):
         try:
             import pythoncom
             pythoncom.CoInitialize()
@@ -148,7 +141,7 @@ class Run(object):
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:
                     log(f'开始第{GROUP_NO}组号')
-                    ChangeAcct().start(index)
+                    Login(index).login()
 
                     # 进程共享数据
                     lock = Manager().Lock()
@@ -164,14 +157,14 @@ class Run(object):
                     p.join()
 
                     log(f'完成第{GROUP_NO}组号')
+                    self.pushMsg(GROUP_NO)
                 else:
                     log(f'第{GROUP_NO}组号不执行')
 
-                self.pushMsg(GROUP_NO)
-                # del config.ACCTZU[0]
                 sleep(2)
 
             log('运行完成')
+            # self.pushMsg(0, shutdown)
 
         except Exception as e:
             self.pushMsg(-1, True)
@@ -191,10 +184,13 @@ if __name__ == "__main__":
             if sys.argv[1] == '-t':
                 timing = input('请输入定时事件：')
                 Run().timingStart(timing)
+            elif sys.argv[1] == '-s':
+                Run().start(True)
             else:
                 log('无该参数')
         else:
             Run().start()
     except Exception as e:
+        print('错误')
         traceback.print_exc()
         log(e, True)
