@@ -16,6 +16,7 @@ class Shimen:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.smca = SMC().smca
         self.complete = False
 
     def isComplete(self):
@@ -31,7 +32,7 @@ class Shimen:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc(['sm_wc', 'sm_wc1'], simi=0.95, count=0)
+                res = self.smca(['sm_wc', 'sm_wc1'], simi=0.95, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 师门任务已完成")
                     complete = True

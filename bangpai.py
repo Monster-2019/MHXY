@@ -3,6 +3,7 @@ from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
 from public.smc import SMC
+from public.smca import SMC
 from public.glo import Glo
 from public.log import log
 
@@ -15,6 +16,7 @@ class Bangpai:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.smca = SMC().smca
 
     def changeTask(self):
         processList = ['rw_dqrw', 'rw_cgrw', 'rw_bprw', 'rw_fqrw', 'qd']
@@ -107,7 +109,7 @@ class Bangpai:
                                 if item == 'my_xsl_dh':
                                     while True:
                                         self.B.LBtn(btnCoor)
-                                        res = self.smc(['my_xsl_no', 'my_xsl_ten', 'my_xsl_max'])
+                                        res = self.smca(['my_xsl_no', 'my_xsl_ten', 'my_xsl_max'])
                                         if res != 0:
                                             status = True
                                             self.B.RBtn()

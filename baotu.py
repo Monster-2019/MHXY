@@ -16,6 +16,7 @@ class Baotu:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.smca = SMC().smca
         self.complete = False
         self.processing = False
 
@@ -119,7 +120,7 @@ class Baotu:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc(['bt_wc', 'bt_wc1'], simi=0.9, count=0)
+                res = self.smca(['bt_wc', 'bt_wc1'], simi=0.9, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 宝图任务已完成")
                     complete = True

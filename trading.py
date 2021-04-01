@@ -15,6 +15,7 @@ class Trading:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.smca = SMC().smca
 
     def isComplete(self):
         complete = False
@@ -217,7 +218,7 @@ class Trading:
                                 if res != 0:
                                     self.B.RBtn()
                                     sleep(1)
-                                    res = self.smc(['my_msyj', 'my_jlh', 'my_mgh', 'my_cwnd'])
+                                    res = self.smca(['my_msyj', 'my_jlh', 'my_mgh', 'my_cwnd'])
                                     if res != 0:
                                         while True:
                                             self.smc('my_xsl_sy', sleepT=0.5)

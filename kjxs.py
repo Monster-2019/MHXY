@@ -13,6 +13,7 @@ class KJXS:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.smca = SMC().smca
 
     def isComplete(self):
         complete = False
@@ -82,7 +83,7 @@ class KJXS:
                                 break
 
                 while processing:
-                    res = self.smc(['kj_dw', 'kj_dw1'], count=0)
+                    res = self.smca(['kj_dw', 'kj_dw1'], count=0)
                     if res != 0:
                         self.B.RBtn()
                         complete = True

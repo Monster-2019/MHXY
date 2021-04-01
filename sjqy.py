@@ -13,6 +13,7 @@ class SJQY:
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
+        self.smca = SMC().smca
 
     def isComplete(self):
         complete = False
@@ -27,7 +28,7 @@ class SJQY:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc(['sj_wc', 'sj_wc1'], simi=0.95, count=0)
+                res = self.smca(['sj_wc', 'sj_wc1'], simi=0.95, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 三界奇缘任务已完成")
                     complete = True
