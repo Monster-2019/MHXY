@@ -7,6 +7,7 @@ from public.glo import Glo
 from public.log import log
 import threading
 
+
 class Yunbiao:
     def __init__(self):
         self.name = Glo().get('name')
@@ -72,10 +73,15 @@ class Yunbiao:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_yb', simi=0.95)
+                        temCoor = self.matchTem('hd_yb1') or self.matchTem(
+                            'hd_yb')
                         if temCoor != 0:
-                            btnCoor = self.matchTem('cj', 'imgTem/hd_yb')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            btnCoor = self.matchTem(
+                                'cj', 'imgTem/hd_yb1') or self.matchTem(
+                                    'cj', 'imgTem/hd_yb')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0],
+                                        temCoor[0][1] + btnCoor[0][1]),
+                                       btnCoor[1])
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
                                 processing = True
@@ -100,16 +106,16 @@ class Yunbiao:
                                     res = self.smc(item, sleepT=0.5)
                                     if res != 0 and item == 'qd':
                                         sleep(3)
-                                        count+=1
+                                        count += 1
                                         ysStatus = True
-                                        log(f'账号: { self.name } 正在进行第{ count }轮运镖')
+                                        log(f'账号: { self.name } 正在进行第{ count }轮运镖'
+                                            )
                                         sleep(60)
 
                                         while True:
                                             res = self.smc('hd', count=0)
                                             if res != 0:
                                                 break
-
 
                         else:
                             if count != 0:
@@ -132,6 +138,7 @@ class Yunbiao:
 
         except Exception as e:
             log(e, True)
+
 
 if __name__ == '__main__':
     Yunbiao().start()

@@ -25,12 +25,13 @@ class CScreen(object):
         # 初始化窗口的句柄
         super(CScreen, self).__init__()
         self.g = Glo()
-        self.index = self.g.get('windowClass')
+        self.index = self.g.get('screen')
         if hwnd:
             self.hwnd = hwnd
             self.login = True
         else:
-            self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
+            # self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
+            self.hwnd = self.g.get('windowClass')
 
     def cutScreen(self, infoKey=""):
         # 获取句柄窗口的大小信息

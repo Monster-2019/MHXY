@@ -2,161 +2,76 @@ from time import sleep
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
+from public.smc import SMC
+from public.glo import Glo
+from public.log import log
 
 
 class Upgrade(object):
-
     def __init__(self):
+        super(Upgrade, self).__init__()
+        self.g = Glo()
+        self.name = Glo().get('name')
         self.B = Btn()
-        C = CScreen()
-        self.cutScreen = C.cutScreen
-        M = Match()
-        self.matchTem = M.matchTem
-
-    def matchTeam(self):
-        self.B.Hotkey('dw')
-        sleep(0.5)
-
-        xhList = ['jq_select_target', 'target_zg']
-
-        self.cutScreen()
-        btnCoor = self.matchTem('cjdw')
-        if btnCoor != 0:
-            self.B.LBtn(btnCoor)
-
-            complete = False
-            while not complete:
-                self.cutScreen()
-                for item in xhList:
-                    btnCoor = self.matchTem(item)
-                    if btnCoor != 0:
-                        self.B.LBtn(btnCoor)
-
-                        if item == 'target_zg':
-                            sleep(1)
-                            # 选择等级
-                            for i in range(3):
-                                self.B.DBtn((560, 380), (560, 190))
-                                sleep(1)
-
-                            for i in range(5):
-                                self.B.DBtn((660, 380), (660, 190))
-                                sleep(1)
-
-                            self.cutScreen()
-                            btnCoor = self.matchTem('qdmb')
-                            if btnCoor != 0:
-                                self.B.LBtn(btnCoor, sleepT=0.5)
-                                self.B.RBtn()
-                                complete = True
-                                break
-        else:
-            self.B.RBtn()
+        self.cutScreen = CScreen().cutScreen
+        self.matchTem = Match().matchTem
+        self.smc = SMC().smc
+        self.smca = SMC().smca
+        self.complete = False
 
     def start(self):
-        notTask = False
-        
-        while True:
-            self.cutScreen()
-            tem = self.matchTem('hd')
-            if tem == 0:
-                self.B.RBtn()
-            else:
-                break
+        log(f"账号: { self.name } 开始剧情任务")
+        self.smc('hd', count=0)
 
-        sleep(1)
-        self.cutScreen()
-        tem = self.matchTem('jq_jssj', simi=0.75) or self.matchTem('sjjq', simi=0.75) or self.matchTem('jqqd', simi=0.75)
-        if tem != 0:
-            notTask = True
+        xhList = ['jqqd', 'dh', 'hd', 'djjx', 'djtg', 'up_mscs']
 
-        if not notTask:
-            self.matchTeam()
+        while not self.complete:
+            for item in xhList:
+                btn = self.smc(item, count=0)
+                # print(btn)
+                if btn != 0:
+                    if item == 'jqqd':
+                        self.complete = True
+                        break
 
-            xhList = ['jq_jssj','sjjq', 'jqqd', 'hcsl', 'rwjm', 'djtgjq', 'djjx', 'dh', 'qd', 'zd']
+                    elif item == 'dh':
+                        coor = self.smc('dh', count=0)
+                        newCoor = ((coor[0][0] + 14, coor[0][1] + 64), (247,
+                                                                        41))
+                        self.B.LBtn(newCoor, sleepT=0.5)
 
-            while not notTask:
-                for item in xhList:
-                    self.cutScreen()
-                    if item == 'hcsl' or item == 'jq_jssj' or item == 'sjjq' or item == 'jqqd':
-                        btnCoor = self.matchTem(item, simi=0.75)
-                    else:
-                        btnCoor = self.matchTem(item)
-                    if btnCoor != 0:
-                        if item == 'jq_jssj' or item == 'sjjq' or item == 'jqqd':
-                            self.B.Hotkey('dw')
+                        self.smc('qd')
+
+                    elif item == 'hd':
+                        if self.g.compare() == True:
+                            self.B.Hotkey('rw', sleepT=1)
+
                             while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem('tcdw')
-                                if btnCoor != 0:
-                                    self.B.LBtn(btnCoor)
-                                    self.B.RBtn()
-                                    self.B.RBtn()
-
-                                    notTask = True
+                                res = self.smc('up_zx')
+                                if res != 0:
                                     break
+                                else:
+                                    self.smc('rw_dqrw')
+                                    self.smc('up_zxjq')
 
-                        elif item == 'hcsl':
-                            self.B.RBtn()
-                            self.B.LBtn(((808, 163), (204, 75)))
-
-                        elif item == 'rwjm':
-                            self.B.RBtn()
-                            sleep(0.5)
-                            self.B.LBtn(((808, 163), (204, 75)))
+                            self.smc('up_mscs')
+                            self.smc('rw_gb')
                             sleep(1)
 
-                        elif item == 'djtgjq' or item == 'djjx':
-                            while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem(item)
-                                if btnCoor != 0:
-                                    self.B.LBtn(btnCoor)
-                                else:
-                                    break
+                    elif item == 'djjx':
+                        while True:
+                            res = self.smc(item, sleepT=0.2)
+                            if res == 0:
+                                break
 
-                        elif item == 'dh':
-                            while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem(item)
-                                if btnCoor != 0:
-                                    newCoor = ((btnCoor[0][0] + 14, btnCoor[0][1] + 64), (247, 41))
-                                    self.B.LBtn(newCoor)
-                                    sleep(0.3)
-                                else:
-                                    break
+                    elif item == 'djtg':
+                        self.smc(item, count=2)
 
-                        else:
-                            self.B.LBtn(btnCoor)
-                    else:
-                        if item == 'hcsl':
-                            self.cutScreen()
-                            btnCoor = self.matchTem('hd')
-                            if btnCoor != 0:
-                                temCoor = self.matchTem('rw')
-                                if temCoor != 0:
-                                    self.B.Hotkey('dw')
-                                    sleep(0.5)
+                    elif item == 'up_mscs':
+                        self.B.RBtn()
 
-                                    self.cutScreen()
-                                    btnCoor = self.matchTem('zdpp', simi=0.95)
-                                    if btnCoor != 0:
-                                        self.B.LBtn(btnCoor)
+        log(f"账号: { self.name } 剧情任务完成")
 
-                                    self.B.RBtn()
-                                    sleep(0.5)
-
-                                    self.cutScreen()
-                                    btnCoor = self.matchTem('rw')
-                                    if btnCoor != 0:
-                                        self.B.LBtn(btnCoor)
-                                else:
-                                    self.B.LBtn(((808, 163), (204, 75)))
-
-        if notTask:
-            return 1
-        else:
-            self.start()
 
 if __name__ == '__main__':
     Upgrade().start()

@@ -8,6 +8,7 @@ from public.glo import Glo
 from public.log import log
 import threading
 
+
 class Baotu:
     def __init__(self):
         self.g = Glo()
@@ -35,9 +36,9 @@ class Baotu:
         while True:
             res = self.smc('bb_cbt', count=2, sleepT=0.5)
             if res != 0:
-            	res = self.smc('bb_cbt', count=2, sleepT=0.5)
-            	if res == 0:
-	                break
+                res = self.smc('bb_cbt', count=2, sleepT=0.5)
+                if res == 0:
+                    break
             else:
                 self.B.MBtn(700, 400)
                 self.B.VBtn(-1, 6)
@@ -61,7 +62,7 @@ class Baotu:
         count = 0
         if not empty:
             log(f"账号: { self.name } 挖宝中")
-            
+
             while not empty:
                 timer1 = time.time()
                 timer2 = time.time()
@@ -75,7 +76,7 @@ class Baotu:
                             if btnCoor[0][0] + btnCoor[1][0] < 920:
                                 # print('使用藏宝图中')
                                 count += 1
-                                log('使用一张藏宝图')
+                                log(f'账号: { self.name } 使用一张藏宝图')
                                 self.B.LBtn(btnCoor)
                                 sleep(4)
                                 timer1 = time.time()
@@ -171,13 +172,20 @@ class Baotu:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_btrw', simi=0.7) or self.matchTem('hd_btrw1', simi=0.7)
+                        temCoor = self.matchTem(
+                            'hd_btrw', simi=0.7) or self.matchTem('hd_btrw1',
+                                                                  simi=0.7)
                         if temCoor != 0:
-                            btnCoor = self.matchTem('cj', 'imgTem/hd_btrw') or self.matchTem('cj', 'imgTem/hd_btrw1')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            btnCoor = self.matchTem(
+                                'cj', 'imgTem/hd_btrw') or self.matchTem(
+                                    'cj', 'imgTem/hd_btrw1')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0],
+                                        temCoor[0][1] + btnCoor[0][1]),
+                                       btnCoor[1])
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
                                 self.processing = True
+                                sleep(30)
                                 break
                         else:
                             page += 1
@@ -217,15 +225,15 @@ class Baotu:
                                 self.B.MBtn(900, 300)
                                 self.B.VBtn(1, 10)
                                 sleep(0.5)
-                                
+
                                 res = self.smc('bt_btrw')
                                 if res == 0:
                                     self.complete = self.isComplete()
                                     if self.complete:
-	                                    self.processing = not self.complete
-	                                    log(f"账号: { self.name } 宝图任务完成")
-	                                    break
-                                
+                                        self.processing = not self.complete
+                                        log(f"账号: { self.name } 宝图任务完成")
+                                        break
+
                                 # eTime = time.time()
                                 # if eTime - sTime > 60:
                                 #     log(f"账号: { self.name } 宝图任务完成")
@@ -262,9 +270,10 @@ class Baotu:
                 return 1
             else:
                 self.start()
-        
+
         except Exception as e:
             log(e, True)
+
 
 if __name__ == '__main__':
     Baotu().start()

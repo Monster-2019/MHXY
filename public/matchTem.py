@@ -13,7 +13,7 @@ class Match():
 
     def __init__(self):
         g = Glo()
-        self.screen = 'screen' + g.get('windowClass')
+        self.screen = 'screen' + g.get('screen')
 
     def imgProcess(self, img, type=0):
         # if type == 0:

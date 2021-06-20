@@ -353,10 +353,6 @@ class ChangeAcct(object):
             log(e)
 
 if __name__ == '__main__':
-    # ChangeAcct().start()
-    a = ChangeAcct()
-    a.setWindow('mnq')
-    a.cut()
-    log(a.matchTem('h1'))
+    ChangeAcct().start()
     # a.LBtn(((155, 310), (20, 20)))
     # 30,110   500 30

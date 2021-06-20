@@ -17,16 +17,13 @@ def retry_if_error(exception):
     return isinstance(exception, Exception)
 
 class Info():
-    def __init__(self, windowClass):
+    def __init__(self):
         self.g = Glo()
-        self.g.set('windowClass', windowClass)
+        # self.g.set('windowClass', windowClass)
         self.B = Btn()
-        ocr = OCR()
-        self.ocr = ocr.ocr
-        C = CScreen()
-        self.cutScreen = C.cutScreen
-        M = Match()
-        self.matchTem = M.matchTem
+        self.ocr = OCR().ocr
+        self.cutScreen = CScreen().cutScreen
+        self.matchTem = Match().matchTem
 
     @retry(retry_on_exception=retry_if_error, stop_max_attempt_number=2)
     def useOcr(self):
@@ -82,5 +79,5 @@ class Info():
             log(e, True)
 
 if __name__ == '__main__':
-    g = Info('0')
+    g = Info()
     g.getInfo()

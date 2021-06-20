@@ -7,6 +7,7 @@ from public.glo import Glo
 from public.log import log
 import threading
 
+
 class Mijing:
     def __init__(self):
         self.name = Glo().get('name')
@@ -73,10 +74,16 @@ class Mijing:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_mjxy', simi=0.9) or self.matchTem('hd_mjxy1', simi=0.9)
+                        temCoor = self.matchTem(
+                            'hd_mjxy', simi=0.9) or self.matchTem('hd_mjxy1',
+                                                                  simi=0.9)
                         if temCoor != 0:
-                            btnCoor = self.matchTem('cj', 'imgTem/hd_mjxy') or self.matchTem('cj', 'imgTem/hd_mjxy1')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            btnCoor = self.matchTem(
+                                'cj', 'imgTem/hd_mjxy') or self.matchTem(
+                                    'cj', 'imgTem/hd_mjxy1')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0],
+                                        temCoor[0][1] + btnCoor[0][1]),
+                                       btnCoor[1])
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
                                 self.processing = True
@@ -91,7 +98,10 @@ class Mijing:
                                 self.processing = False
                                 break
 
-                xhList = ['mj_mjxy', 'mj_jr', 'qd', 'mj_mrh', 'mj_nz', 'mj_tz']
+                xhList = [
+                    'mj_mjxy', 'mj_jr', 'qd', 'mj_mrh', 'mj_yjf', 'mj_nz',
+                    'mj_tz'
+                ]
                 if self.processing:
                     while self.processing:
                         for item in xhList:
@@ -102,13 +112,16 @@ class Mijing:
 
                     self.processing = True
 
-                xhList = ['hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_lq', 'mj_gb']
+                xhList = [
+                    'hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_lb',
+                    'mj_jrzd', 'mj_lq', 'mj_gb'
+                ]
 
                 wheel = 0
                 while self.processing:
                     if self.complete:
-                        self.smc('mj_lk')
-                            
+                        self.smc('mj_lk', simi=0.7)
+
                     for item in xhList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item, simi=0.8)
@@ -117,7 +130,7 @@ class Mijing:
                                 self.processing = False
                                 break
 
-                            elif item == 'sb' or item == 'mj_18' or item == 'mj_tg' or wheel >=3:
+                            elif item == 'sb' or item == 'mj_18' or item == 'mj_tg' or wheel >= 3:
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.complete = True
@@ -155,6 +168,7 @@ class Mijing:
 
         except Exception as e:
             log(e, True)
-        
+
+
 if __name__ == '__main__':
     Mijing().start()

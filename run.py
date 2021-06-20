@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('.')
 sys.path.append('..')
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -9,6 +10,7 @@ import requests
 import random
 import os
 import traceback
+import win32gui
 
 from public.log import log, clearFile
 from guajiang import Guajiang
@@ -35,11 +37,13 @@ import config
 
 from public.glo import Glo
 
+
 class Run(object):
     def __init__(self):
         self.startTime = datetime.now()
         self.g = Glo()
         self.totalTime = 0
+        self.hwndList = []
 
     def runOver(self):
         self.endTime = datetime.now()
@@ -52,11 +56,13 @@ class Run(object):
         msg = '完成第' + str(groupNo) + '组号, 用时' + str(self.m) + '分钟'
         SendMsg(msg)
         self.startTime = datetime.now()
-            
+
         if groupNo == len(config.ACCTZU):
             currentHour = datetime.today().hour
             currentWeek = datetime.today().isoweekday()
-            if currentHour <= 6 or ((currentWeek == 1 or currentWeek == 4 or currentWeek == 5) and currentHour <= 17):
+            if currentHour <= 6 or (
+                (currentWeek == 1 or currentWeek == 4 or currentWeek == 5)
+                    and currentHour <= 17):
                 shutdown = True
 
         if shutdown:
@@ -64,14 +70,16 @@ class Run(object):
             SendMsg(msg)
             os.system(f'shutdown -s -t 300')
 
-    def richang(self, windowClass, lock, myDict):
+    def richang(self, screen, windowClass, lock, myDict):
         currentHour = datetime.today().hour
         currentWeek = datetime.today().isoweekday()
         g = Glo()
+        g.set('screen', screen)
+        g.set('windowClass', windowClass)
         g.set('lock', lock)
         g.set('config', myDict)
 
-        Info(windowClass).getInfo()
+        Info().getInfo()
 
         name = self.g.get('name')
         level = self.g.get('level')
@@ -91,7 +99,7 @@ class Run(object):
 
         if level >= 60:
             GengZhong().start()
-            
+
         Shimen().start()
 
         Baotu().start()
@@ -110,14 +118,15 @@ class Run(object):
 
         LQHYD().start()
 
-        if level >= 60:
+        if level < 65:
             GengZhong().start(True)
 
-        # currentHour = int(time.strftime('%H', time.localtime()))
-        # if int(level) < 69 and currentHour >= 8:
-        #     Upgrade().start()
-
         Clean().start()
+
+        # currentHour = int(time.strftime('%H', time.localtime()))
+        # currentHour = 8
+        # if int(level) < 69 and currentHour >= 8:
+        # Upgrade().start()
 
         # if myDict['CJMY']:
         #     Bangpai().start()
@@ -128,20 +137,27 @@ class Run(object):
 
         Logout().start(myDict['NEXT'])
 
+    def filtter(self, hwnd, lparam):
+        if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
+            self.hwndList.append(hwnd)
+
     def start(self, shutdown=False):
         try:
             import pythoncom
             pythoncom.CoInitialize()
             clearFile()
-            log('----------------------------------------------------------------------------------------')
+            log('----------------------------------------------------------------------------------------'
+                )
             log('开始执行')
+            win32gui.EnumWindows(self.filtter, 0)
+            self.hwndList.sort()
 
             for index in range(len(config.ACCTZU)):
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:
                     log(f'开始第{GROUP_NO}组号')
-                    Login(index).login()
+                    Login(index, self.hwndList).login()
 
                     # 进程共享数据
                     lock = Manager().Lock()
@@ -150,8 +166,9 @@ class Run(object):
                         d[key] = config.ACCTZU[index]['config'][key]
 
                     p = Pool(5)
-                    for i in config.ACCT_LIST:
-                        p.apply_async(self.richang, args=(i, lock, d))
+                    for i in range(5):
+                        p.apply_async(self.richang,
+                                      args=(str(i), self.hwndList[i], lock, d))
                         sleep(1)
                     p.close()
                     p.join()
@@ -164,9 +181,9 @@ class Run(object):
                 sleep(2)
 
             log('运行完成')
-            # self.pushMsg(0, shutdown)
+            self.pushMsg(0, shutdown)
 
-        except Exception as e:
+        except BaseException as e:
             self.pushMsg(-1, True)
 
     def timingStart(self, timingTime):
@@ -175,8 +192,12 @@ class Run(object):
         self.minute = time[1]
         log(f'开始定时任务，时间为{self.hour}时{self.minute}分')
         scheduler = BlockingScheduler()
-        scheduler.add_job(self.start, 'cron', hour=self.hour, minute=self.minute)
+        scheduler.add_job(self.start,
+                          'cron',
+                          hour=self.hour,
+                          minute=self.minute)
         scheduler.start()
+
 
 if __name__ == "__main__":
     try:
@@ -191,6 +212,5 @@ if __name__ == "__main__":
         else:
             Run().start()
     except Exception as e:
-        print('错误')
         traceback.print_exc()
         log(e, True)

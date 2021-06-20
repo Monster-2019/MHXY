@@ -3,7 +3,6 @@ from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
 from public.smc import SMC
-from public.smca import SMC
 from public.glo import Glo
 from public.log import log
 

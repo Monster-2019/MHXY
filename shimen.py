@@ -8,9 +8,11 @@ from public.log import log
 from sendMsg import SendMsg
 import threading
 
+
 class Shimen:
     def __init__(self):
         super(Shimen, self).__init__()
+        self.g = Glo()
         self.name = Glo().get('name')
         self.B = Btn()
         self.cutScreen = CScreen().cutScreen
@@ -45,7 +47,7 @@ class Shimen:
         self.B.RBtn()
 
         return complete
-    
+
     def timing(self):
         self.complete = True
 
@@ -84,17 +86,24 @@ class Shimen:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_smrw', simi=0.95) or self.matchTem('hd_smrw1', simi=0.95)
+                        temCoor = self.matchTem(
+                            'hd_smrw', simi=0.95) or self.matchTem('hd_smrw1',
+                                                                   simi=0.95)
                         if temCoor != 0:
-                            btnCoor = self.matchTem('cj', 'imgTem/hd_smrw') or self.matchTem('cj', 'imgTem/hd_smrw1')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            btnCoor = self.matchTem(
+                                'cj', 'imgTem/hd_smrw') or self.matchTem(
+                                    'cj', 'imgTem/hd_smrw1')
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0],
+                                        temCoor[0][1] + btnCoor[0][1]),
+                                       btnCoor[1])
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
 
                                 # 去完成或继续任务
                                 while True:
                                     self.cutScreen()
-                                    btnCoor = self.matchTem('sm_qwc') or self.matchTem('sm_jxrw')
+                                    btnCoor = self.matchTem(
+                                        'sm_qwc') or self.matchTem('sm_jxrw')
                                     if btnCoor != 0:
                                         self.B.LBtn(btnCoor)
                                         processing = True
@@ -108,7 +117,10 @@ class Shimen:
                             if page == 4:
                                 break
 
-                smList = ['sm_gb', 'sm_sm', 'djjx', 'dh', 'dhda', 'gm', 'btgm', 'gfgm', 'sj', 'sy', 'sm_hdwp', 'sm_rwdh', 'jm_gb']
+                smList = [
+                    'sm_gb', 'hd', 'sm_sm', 'djjx', 'dh', 'dhda', 'gm', 'btgm',
+                    'gfgm', 'sj', 'sy', 'sm_hdwp', 'sm_rwdh', 'jm_gb'
+                ]
 
                 cleanBB = False
                 while processing:
@@ -118,18 +130,25 @@ class Shimen:
                         if btnCoor != 0:
                             if item == 'sm_sm':
                                 self.B.LBtn(btnCoor, sleepT=1)
-                                
+
+                            elif item == 'hd':
+                                if self.g.compare() == True:
+                                    self.B.RBtn()
+
                             elif item == 'dh' or item == 'dhda':
                                 while True:
                                     self.cutScreen()
-                                    btnCoor = self.matchTem('dh') or self.matchTem('dhda')
+                                    btnCoor = self.matchTem(
+                                        'dh') or self.matchTem('dhda')
                                     if btnCoor != 0:
-                                        newCoor = ((btnCoor[0][0] + 14, btnCoor[0][1] + 64), (247, 41))
+                                        newCoor = ((btnCoor[0][0] + 14,
+                                                    btnCoor[0][1] + 64), (247,
+                                                                          41))
                                         self.B.LBtn(newCoor)
                                         sleep(0.3)
                                     else:
                                         break
-                            
+
                             elif item == 'djjx':
                                 while True:
                                     res = self.smc('djjx', sleepT=0.3)
@@ -140,7 +159,8 @@ class Shimen:
                                 self.B.LBtn(btnCoor)
                                 self.cutScreen()
                                 btnCoor = self.matchTem('gmsb')
-                                btnCoor1 = self.matchTem('bb_max') or self.matchTem('bb_max1')
+                                btnCoor1 = self.matchTem(
+                                    'bb_max') or self.matchTem('bb_max1')
                                 if btnCoor != 0:
                                     newCoor = ((308, 245), (294, 75))
                                     self.B.LBtn(newCoor)
@@ -202,6 +222,7 @@ class Shimen:
 
         except Exception as e:
             log(e, True)
+
 
 if __name__ == "__main__":
     Shimen().start()

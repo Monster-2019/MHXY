@@ -13,7 +13,7 @@ class Zudui(object):
     def __init__(self):
         super(Zudui, self).__init__()
         self.g = Glo()
-        self.index = self.g.get('windowClass')
+        self.index = self.g.get('screen')
         self.B = Btn()
         self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem

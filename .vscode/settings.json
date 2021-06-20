@@ -1,2 +1,8 @@
 {
+  "python.formatting.provider": "yapf",
+  "python.pythonPath": "D:\\dev\\Python37\\python.exe",
+  "C_Cpp_Runner.cCompilerPath": "D:\\dev\\mingw\\mingw64\\bin\\gcc.exe",
+  "C_Cpp_Runner.cppCompilerPath": "D:\\dev\\mingw\\mingw64\\bin\\g++.exe",
+  "C_Cpp_Runner.debuggerPath": "D:\\dev\\mingw\\mingw64\\bin\\gdb.exe",
+  "C_Cpp_Runner.makePath": "D:\\dev\\mingw\\mingw64\\bin\\make.exe"
 }

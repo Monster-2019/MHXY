@@ -8,6 +8,7 @@ from public.glo import Glo
 from public.smc import SMC
 from public.log import log
 
+
 class Zhuogui:
     def __init__(self):
         self.g = Glo()
@@ -16,7 +17,7 @@ class Zhuogui:
         self.smc = SMC().smc
         self.matchTem = Match().matchTem
         self.cutScreen = CScreen().cutScreen
-        self.index = self.g.get('windowClass')
+        self.index = self.g.get('screen')
         self.weekday = datetime.today().isoweekday()
 
     def isComplete(self):
@@ -36,6 +37,13 @@ class Zhuogui:
                     self.cutScreen(res)
                     res = self.matchTem('hd_no', simi=0.95)
                     if res == 0:
+                        complete = True
+                        log(f"捉鬼任务已完成")
+                        self.g.setObj('config', 'ZG_WC', True)
+                        break
+                else:
+                    res = self.smc('zg_wc') or self.smc('zg_wc1')
+                    if res != 0:
                         complete = True
                         log(f"捉鬼任务已完成")
                         self.g.setObj('config', 'ZG_WC', True)
@@ -82,16 +90,19 @@ class Zhuogui:
                 self.cutScreen()
                 temCoor = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
                 if temCoor != 0:
-                    btnCoor = self.matchTem('cj', 'imgTem/hd_zgrw') or self.matchTem('cj', 'imgTem/hd_zgrw1')
-                    newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                    btnCoor = self.matchTem('cj',
+                                            'imgTem/hd_zgrw') or self.matchTem(
+                                                'cj', 'imgTem/hd_zgrw1')
+                    newCoor = ((temCoor[0][0] + btnCoor[0][0],
+                                temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                     if btnCoor != 0:
                         self.B.LBtn(newCoor)
                         processing = True
                         break
-                    
+
                 else:
                     page += 1
-                    self.B.VBtn(-1 ,10)
+                    self.B.VBtn(-1, 10)
                     sleep(0.5)
                     if page == 4:
                         break
@@ -122,7 +133,7 @@ class Zhuogui:
                         btnCoor = self.matchTem(item)
                         if btnCoor != 0:
                             if item == 'zg_zg':
-                                count+=1
+                                count += 1
                                 if total > ZG_COUNT and count > totalMax:
                                     self.B.LBtn(((511, 384), (2, 2)))
                                     self.B.LBtn(((511, 384), (2, 2)))
@@ -130,13 +141,14 @@ class Zhuogui:
                                     while True:
                                         self.B.Hotkey('dt')
                                         hc = self.smc('dt_cac', sleepT=2)
-                                        isHC = isHC == True or (isHC == False and hc != 0)
+                                        isHC = isHC == True or (isHC == False
+                                                                and hc != 0)
                                         res = self.smc('hd', count=0)
                                         if hc and res != 0:
                                             break
-                                            
+
                                     sleep(3)
-                                    
+
                                     complete = True
                                     processing = False
                                     self.g.setObj('config', 'ZG_WC', True)
@@ -150,7 +162,8 @@ class Zhuogui:
                                     sleep(30)
 
                             elif item == 'zg_zgwc':
-                                if total < ZG_COUNT or (total == ZG_COUNT and totalMax != 0):
+                                if total < ZG_COUNT or (total == ZG_COUNT
+                                                        and totalMax != 0):
                                     btnCoor = self.matchTem('qd')
                                     if btnCoor != 0:
                                         self.B.LBtn(btnCoor)
@@ -212,7 +225,7 @@ class Zhuogui:
                 if btnCoor != 0:
                     if item == 'zg_zgrw':
                         self.B.LBtn(btnCoor)
-                        count+=1
+                        count += 1
                         print(f'开始刷第{count}轮鬼')
 
                     elif item == 'zg_zgwc':
@@ -248,7 +261,7 @@ class Zhuogui:
             else:
                 while self.g.getObj('config', 'ZG_WC') == None:
                     sleep(3)
-                    
+
                 if not self.g.getObj('config', 'ZG_WC'):
                     res = self.palyer()
                 else:
@@ -262,5 +275,6 @@ class Zhuogui:
         except Exception as e:
             log(e, True)
 
+
 if __name__ == '__main__':
-    Zhuogui().leader()
+    Zhuogui().start()
