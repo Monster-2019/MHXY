@@ -142,16 +142,26 @@ class Run(object):
         if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
             self.hwndList.append(hwnd)
 
+    def getHwndList(self):
+        isStart = False
+        hwnd = 0
+        while not isStart:
+            if not isStart and hwnd == 0:
+                hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+            else:
+                hwnd = win32gui.FindWindowEx(None, hwnd, None, "《梦幻西游》手游")
+            if hwnd:
+                self.hwndList.append(hwnd)
+            else:
+                isStart = True
+
     def start(self, shutdown=False):
         try:
             import pythoncom
             pythoncom.CoInitialize()
             clearFile()
-            log('----------------------------------------------------------------------------------------'
-                )
-            log('开始执行')
-            win32gui.EnumWindows(self.filtter, 0)
-            self.hwndList.sort()
+            log('-------------------------------------开始执行--------------------------------------')
+            self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
                 GROUP_NO = index + 1
@@ -168,8 +178,7 @@ class Run(object):
 
                     p = Pool(5)
                     for i in range(5):
-                        p.apply_async(self.richang,
-                                      args=(str(i), self.hwndList[i], lock, d))
+                        p.apply_async(self.richang, args=(str(i), self.hwndList[i], lock, d))
                         sleep(1)
                     p.close()
                     p.join()
