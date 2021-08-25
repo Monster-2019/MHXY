@@ -21,22 +21,18 @@ class Lidui:
     def start(self):
         complete = False
 
-        self.cutScreen()
-        btnCoor = self.matchTem('sb')
-        if btnCoor != 0:
-            self.B.LBtn(btnCoor)
+        self.smc('sb')
 
         while True:
-            self.cutScreen()
-            btnCoor = self.matchTem('hd')
-            if btnCoor == 0:
+            res = self.smc('hd', count=0)
+            if res == 0:
                 self.B.RBtn()
             else: 
                 break
 
-        self.B.Hotkey('dw')
         while True:
-            self.smc('tcdw', sleepT=2)
+            self.B.Hotkey('dw')
+            self.smc('tcdw', sleepT=1)
             res = self.smc('cjdw', count=0)
             if res != 0:
                 break

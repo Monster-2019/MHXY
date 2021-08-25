@@ -225,6 +225,8 @@ class Zhuogui:
                 if btnCoor != 0:
                     if item == 'zg_zgrw':
                         self.B.LBtn(btnCoor)
+                        sleep(1)
+                        self.B.RBtn()
                         count += 1
                         print(f'开始刷第{count}轮鬼')
 
@@ -244,8 +246,11 @@ class Zhuogui:
 
                     elif item == 'zg_zg':
                         self.B.LBtn(btnCoor)
-                        self.B.LBtn(btnCoor)
-                        sleep(30)
+                        sleep(5)
+                        compareResult = self.g.compare(5)
+                        if compareResult:
+                            self.B.RBtn()
+                        sleep(20)
 
                 else:
                     if item == 'zg_zg':

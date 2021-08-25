@@ -120,7 +120,7 @@ class Mijing:
                 wheel = 0
                 while self.processing:
                     if self.complete:
-                        self.smc('mj_lk', simi=0.7)
+                        self.smc('mj_lk', simi=0.6)
 
                     for item in xhList:
                         self.cutScreen()

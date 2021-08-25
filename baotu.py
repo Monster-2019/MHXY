@@ -34,11 +34,11 @@ class Baotu:
         useComplete = False
         page = 1
         while True:
-            res = self.smc('bb_cbt', count=2, sleepT=0.5)
+            res = self.smc('bb_cbt', sleepT=1)
             if res != 0:
-                res = self.smc('bb_cbt', count=2, sleepT=0.5)
-                if res == 0:
-                    break
+                self.smc('bb_sy', sleepT=0.5)
+                break
+
             else:
                 self.B.MBtn(700, 400)
                 self.B.VBtn(-1, 6)

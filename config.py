@@ -72,17 +72,17 @@ ACCTZU = [
         'config': {
             'TeamStatus': False,
             'ZG_COUNT': 2,
-            'ZG': True,
+            'ZG': False,
             "ZG_WC": None,
             'FB': False,
             'FB_WC': None,
             'CJMY': CJMY_STATUS,
-            'NEXT': True
+            'NEXT': False
         },
         'acctList': ACCTIFNO_LIST[0]
     },
     {
-        'status': True,
+        'status': False,
         'config': {
             'TeamStatus': False,
             'ZG_COUNT': 2,

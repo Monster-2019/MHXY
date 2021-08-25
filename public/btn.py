@@ -43,9 +43,10 @@ class Btn:
         Coor = self.fixedCoor.get(btnCoor)
         if Coor != None:
             btnCoor = Coor
+
+        x = btnCoor[0][0] + random.randint(1, btnCoor[1][0])
+        y = btnCoor[0][1] + random.randint(1, btnCoor[1][1])
         for i in range(count):
-            x = btnCoor[0][0] + random.randint(1, btnCoor[1][0])
-            y = btnCoor[0][1] + random.randint(1, btnCoor[1][1])
             win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN,
                                  win32con.MK_LBUTTON, win32api.MAKELONG(x, y))
             sleep(0.1)

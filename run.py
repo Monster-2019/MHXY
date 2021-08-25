@@ -54,7 +54,6 @@ class Run(object):
     def pushMsg(self, groupNo, shutdown=False):
         self.runOver()
         msg = '完成第' + str(groupNo) + '组号, 用时' + str(self.m) + '分钟'
-        SendMsg(msg)
         self.startTime = datetime.now()
 
         if groupNo == len(config.ACCTZU):
@@ -66,9 +65,11 @@ class Run(object):
                 shutdown = True
 
         if shutdown:
-            msg = '全部完成，关机'
+            msg += '全部完成，关机'
             SendMsg(msg)
             os.system(f'shutdown -s -t 300')
+        else:
+            SendMsg(msg)
 
     def richang(self, screen, windowClass, lock, myDict):
         currentHour = datetime.today().hour
@@ -118,8 +119,8 @@ class Run(object):
 
         LQHYD().start()
 
-        if level < 65:
-            GengZhong().start(True)
+        if level >= 60:
+            GengZhong().start()
 
         Clean().start()
 
@@ -181,7 +182,7 @@ class Run(object):
                 sleep(2)
 
             log('运行完成')
-            self.pushMsg(0, shutdown)
+            self.pushMsg(0, True)
 
         except BaseException as e:
             self.pushMsg(-1, True)

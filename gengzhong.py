@@ -9,6 +9,7 @@ from public.glo import Glo
 from public.log import log
 import traceback
 
+
 class GengZhong:
     def __init__(self):
         self.g = Glo()
@@ -94,7 +95,7 @@ class GengZhong:
             log(f"账号: { self.name } 开始耕种")
             complete = False
             isTill = True
-            
+
             while True:
                 res = self.smc('hd', count=0)
                 if res == 0:
@@ -113,7 +114,9 @@ class GengZhong:
                 isTill = False
                 complete = True
 
-            xhList = ['gz_sh', 'sh', 'gz_td', 'gz_td1', 'gz_prve', 'gz_jyh', 'gz_zz']
+            xhList = [
+                'gz_sh', 'sh', 'gz_td', 'gz_td1', 'gz_prve', 'gz_jyh', 'gz_zz'
+            ]
 
             while isTill:
                 for item in xhList:
@@ -122,11 +125,13 @@ class GengZhong:
                     if btnCoor != 0:
                         if item == 'gz_jyh':
                             temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')
-                            newCoor = ((btnCoor[0][0] + temCoor[0][0], btnCoor[0][1] + temCoor[0][1]), temCoor[1])
+                            newCoor = ((btnCoor[0][0] + temCoor[0][0],
+                                        btnCoor[0][1] + temCoor[0][1]),
+                                       temCoor[1])
                             for n in range(10):
                                 self.B.LBtn(newCoor)
                                 sleep(0.1)
-                            
+
                         elif item == 'gz_zz':
                             self.B.LBtn(btnCoor, sleepT=0.5)
                             self.cutScreen()
@@ -135,12 +140,12 @@ class GengZhong:
                                 self.B.RBtn()
                             isTill = False
                             complete = True
-                        
+
                         else:
                             self.B.LBtn(btnCoor)
                         sleep(0.4)
 
-            if ((self.weekday - 1) % 2 == 0) and isSell:
+            if ((self.weekday - 1) % 2 == 0) or isSell:
                 self.sell()
 
             if complete:
@@ -153,5 +158,6 @@ class GengZhong:
             # traceback.print_exc()
             log(e, True)
 
+
 if __name__ == "__main__":
-    GengZhong().start()
+    GengZhong().start(True)
