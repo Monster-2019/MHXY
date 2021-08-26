@@ -185,7 +185,7 @@ class Baotu:
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
                                 self.processing = True
-                                sleep(30)
+                                sleep(15)
                                 break
                         else:
                             page += 1
