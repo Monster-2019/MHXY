@@ -21,6 +21,7 @@ class Gongfang:
         self.smca = SMC(hwnd).smca
 
     def kaogu(self):
+        isStart = False
         complete = False
         self.B.Hotkey("bb", sleepT=1)
 
@@ -35,16 +36,10 @@ class Gongfang:
             if r != 0:
                 self.B.LBtn(r)
                 self.B.LBtn(r)
+                isStart = True
                 sleep(1)
                 break
 
-                # r = self.smc('kg_not3')
-                # if r != 0:
-                #     cz = 'bb_lyc'
-                #     continue
-                # else:
-                #     break
-                # raise
             else:
                 page += 1
                 self.B.MBtn(707, 406)
@@ -52,7 +47,7 @@ class Gongfang:
                 sleep(0.5)
                 if page == 6:
                     self.B.RBtn()
-                    return 0
+                    return isStart
 
         while True:
             r = self.smc("kg_ks", sleepT=1)
@@ -61,38 +56,19 @@ class Gongfang:
                 self.B.RBtn()
                 break
 
-        # while True:
-        #     r = self.smc('hd', count=0)
-        #     if r == 0:
-        #         self.B.RBtn()
-        #     else:
-        #         break
-
-        stopTime1 = time.time()
-        stopTime2 = time.time()
         for i in range(10):
-            if not complete:
-                while True:
-                    self.cutScreen()
-                    btnCoor = self.matchTem("wj")
-                    if btnCoor != 0:
-                        stopTime1 = time.time()
-                        if btnCoor[0][0] + btnCoor[1][0] < 920:
-                            self.B.LBtn(btnCoor, sleepT=3)
-                            break
+            while True:
+                self.cutScreen()
+                btnCoor = self.matchTem("wj")
+                if btnCoor != 0:
+                    if btnCoor[0][0] + btnCoor[1][0] < 920:
+                        self.B.LBtn(btnCoor, sleepT=3)
+                        break
 
-                    else:
-                        stopTime2 = time.time()
-                        if stopTime2 - stopTime1 >= 60:
-                            complete = True
-                            break
-            else:
-                break
-
-        return 1
+        return isStart
 
     def sell(self):
-        self.B.Hotkey("dt", sleepT=1)
+        self.B.Hotkey("dt", sleepT=2)
 
         xhList = ["dt_lyc", "zb_lyc", "lyc_zhsr", "kg_gdsm"]
 
@@ -102,6 +78,7 @@ class Gongfang:
                 r = 0
                 while True:
                     r = self.smc(item)
+                    print(r)
                     if r != 0:
                         if item == "lyc_zhsr":
                             sleep(15)
@@ -122,13 +99,6 @@ class Gongfang:
                     self.B.RBtn()
                     self.B.RBtn()
                     break
-
-        # while True:
-        #     r = self.smc('hd', count=0)
-        #     if r == 0:
-        #         self.B.RBtn()
-        #     else:
-        #         break
 
         return 1
 
@@ -173,7 +143,7 @@ class Gongfang:
                 self.B.VBtn(-1, 20)
                 sleep(0.5)
 
-                temCoor = self.matchTem("gf_kg", simi=0.7)
+                temCoor = self.matchTem("gf_kg", simi=0.7) or self.matchTem("gf_gf", simi=0.7)
                 if temCoor != 0:
                     if temCoor[0][0] + temCoor[1][0] > 780:
                         log(f"账号: { self.name } 已领取工坊任务")
@@ -181,7 +151,8 @@ class Gongfang:
                 sleep(0.5)
                 break
 
-        complete = self.isComplete()
+        if not processing:
+            complete = self.isComplete()
 
         if processing or not complete:
             print(f"账号: { self.name } 工坊任务进行中")
@@ -205,6 +176,13 @@ class Gongfang:
                         if btnCoor != 0:
                             self.B.LBtn(newCoor)
                             processing = True
+
+                            while True:
+                                r = self.smc('gf_lqrw')
+                                sleep(1)
+                                if r != 0:
+                                    break
+
                             break
 
                     else:
@@ -212,8 +190,6 @@ class Gongfang:
                         self.B.VBtn(-1, 10)
                         sleep(0.5)
                         if page == 4:
-                            # complete = True
-                            # processing = True
                             break
 
             xhList = [
@@ -231,25 +207,18 @@ class Gongfang:
                 "sj",
             ]
 
-            # sTime = time.time()
-            # eTime = time.time()
-
             while not complete or processing:
                 for item in xhList:
                     self.cutScreen()
-                    if item == "gf_kg":
-                        btnCoor = self.matchTem(item, simi=0.7)
-                    else:
-                        btnCoor = self.matchTem(item)
+                    btnCoor = self.matchTem(item, simi=0.8)
                     if btnCoor != 0:
-                        sTime = time.time()
-                        if item == "gf_kg":
+                        if item == "gf_kg" or item == 'gf_gf':
                             if btnCoor[0][0] + btnCoor[1][0] > 780:
                                 self.B.LBtn(btnCoor)
 
-                        elif item == "hd":
-                            if self.g.compare() == True:
-                                self.B.RBtn()
+                        # elif item == "hd":
+                        #     if self.g.compare() == True:
+                        #         self.B.RBtn()
 
                         elif item == "dh" or item == "dhda":
                             while True:
@@ -309,8 +278,9 @@ class Gongfang:
                             else:
                                 self.B.RBtn()
 
-        self.kaogu()
-        self.sell()
+        res = self.kaogu()
+        if res:
+            self.sell()
 
         if complete:
             return 1

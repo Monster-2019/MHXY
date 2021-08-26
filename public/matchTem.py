@@ -21,10 +21,10 @@ class Match():
         return cv.morphologyEx(img, cv.MORPH_OPEN, self.kernel)
         # elif type == 1:
         #     # 自适应阈值
-        #     return cv.adaptiveThreshold(img, 255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,11,2)
+        # return cv.adaptiveThreshold(img, 255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,5,3)
         # elif type == 2:
         #     # 去噪处理
-        #     return cv.fastNlMeansDenoising(img, None, 10, 7, 21)
+        # return cv.fastNlMeansDenoising(img, None, 10, 7, 21)
 
     def matchTem(self, tem, img=0, simi=0.85):
         if img == 0:
@@ -32,8 +32,8 @@ class Match():
         self.simi = simi
             
         screen = cv.imread('./images/' + img  + '.jpg', 0)
-        screen = self.imgProcess(screen)
         newTem = cv.imread('./images/imgTem/' + tem  + '.jpg', 0)
+        screen = self.imgProcess(screen)
         newTem = self.imgProcess(newTem)
         result = cv.matchTemplate(screen, newTem, cv.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
