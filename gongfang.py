@@ -1,24 +1,21 @@
-from time import sleep
-
-import win32gui
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
-import time
+from time import sleep
 
 
 class Gongfang:
     def __init__(self, hwnd=False):
+        super(Gongfang, self).__init__()
         self.g = Glo()
         self.name = self.g.get("name")
         self.B = Btn(hwnd)
         self.cutScreen = CScreen(hwnd).cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC(hwnd).smc
-        self.smca = SMC(hwnd).smca
 
     def kaogu(self):
         isStart = False
@@ -143,9 +140,9 @@ class Gongfang:
                 self.B.VBtn(-1, 20)
                 sleep(0.5)
 
-                temCoor = self.matchTem("gf_kg", simi=0.7) or self.matchTem("gf_gf", simi=0.7)
-                if temCoor != 0:
-                    if temCoor[0][0] + temCoor[1][0] > 780:
+                r = self.smc('gf_ky', simi=0.7, count=0) or self.smc('gf_gf', simi=0.7, count=0)
+                if r != 0:
+                    if r[0][0] + r[1][0] > 780:
                         log(f"账号: { self.name } 已领取工坊任务")
                         processing = True
                 sleep(0.5)
@@ -178,7 +175,7 @@ class Gongfang:
                             processing = True
 
                             while True:
-                                r = self.smc('gf_lqrw')
+                                r = self.smc("gf_lqrw")
                                 sleep(1)
                                 if r != 0:
                                     break
@@ -187,6 +184,7 @@ class Gongfang:
 
                     else:
                         page += 1
+                        self.B.MBtn(590, 330)
                         self.B.VBtn(-1, 10)
                         sleep(0.5)
                         if page == 4:
@@ -212,13 +210,11 @@ class Gongfang:
                     self.cutScreen()
                     btnCoor = self.matchTem(item, simi=0.8)
                     if btnCoor != 0:
-                        if item == "gf_kg" or item == 'gf_gf':
-                            if btnCoor[0][0] + btnCoor[1][0] > 780:
-                                self.B.LBtn(btnCoor)
-
-                        # elif item == "hd":
-                        #     if self.g.compare() == True:
-                        #         self.B.RBtn()
+                        if item == "hd":
+                            if self.g.compare() == True:
+                                self.B.MBtn(900, 300)
+                                self.B.VBtn(-1, 20)
+                                self.smc('gf_kg') or self.smc('gf_gf')
 
                         elif item == "dh" or item == "dhda":
                             while True:
@@ -283,11 +279,13 @@ class Gongfang:
             self.sell()
 
         if complete:
+            print(f"账号: { self.name } 工坊任务结束")
             return 1
         else:
             self.start()
 
 
 if __name__ == "__main__":
+    import win32gui
     hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
     Gongfang(hwnd).start()
