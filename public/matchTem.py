@@ -3,24 +3,17 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 import cv2 as cv
-import numpy as np
-from time import sleep
 from public.glo import Glo
-from public.cutScreen import CScreen
 
 
 class Match:
     simi = 0.85
-    kernel = np.ones((1, 1), np.uint8)
 
     def __init__(self):
         g = Glo()
         self.screen = "screen" + g.get("screen")
 
     def imgProcess(self, img, type=0):
-        # if type == 0:
-        # 开运算处理
-        # return cv.morphologyEx(img, cv.MORPH_OPEN, self.kernel)
         # elif type == 1:
         #     # 自适应阈值
         return cv.adaptiveThreshold(
@@ -41,13 +34,6 @@ class Match:
         result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
-        # cv.imshow("custom_blur_demo1", screen)
-        # cv.imshow("custom_blur_demo", newTem)
-        # cv.waitKey(0)
-        # cv.destroyAllWindows()
-
-        # if tem == 'hd_no1':
-        # print(max_val, max_loc)
         if max_val > self.simi:
             w, h = newTem.shape[::-1]
             return (max_loc, (w, h))
@@ -68,13 +54,7 @@ class Match:
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if max_val > self.simi:
                 break
-        # cv.imshow("custom_blur_demo1", screen)
-        # cv.imshow("custom_blur_demo", newTem)
-        # cv.waitKey(0)
-        # cv.destroyAllWindows()
 
-        # if tem == 'hd_no1':
-        # print(max_val, max_loc)
         if max_val > self.simi:
             w, h = newTem.shape[::-1]
             return (max_loc, (w, h))
@@ -83,5 +63,4 @@ class Match:
 
 
 if __name__ == "__main__":
-    # CScreen().cutScreen()
     Match().matchTem("zh1")
