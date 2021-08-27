@@ -1,27 +1,31 @@
 import sys
-sys.path.append('.')
-sys.path.append('..')
+
+sys.path.append(".")
+sys.path.append("..")
 import cv2 as cv
 import numpy as np
 from time import sleep
 from public.glo import Glo
 from public.cutScreen import CScreen
 
-class Match():
+
+class Match:
     simi = 0.85
     kernel = np.ones((1, 1), np.uint8)
 
     def __init__(self):
         g = Glo()
-        self.screen = 'screen' + g.get('screen')
+        self.screen = "screen" + g.get("screen")
 
     def imgProcess(self, img, type=0):
         # if type == 0:
-            # 开运算处理
-        return cv.morphologyEx(img, cv.MORPH_OPEN, self.kernel)
+        # 开运算处理
+        # return cv.morphologyEx(img, cv.MORPH_OPEN, self.kernel)
         # elif type == 1:
         #     # 自适应阈值
-        # return cv.adaptiveThreshold(img, 255,cv.ADAPTIVE_THRESH_GAUSSIAN_C,cv.THRESH_BINARY,5,3)
+        return cv.adaptiveThreshold(
+            img, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 2
+        )
         # elif type == 2:
         #     # 去噪处理
         # return cv.fastNlMeansDenoising(img, None, 10, 7, 21)
@@ -30,12 +34,11 @@ class Match():
         if img == 0:
             img = self.screen
         self.simi = simi
-            
-        screen = cv.imread('./images/' + img  + '.jpg', 0)
-        newTem = cv.imread('./images/imgTem/' + tem  + '.jpg', 0)
+        screen = cv.imread("./images/" + img + ".jpg", 0)
+        newTem = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
         screen = self.imgProcess(screen)
         newTem = self.imgProcess(newTem)
-        result = cv.matchTemplate(screen, newTem, cv.TM_CCOEFF_NORMED)
+        result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
         # cv.imshow("custom_blur_demo1", screen)
@@ -55,13 +58,13 @@ class Match():
         if img == 0:
             img = self.screen
         self.simi = simi
-            
-        screen = cv.imread('./images/' + img  + '.jpg', 0)
+
+        screen = cv.imread("./images/" + img + ".jpg", 0)
         screen = self.imgProcess(screen)
         for item in tem:
-            newTem = cv.imread('./images/imgTem/' + item  + '.jpg', 0)
+            newTem = cv.imread("./images/imgTem/" + item + ".jpg", 0)
             newTem = self.imgProcess(newTem)
-            result = cv.matchTemplate(screen, newTem, cv.TM_CCOEFF_NORMED)
+            result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if max_val > self.simi:
                 break
@@ -78,6 +81,7 @@ class Match():
         else:
             return 0
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     # CScreen().cutScreen()
-    Match().matchTem('zh1')
+    Match().matchTem("zh1")
