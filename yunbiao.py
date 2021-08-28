@@ -31,7 +31,7 @@ class Yunbiao:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smca(['yb_wc', 'yb_wc1'], simi=0.95, count=0)
+                res = self.smc('yb_wc', simi=0.98, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 运镖任务已完成")
                     complete = True
@@ -96,7 +96,7 @@ class Yunbiao:
                 count = 0
                 xhList = ['yb_ys', 'qd']
                 while processing:
-                    res = self.smc('hd', count=0)
+                    res = self.smc('hd', simi=0.9, count=0)
                     if res != 0:
                         btnCoor = self.matchTem('yb_ys')
                         if btnCoor != 0:
@@ -119,7 +119,7 @@ class Yunbiao:
 
                         else:
                             if count != 0:
-                                temCoor = self.matchTem('hd')
+                                temCoor = self.matchTem('hd', simi=0.9)
                                 if temCoor != 0:
                                     btnCoor = self.matchTem('yb_ys')
                                     if btnCoor == 0:

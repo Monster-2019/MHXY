@@ -31,14 +31,13 @@ class Mijing:
                 sleep(0.5)
                 self.cutScreen()
                 res = self.matchTem('hd_mjxy') or self.matchTem('hd_mjxy1')
+                res = self.smc('mjxy_wc', simi=0.97, count=0)
                 if res != 0:
-                    self.cutScreen(res)
-                    res = self.matchTem('hd_no', simi=0.97)
-                    if res == 0:
-                        complete = True
-                        log(f"账号: { self.name } 秘境任务已完成")
-                        break
-            self.B.VBtn(-1)
+                    log(f"账号: { self.name } 秘境任务已完成")
+                    complete = True
+                    break
+            else:
+                self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
 
@@ -85,7 +84,7 @@ class Mijing:
                                         temCoor[0][1] + btnCoor[0][1]),
                                        btnCoor[1])
                             if btnCoor != 0:
-                                self.B.LBtn(newCoor)
+                                self.B.LBtn(newCoor, sleepT=3)
                                 self.processing = True
                                 break
 
@@ -114,17 +113,18 @@ class Mijing:
 
                 xhList = [
                     'hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_lb',
-                    'mj_jrzd', 'mj_lq', 'mj_gb'
+                    'mj_jrzd'
                 ]
+                # , 'mj_lq', 'mj_gb'
 
                 wheel = 0
                 while self.processing:
                     if self.complete:
-                        self.smc('mj_lk', simi=0.6)
+                        self.smc('mj_lk')
 
                     for item in xhList:
                         self.cutScreen()
-                        btnCoor = self.matchTem(item, simi=0.8)
+                        btnCoor = self.matchTem(item)
                         if btnCoor != 0:
                             if item == 'hd':
                                 self.processing = False

@@ -4,6 +4,7 @@ from public.cutScreen import CScreen
 from public.matchTem import Match
 from public.btn import Btn
 from time import sleep
+import config
 
 class SMC(object):
     bb = (513, 202)
@@ -16,7 +17,7 @@ class SMC(object):
         self.matchArrTem = Match().matchArrTem
         self.B = Btn(hwnd)
 
-    def smc(self, tem, infoKey="", simi=0.85, sleepT=0, count=1):
+    def smc(self, tem, infoKey="", simi=0, sleepT=0, count=1):
         self.cutScreen(infoKey=infoKey)
         Coor = self.matchTem(tem, simi=simi)
         if Coor != 0:
@@ -28,7 +29,7 @@ class SMC(object):
             return Coor
         return 0
 
-    def smca(self, tem, infoKey="", simi=0.85, sleepT=0, count=1):
+    def smca(self, tem, infoKey="", simi=0, sleepT=0, count=1):
         self.cutScreen(infoKey=infoKey)
         Coor = self.matchArrTem(tem, simi=simi)
         if Coor != 0:

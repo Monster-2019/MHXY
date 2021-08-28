@@ -75,7 +75,6 @@ class Gongfang:
                 r = 0
                 while True:
                     r = self.smc(item)
-                    print(r)
                     if r != 0:
                         if item == "lyc_zhsr":
                             sleep(15)
@@ -112,7 +111,7 @@ class Gongfang:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc("gf_wc", simi=0.9, count=0)
+                res = self.smc("gf_wc", simi=0.98, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 工坊任务已完成")
                     complete = True
@@ -140,7 +139,7 @@ class Gongfang:
                 self.B.VBtn(-1, 20)
                 sleep(0.5)
 
-                r = self.smc('gf_ky', simi=0.7, count=0) or self.smc('gf_gf', simi=0.7, count=0)
+                r = self.smc('gf_kg', simi=0.9, count=0) or self.smc('gf_gf', simi=0.9, count=0)
                 if r != 0:
                     if r[0][0] + r[1][0] > 780:
                         log(f"账号: { self.name } 已领取工坊任务")
@@ -208,13 +207,14 @@ class Gongfang:
             while not complete or processing:
                 for item in xhList:
                     self.cutScreen()
-                    btnCoor = self.matchTem(item, simi=0.8)
+                    if item == 'gf_kg' or item == 'gf_gf':
+                        btnCoor = self.matchTem(item, simi=0.9)
+                    else:
+                        btnCoor = self.matchTem(item)
                     if btnCoor != 0:
                         if item == "hd":
                             if self.g.compare() == True:
-                                self.B.MBtn(900, 300)
-                                self.B.VBtn(-1, 20)
-                                self.smc('gf_kg') or self.smc('gf_gf')
+                                self.B.RBtn()
 
                         elif item == "dh" or item == "dhda":
                             while True:
@@ -265,6 +265,8 @@ class Gongfang:
                         else:
                             self.B.LBtn(btnCoor)
 
+                        sleep(1)
+
                     else:
                         if item == "gf_kg":
                             if self.smc("hd", count=0) != 0:
@@ -286,6 +288,4 @@ class Gongfang:
 
 
 if __name__ == "__main__":
-    import win32gui
-    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
-    Gongfang(hwnd).start()
+    Gongfang().start()

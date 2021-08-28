@@ -28,7 +28,7 @@ class SJQY:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smca(['sj_wc', 'sj_wc1'], simi=0.95, count=0)
+                res = self.smc('sj_wc', simi=0.98, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 三界奇缘任务已完成")
                     complete = True
@@ -83,7 +83,7 @@ class SJQY:
                                 break
 
                 while processing:
-                    res = self.smc('sj_dw', count=0)
+                    res = self.smc('sj_dw', count=0, simi=0.97)
                     if res != 0:
                         self.B.RBtn()
                         complete = True
@@ -95,7 +95,7 @@ class SJQY:
                 sleep(0.5)
                 while True:
                     self.cutScreen()
-                    temCoor = self.matchTem('hd')
+                    temCoor = self.matchTem('hd', simi=0.9)
                     btnCoor = self.matchTem('sy')
                     if temCoor != 0 and btnCoor != 0:
                         self.B.LBtn(btnCoor, sleepT=0.5)

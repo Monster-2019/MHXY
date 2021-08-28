@@ -4,62 +4,72 @@ sys.path.append(".")
 sys.path.append("..")
 import cv2 as cv
 from public.glo import Glo
+import config
 
 
 class Match:
-    simi = 0.85
+    default_simi = config.GLOBAL_SIMI
+    simi = default_simi
 
     def __init__(self):
         g = Glo()
         self.screen = "screen" + g.get("screen")
 
     def imgProcess(self, img, type=0):
-        # elif type == 1:
-        #     # 自适应阈值
-        return cv.adaptiveThreshold(
-            img, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 2
-        )
-        # elif type == 2:
-        #     # 去噪处理
-        # return cv.fastNlMeansDenoising(img, None, 10, 7, 21)
+        #     自适应阈值
+        # return cv.adaptiveThreshold(
+        #     img, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 2
+        # )
+        #   Otsu 二值化
+        ret3, newImg = cv.threshold(img,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
+        return newImg
 
-    def matchTem(self, tem, img=0, simi=0.85):
+
+    def matchTem(self, tem, img=0, simi=simi):
         if img == 0:
             img = self.screen
-        self.simi = simi
-        screen = cv.imread("./images/" + img + ".jpg", 0)
-        newTem = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
-        screen = self.imgProcess(screen)
-        newTem = self.imgProcess(newTem)
+        if simi and simi != 0:
+            self.simi = simi
+        s = cv.imread("./images/" + img + ".jpg", 0)
+        n = cv.imread("./images/imgTem/" + tem + ".JPG", 0)
+        screen = self.imgProcess(s)
+        newTem = self.imgProcess(n)
         result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
+        res = 0
         if max_val > self.simi:
+            # print('匹配成功', tem, max_val, self.simi, max_loc)
             w, h = newTem.shape[::-1]
-            return (max_loc, (w, h))
-        else:
-            return 0
+            res = (max_loc, (w, h))
 
-    def matchArrTem(self, tem, img=0, simi=0.85, bina=False):
+        self.simi = self.default_simi
+
+        return res
+
+    def matchArrTem(self, tem, img=0, simi=simi, bina=False):
         if img == 0:
             img = self.screen
         self.simi = simi
 
-        screen = cv.imread("./images/" + img + ".jpg", 0)
-        screen = self.imgProcess(screen)
+        s = cv.imread("./images/" + img + ".jpg", 0)
+        screen = self.imgProcess(s)
         for item in tem:
-            newTem = cv.imread("./images/imgTem/" + item + ".jpg", 0)
-            newTem = self.imgProcess(newTem)
+            n = cv.imread("./images/imgTem/" + item + ".jpg", 0)
+            newTem = self.imgProcess(n)
             result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if max_val > self.simi:
                 break
 
+        res = 0
         if max_val > self.simi:
             w, h = newTem.shape[::-1]
-            return (max_loc, (w, h))
-        else:
-            return 0
+            res = (max_loc, (w, h))
+
+        self.simi = self.default_simi
+
+        return res
 
 
 if __name__ == "__main__":

@@ -9,9 +9,7 @@ import win32gui
 
 class Glo:
     obj = {
-        "windowClass": win32gui.FindWindow(
-            "class neox::toolkit::Win32Window0", "《梦幻西游》手游"
-        ),
+        "windowClass": win32gui.FindWindow(None, "《梦幻西游》手游"),
         "screen": "0",
         "name": "",
         "level": 0,

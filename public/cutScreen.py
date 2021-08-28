@@ -88,7 +88,8 @@ class CScreen(object):
         if infoKey == "" and not self.login:
             img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            self.g.set('newCoor', [img[253, 190], img[762, 190], img[253, 570], img[762, 570]])
+            # self.g.set('newCoor', [img[253, 190], img[762, 190], img[253, 570], img[762, 570]])
+            self.g.set('newCoor', [img[130, 250], img[130, 700]])
             # print([img[130, 250], img[130, 700]])
 
 if __name__ == '__main__':

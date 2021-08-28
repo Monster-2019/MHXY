@@ -121,7 +121,7 @@ class Baotu:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smca(['bt_wc', 'bt_wc1'], simi=0.9, count=0)
+                res = self.smc('bt_wc', simi=0.98, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 宝图任务已完成")
                     complete = True
@@ -195,72 +195,47 @@ class Baotu:
                                 break
 
                 xhList = ['bt_cbthdwc', 'bt_ttwf', 'bt_btrw']
-                # sTime = time.time()
-                # eTime = time.time()
 
                 while self.processing:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd')
-                    if temCoor != 0:
-                        for item in xhList:
-                            self.cutScreen()
-                            btnCoor = self.matchTem(item)
-                            if btnCoor != 0:
-                                # sTime = time.time()
-                                if item == 'bt_cbthdwc':
-                                    self.complete = True
-                                    sleep(1)
-                                    break
+                    for item in xhList:
+                        self.cutScreen()
+                        btnCoor = self.matchTem(item)
+                        if btnCoor != 0:
+                            if item == 'hd':
+                                if self.g.compare() == True:
+                                    self.B.MBtn(900, 300)
+                                    self.B.VBtn(1, 20)
+                                    self.smc('bt_btrw')
 
-                                elif item == 'bt_ttwf':
-                                    self.B.LBtn(btnCoor, sleepT=0.5)
-                                    self.B.RBtn()
-                                    xhList.remove('bt_ttwf')
+                            elif item == 'bt_cbthdwc':
+                                self.complete = True
+                                sleep(1)
+                                break
 
-                                elif item == 'bt_btrw':
-                                    self.B.LBtn(btnCoor)
-                                    sleep(10)
+                            elif item == 'bt_ttwf':
+                                self.B.LBtn(btnCoor, sleepT=0.5)
+                                self.B.RBtn()
+                                xhList.remove('bt_ttwf')
 
-                            else:
-                                self.B.MBtn(900, 300)
-                                self.B.VBtn(1, 10)
-                                sleep(0.5)
+                            elif item == 'bt_btrw':
+                                self.B.LBtn(btnCoor)
+                                sleep(10)
 
-                                res = self.smc('bt_btrw')
-                                if res == 0:
+                        else:
+                            self.B.MBtn(900, 300)
+                            self.B.VBtn(1, 30)
+                            sleep(0.5)
+
+                            res = self.smc('bt_btrw')
+                            if res == 0:
+                                if self.smc('hd', count=0) != 0 and self.g.compare():
                                     self.complete = self.isComplete()
                                     if self.complete:
                                         self.processing = not self.complete
                                         log(f"账号: { self.name } 宝图任务完成")
                                         break
 
-                                # eTime = time.time()
-                                # if eTime - sTime > 60:
-                                #     log(f"账号: { self.name } 宝图任务完成")
-                                #     complete = True
-                                #     processing = False
-                                #     sleep(1)
-                                #     break
-                    # else:
-                    #     sTime = time.time()
-                    #     eTime = time.time()
-
-                sleep(0.5)
-                # count = 0
-                # while True:
-                #     if count >= 4:
-                #         break
-                #     self.cutScreen()
-                #     temCoor = self.matchTem('hd')
-                #     btnCoor = self.matchTem('sy')
-                #     if temCoor != 0 and btnCoor != 0:
-                #         count += 1
-                #         self.B.LBtn(btnCoor, sleepT=0.5)
-                #     elif temCoor != 0 and btnCoor == 0:
-                #         break
-                #     else:
-                #         self.B.RBtn()
-                #     sleep(0.5)
+                        sleep(2)
 
             self.dig()
 
