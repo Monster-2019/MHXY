@@ -55,11 +55,11 @@ class GengZhong:
         complete = False
         count = 0
         while not complete:
-            res = self.smc('gfbt_gq', simi=0.9, sleepT=0.5)
+            res = self.smc('gfbt_gq', sleepT=0.5)
             if res != 0:
-                self.smc('gfbt_cxsj', simi=0.9, sleepT=0.5)
-                self.smc('bzts', simi=0.9, sleepT=0.5)
-                self.smc('qd', simi=0.9, sleepT=0.5)
+                self.smc('gfbt_cxsj', sleepT=0.5)
+                self.smc('bzts', sleepT=0.5)
+                self.smc('qd', sleepT=0.5)
                 count += 1
             else:
                 complete = True
@@ -69,15 +69,15 @@ class GengZhong:
         complete = False
         count = 0
         while not complete:
-            res = self.smc('gfbt_jyh', simi=0.9, infoKey='gfbt', sleepT=0.5)
+            res = self.smc('gfbt_jyh', infoKey='gfbt', sleepT=0.5)
             if res != 0:
-                self.smc('gfbt_sj', simi=0.9, sleepT=0.5)
+                self.smc('gfbt_sj', sleepT=0.5)
                 res = self.smc('gfbt_max', sleepT=0.5)
                 if res != 0:
                     complete = True
                     break
-                self.smc('bzts', simi=0.9, sleepT=0.5)
-                self.smc('qd', simi=0.9, sleepT=0.5)
+                self.smc('bzts', sleepT=0.5)
+                self.smc('qd', sleepT=0.5)
                 count += 1
             else:
                 complete = True
@@ -109,19 +109,19 @@ class GengZhong:
 
             self.cutScreen()
             btnCoor = self.matchTem('gz_sh')
-            temCoor = self.matchTem('gz_td')
+            temCoor = self.matchTem('gz_td', simi=0.998)
             if btnCoor == 0 and temCoor == 0:
                 isTill = False
                 complete = True
 
             xhList = [
-                'gz_sh', 'sh', 'gz_td', 'gz_td1', 'gz_prve', 'gz_jyh', 'gz_zz'
+                'gz_sh', 'sh', 'gz_td', 'gz_prve', 'gz_jyh', 'gz_zz'
             ]
 
             while isTill:
                 for item in xhList:
                     self.cutScreen()
-                    btnCoor = self.matchTem(item)
+                    btnCoor = self.matchTem(item, simi=0.998)
                     if btnCoor != 0:
                         if item == 'gz_jyh':
                             temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')

@@ -33,7 +33,7 @@ class LQHYD:
                 xhList = ['hy_20', 'hy_40', 'hy_60', 'hy_80', 'hy_100']
                 for item in xhList:
                     while True:
-                        res = self.smc(item, sleepT=0.5)
+                        res = self.smc(item, simi=0.95, sleepT=0.5)
                         if res != 0:
                             res = self.smc('sygb', sleepT=0.2)
                                 

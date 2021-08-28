@@ -1,5 +1,5 @@
 from datetime import datetime
-GLOBAL_SIMI = 0.97
+GLOBAL_SIMI = 0.99
 
 WEEKDAY = datetime.today().isoweekday()
 HOUR = datetime.today().hour

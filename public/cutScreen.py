@@ -1,4 +1,5 @@
 import sys
+sys.path.append('.')
 sys.path.append('..')
 import win32gui, win32ui, win32con, win32api
 from ctypes import windll
@@ -93,4 +94,4 @@ class CScreen(object):
             # print([img[130, 250], img[130, 700]])
 
 if __name__ == '__main__':
-    CScreen().cutScreen('name')
+    CScreen().cutScreen()

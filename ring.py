@@ -33,7 +33,7 @@ class Ring:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc("jyl_wc", simi=0.95, count=0)
+                res = self.smc("jyl_wc", simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 经验链已完成")
                     complete = True
@@ -62,7 +62,7 @@ class Ring:
                     self.B.VBtn(-1, 20)
                     sleep(0.5)
 
-                    r = self.smc("rw_jyl", simi=0.8, count=0)
+                    r = self.smc("rw_jyl", simi=0.94, count=0)
                     if r != 0:
                         print(f"账号: { self.name } 已领取经验链")
                         processing = True
@@ -114,21 +114,27 @@ class Ring:
                             if page == 4:
                                 break
 
-                xhList = ["rw_jyl", "gm", "gm_1", 'btgm', "dh", "sj"]
+                xhList = ["rw_jyl_wc", "rw_jyl", "gm", "gm_1", 'btgm', "dh", "sj"]
 
                 while not complete or processing:
                     for item in xhList:
                         self.cutScreen()
-                        btnCoor = self.matchTem(item, simi=0.8)
+                        btnCoor = self.matchTem(item)
+                        if item == 'dh' or item == 'rw_jyl':
+                            btnCoor = self.matchTem(item, simi=0.94)
                         if btnCoor != 0:
-                            if item == "dh":
+                            if item == 'rw_jyl_wc':
+                                complete = True
+                                break
+
+                            elif item == "dh":
                                 while True:
                                     self.cutScreen()
-                                    btnCoor = self.matchTem("dh")
+                                    btnCoor = self.matchTem("dh", simi=0.94)
                                     if btnCoor != 0:
                                         newCoor = (
                                             (btnCoor[0][0] + 14, btnCoor[0][1] + 64),
-                                            (247, 41),
+                                            (87, 22),
                                         )
                                         self.B.LBtn(newCoor)
                                         sleep(0.3)
@@ -150,11 +156,10 @@ class Ring:
                         else:
                             if item == "rw_jyl" and self.smc('hd', count=0):
                                 if self.g.compare():
-                                    self.B.RBtn()
                                     self.B.MBtn(900, 300)
                                     self.B.VBtn(-1, 20)
-                                else:
-                                    self.B.RBtn()
+
+                        sleep(0.5)
 
             if complete:
                 log(f"账号: { self.name } 经验链结束")

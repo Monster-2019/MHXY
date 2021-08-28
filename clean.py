@@ -31,7 +31,7 @@ class Clean(object):
 			ckList = ['bb_qls', 'bb_bhs', 'bb_zqs', 'bb_xws', 'bb_tys', 'bb_yls', 'bb_sls', 'bb_fcs', 'bb_hbs', 'bb_kls']
 			page = 1
 			while True:
-				res = self.smca(ckList, simi=0.9, infoKey='bb', count=2, sleepT=0.5)
+				res = self.smca(ckList, infoKey='bb', count=2, sleepT=0.5)
 				rs = self.smc('bb_max', count=0)
 				if rs != 0:
 					break
@@ -75,9 +75,10 @@ class Clean(object):
 			self.B.VBtn(1, 50)
 			sleep(0.5)
 
+			list = ['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf']
 			page = 1
 			while True:
-				res = self.smca(['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf'], sleepT=0.5)
+				res = self.smca(list, simi=0.98, sleepT=0.5)
 				if res != 0:
 					self.smc('bb_gd', sleepT=0.5)
 					self.smc('bb_smcs', sleepT=0.5)

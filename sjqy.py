@@ -28,7 +28,7 @@ class SJQY:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc('sj_wc', simi=0.98, count=0)
+                res = self.smc('sj_wc', simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 三界奇缘任务已完成")
                     complete = True
@@ -66,7 +66,7 @@ class SJQY:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_sjqy', simi=0.95) or self.matchTem('hd_sjqy1', simi=0.95)
+                        temCoor = self.matchTem('hd_sjqy') or self.matchTem('hd_sjqy1')
                         if temCoor != 0:
                             btnCoor = self.matchTem('cj', 'imgTem/hd_sjqy') or self.matchTem('cj', 'imgTem/hd_sjqy1')
                             newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
@@ -83,7 +83,7 @@ class SJQY:
                                 break
 
                 while processing:
-                    res = self.smc('sj_dw', count=0, simi=0.97)
+                    res = self.smc('sj_dw', count=0)
                     if res != 0:
                         self.B.RBtn()
                         complete = True
@@ -95,7 +95,7 @@ class SJQY:
                 sleep(0.5)
                 while True:
                     self.cutScreen()
-                    temCoor = self.matchTem('hd', simi=0.9)
+                    temCoor = self.matchTem('hd')
                     btnCoor = self.matchTem('sy')
                     if temCoor != 0 and btnCoor != 0:
                         self.B.LBtn(btnCoor, sleepT=0.5)

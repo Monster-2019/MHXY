@@ -6,27 +6,25 @@ def matchTem():
     # s = cv.imread("./images/screen0.jpg", 0)
     s = cv.imread("./images/screen0.jpg", 0)
     # n = cv.imread("./images/imgTem/hd.JPG", 0)
-    n = cv.imread("./images/imgTem/sm_sm.JPG", 0)
-    screen = cv.adaptiveThreshold(s, 255, cv.ADAPTIVE_THRESH_MEAN_C,
-                                  cv.THRESH_BINARY, 11, 2)
-    newTem = cv.adaptiveThreshold(n, 255, cv.ADAPTIVE_THRESH_MEAN_C,
-                                  cv.THRESH_BINARY, 11, 2)
-    ret1, screen = cv.threshold(s,127,255,cv.THRESH_BINARY)
-    ret2, newTem = cv.threshold(n,127,255,cv.THRESH_BINARY)
+    n = cv.imread("./images/imgTem/hy_20.JPG", 0)
+    # ret3, screen = cv.threshold(s,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
+    # ret4, newTem = cv.threshold(n,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
 
-    ret3, screen = cv.threshold(s,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
-    ret4, newTem = cv.threshold(n,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
+    # ret3, screen = cv.threshold(screen,127,255,cv.THRESH_TRUNC)
+    # ret4, newTem = cv.threshold(newTem,127,255,cv.THRESH_TRUNC)
+    # screen = cv.Canny(screen,100,200)
+    # newTem = cv.Canny(newTem,100,200)
 
-    w, h = newTem.shape[::-1]
+    w, h = n.shape[::-1]
 
-    result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
+    result = cv.matchTemplate(s, n, cv.TM_CCORR_NORMED)
     min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
-    cv.rectangle(screen, max_loc, (max_loc[0] + w, max_loc[1] + h),
+    cv.rectangle(s, max_loc, (max_loc[0] + w, max_loc[1] + h),
                  (0, 128, 0), 3)
 
-    cv.imshow("custom_blur_demo1", screen)
-    cv.imshow("custom_blur_demo", newTem)
+    cv.imshow("custom_blur_demo1", s)
+    cv.imshow("custom_blur_demo", n)
     # cv.imshow("custom_blur_demo2", s1)
     # cv.imshow("custom_blur_demo1", n1)
     # cv.imshow("custom_blur_demo3", s2)

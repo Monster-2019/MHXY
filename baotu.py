@@ -64,44 +64,22 @@ class Baotu:
             log(f"账号: { self.name } 挖宝中")
 
             while not empty:
-                timer1 = time.time()
-                timer2 = time.time()
                 while not useComplete:
                     res = self.smc('hd', count=0)
                     if res != 0:
                         self.cutScreen()
                         btnCoor = self.matchTem('sy')
-                        compareResult = self.g.compare()
-                        if btnCoor != 0 and compareResult == True:
+                        isCompare = self.g.compare()
+                        if btnCoor != 0:
                             if btnCoor[0][0] + btnCoor[1][0] < 920:
-                                # print('使用藏宝图中')
                                 count += 1
-                                log(f'账号: { self.name } 使用一张藏宝图')
                                 self.B.LBtn(btnCoor)
                                 sleep(4)
-                                timer1 = time.time()
-                                timer2 = time.time()
 
-                        elif btnCoor == 0 and compareResult == True:
-                            # print('站立不动状态')
-                            timer2 = time.time()
+                        elif btnCoor == 0 and isCompare:
+                            break
 
-                        else:
-                            timer1 = time.time()
-                            timer2 = time.time()
-                            # print('找藏宝图中')
-
-                    else:
-                        # print('打怪中')
-                        timer1 = time.time()
-                        timer2 = time.time()
-                        res = self.smc('sy')
-                        if res != 0:
-                            self.B.RBtn()
-
-                    if timer2 - timer1 >= 12:
-                        useComplete = True
-                        break
+                    sleep(1)
 
                 empty = self.empty()
                 useComplete = empty
@@ -121,7 +99,7 @@ class Baotu:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc('bt_wc', simi=0.98, count=0)
+                res = self.smc('bt_wc', simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 宝图任务已完成")
                     complete = True
@@ -154,14 +132,15 @@ class Baotu:
                     self.B.VBtn(1, 10)
                     sleep(0.5)
 
-                    temCoor = self.matchTem('bt_btrw')
+                    temCoor = self.matchTem('bt_btrw', simi=0.95)
                     if temCoor != 0:
                         print(f"账号: { self.name } 已领取宝图任务")
                         self.processing = True
                     sleep(0.5)
                     break
 
-            self.complete = self.isComplete()
+            if not self.processing:
+                self.complete = self.isComplete()
 
             if not self.complete:
                 print(f"账号: { self.name } 宝图任务进行中")
@@ -172,9 +151,8 @@ class Baotu:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem(
-                            'hd_btrw', simi=0.7) or self.matchTem('hd_btrw1',
-                                                                  simi=0.7)
+                        temCoor = self.matchTem('hd_btrw') or self.matchTem(
+                            'hd_btrw1')
                         if temCoor != 0:
                             btnCoor = self.matchTem(
                                 'cj', 'imgTem/hd_btrw') or self.matchTem(
@@ -185,7 +163,15 @@ class Baotu:
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
                                 self.processing = True
-                                sleep(15)
+                                sleep(5)
+
+                                while True:
+                                    r = self.smc('bt_ttwf')
+                                    if r != 0:
+                                        break
+
+                                    sleep(3)
+
                                 break
                         else:
                             page += 1
@@ -194,41 +180,32 @@ class Baotu:
                             if page == 4:
                                 break
 
-                xhList = ['bt_cbthdwc', 'bt_ttwf', 'bt_btrw']
+                xhList = ['bt_cbthdwc', 'bt_btrw']
 
                 while self.processing:
                     for item in xhList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
                         if btnCoor != 0:
-                            if item == 'hd':
-                                if self.g.compare() == True:
-                                    self.B.MBtn(900, 300)
-                                    self.B.VBtn(1, 20)
-                                    self.smc('bt_btrw')
-
-                            elif item == 'bt_cbthdwc':
+                            if item == 'bt_cbthdwc':
                                 self.complete = True
                                 sleep(1)
                                 break
 
-                            elif item == 'bt_ttwf':
-                                self.B.LBtn(btnCoor, sleepT=0.5)
-                                self.B.RBtn()
-                                xhList.remove('bt_ttwf')
-
-                            elif item == 'bt_btrw':
+                            else:
                                 self.B.LBtn(btnCoor)
-                                sleep(10)
 
                         else:
+                            self.B.RBtn()
                             self.B.MBtn(900, 300)
                             self.B.VBtn(1, 30)
                             sleep(0.5)
 
-                            res = self.smc('bt_btrw')
+                            res = self.smc('bt_btrw', simi=0.95, sleepT=10)
                             if res == 0:
-                                if self.smc('hd', count=0) != 0 and self.g.compare():
+                                if self.smc(
+                                        'hd',
+                                        count=0) != 0 and self.g.compare(5):
                                     self.complete = self.isComplete()
                                     if self.complete:
                                         self.processing = not self.complete

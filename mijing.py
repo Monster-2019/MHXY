@@ -30,8 +30,8 @@ class Mijing:
             if n % 10 == 0:
                 sleep(0.5)
                 self.cutScreen()
-                res = self.matchTem('hd_mjxy') or self.matchTem('hd_mjxy1')
-                res = self.smc('mjxy_wc', simi=0.97, count=0)
+                # res = self.matchTem('hd_mjxy') or self.matchTem('hd_mjxy1')
+                res = self.smc('mjxy_wc', simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 秘境任务已完成")
                     complete = True
@@ -73,9 +73,8 @@ class Mijing:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem(
-                            'hd_mjxy', simi=0.9) or self.matchTem('hd_mjxy1',
-                                                                  simi=0.9)
+                        temCoor = self.matchTem('hd_mjxy') or self.matchTem(
+                            'hd_mjxy1')
                         if temCoor != 0:
                             btnCoor = self.matchTem(
                                 'cj', 'imgTem/hd_mjxy') or self.matchTem(
@@ -112,12 +111,11 @@ class Mijing:
                     self.processing = True
 
                 xhList = [
-                    'hd', 'sb', 'mj_18', 'mj_tg', 'mj_mjxyrw', 'mj_lb',
+                    'hd', 'sb', 'mj_18', 'mj_18_1', 'mj_tg', 'mj_mjxyrw', 'mj_lb',
                     'mj_jrzd'
                 ]
                 # , 'mj_lq', 'mj_gb'
 
-                wheel = 0
                 while self.processing:
                     if self.complete:
                         self.smc('mj_lk')
@@ -130,18 +128,14 @@ class Mijing:
                                 self.processing = False
                                 break
 
-                            elif item == 'sb' or item == 'mj_18' or item == 'mj_tg' or wheel >= 3:
+                            elif item == 'sb' or item == 'mj_18' or item == 'mj_18_1' or item == 'mj_tg':
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.complete = True
 
-                            elif item == 'mj_lb':
-                                self.B.LBtn(btnCoor, sleepT=5)
-                                wheel += 1
-
                             elif item == 'mj_jrzd':
                                 sleep(1)
-                                res = self.smc('mj_18')
+                                res = self.smc('mj_18', count=0) or self.smc('mj_18_1', count=0)
                                 if res != 0:
                                     self.complete = True
 
