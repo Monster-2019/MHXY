@@ -60,7 +60,7 @@ class Shimen:
             processing = False
 
             while True:
-                res = self.smc("hd", simi=0.9, count=0)
+                res = self.smc("hd", count=0)
                 if res == 0:
                     self.B.RBtn()
                 else:
@@ -113,6 +113,10 @@ class Shimen:
                                         processing = True
                                         break
 
+                                # while True:
+                                #     if self.smc('dh_sm') != 0:
+                                #         break
+
                                 break
                         else:
                             page += 1
@@ -143,6 +147,8 @@ class Shimen:
                     for item in smList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
+                        if item == 'dh' or item == 'sm_sm':
+                            btnCoor = self.matchTem(item, simi=0.94)
                         if btnCoor != 0:
                             if item == "hd":
                                 if self.g.compare() == True:
@@ -152,8 +158,8 @@ class Shimen:
                                 while True:
                                     self.cutScreen()
                                     btnCoor = self.matchTem(
-                                        "dh", simi=0.84) or self.matchTem(
-                                            "dhda", simi=0.84)
+                                        "dh", simi=0.94) or self.matchTem(
+                                            "dhda", simi=0.94)
                                     if btnCoor != 0:
                                         newCoor = (
                                             (btnCoor[0][0],
@@ -196,7 +202,7 @@ class Shimen:
 
                         else:
                             if item == "sm_sm":
-                                if self.smc("hd", simi=0.9, count=0) != 0:
+                                if self.smc("hd", count=0) != 0:
                                     self.B.RBtn()
                                     self.B.MBtn(900, 300)
                                     self.B.VBtn(1, 10)

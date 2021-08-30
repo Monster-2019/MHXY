@@ -125,6 +125,7 @@ class Ring:
                         if btnCoor != 0:
                             if item == 'rw_jyl_wc':
                                 complete = True
+                                processing = False
                                 break
 
                             elif item == "dh":
@@ -156,6 +157,7 @@ class Ring:
                         else:
                             if item == "rw_jyl" and self.smc('hd', count=0):
                                 if self.g.compare():
+                                    self.B.RBtn()
                                     self.B.MBtn(900, 300)
                                     self.B.VBtn(-1, 20)
 

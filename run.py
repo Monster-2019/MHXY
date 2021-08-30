@@ -27,7 +27,6 @@ from kjxs import KJXS
 from lqhyd import LQHYD
 from upgrade import Upgrade
 from gengzhong import GengZhong
-from bangpai import Bangpai
 from trading import Trading
 from clean import Clean
 from logout import Logout

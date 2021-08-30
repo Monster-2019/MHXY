@@ -6,7 +6,7 @@ def matchTem():
     # s = cv.imread("./images/screen0.jpg", 0)
     s = cv.imread("./images/screen0.jpg", 0)
     # n = cv.imread("./images/imgTem/hd.JPG", 0)
-    n = cv.imread("./images/imgTem/hy_20.JPG", 0)
+    n = cv.imread("./images/imgTem/rw_jyl_wc.JPG", 0)
     # ret3, screen = cv.threshold(s,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
     # ret4, newTem = cv.threshold(n,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
 
