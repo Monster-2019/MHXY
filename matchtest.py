@@ -25,10 +25,6 @@ def matchTem():
 
     cv.imshow("custom_blur_demo1", s)
     cv.imshow("custom_blur_demo", n)
-    # cv.imshow("custom_blur_demo2", s1)
-    # cv.imshow("custom_blur_demo1", n1)
-    # cv.imshow("custom_blur_demo3", s2)
-    # cv.imshow("custom_blur_demo2", n2)
     cv.waitKey(0)
     cv.destroyAllWindows()
 

@@ -2,12 +2,12 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 import win32gui, win32ui, win32con, win32api
-from ctypes import windll
 from PIL import Image
 from time import sleep
 from public.glo import Glo
 import cv2 as cv
-import numpy as np
+import easyocr
+import re
 
 class CScreen(object):
     login = False
@@ -56,7 +56,6 @@ class CScreen(object):
 
         # 创建内存设备描述表
         saveDC = mfcDC.CreateCompatibleDC()
-
         # 创建位图对象
         saveBitMap = win32ui.CreateBitmap()
         saveBitMap.CreateCompatibleBitmap(mfcDC, self.WH[0], self.WH[1])
@@ -65,9 +64,16 @@ class CScreen(object):
         # 截图至内存设备描述表
         saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
 
+        # 坐标截图
+        # saveDC1 = mfcDC.CreateCompatibleDC()
+        # saveBitMap1 = win32ui.CreateBitmap()
+        # saveBitMap1.CreateCompatibleBitmap(mfcDC, 86, 22)
+        # saveDC1.SelectObject(saveBitMap1)
+
+        # saveDC1.BitBlt((0, 0), (86, 22), mfcDC, (114, 51), win32con.SRCCOPY)
+
         # 将截图保存到文件中
         try:
-            # saveBitMap.SaveBitmapFile(saveDC, "./images/screen" + self.index + '.jpg')
             ###获取位图信息
             bmpinfo = saveBitMap.GetInfo()
             bmpstr = saveBitMap.GetBitmapBits(True)
@@ -75,7 +81,14 @@ class CScreen(object):
             im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
             ###PrintWindow成功,保存到文件,显示到屏幕
             im_PIL.save("./images/screen" + self.index + '.jpg') #保存
-            # im_PIL.show() #显示
+
+            ###获取位图信息
+            # bmpinfo1 = saveBitMap1.GetInfo()
+            # bmpstr1 = saveBitMap1.GetBitmapBits(True)
+            # ###生成图像
+            # im_PIL1 = Image.frombuffer('RGB',(bmpinfo1['bmWidth'],bmpinfo1['bmHeight']),bmpstr1,'raw','BGRX',0,1)
+            # ###PrintWindow成功,保存到文件,显示到屏幕
+            # im_PIL1.save("./images/coor" + self.index + '.jpg') #保存
         except Exception as e:
             print(f'报错{e}')
 
@@ -86,12 +99,18 @@ class CScreen(object):
         win32gui.ReleaseDC(self.hwnd, hwndDC)
         sleep(0.01)
 
+        # reader = easyocr.Reader(['en'], gpu=False)
+        # result = reader.readtext('./images/coor0.jpg', detail=0)
+
+        # res = re.findall(r"\d+", result[0])
+
+        # print(res[0], res[1])
+
         if infoKey == "" and not self.login:
             img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            # self.g.set('newCoor', [img[253, 190], img[762, 190], img[253, 570], img[762, 570]])
             self.g.set('newCoor', [img[130, 250], img[130, 700]])
-            # print([img[130, 250], img[130, 700]])
+
 
 if __name__ == '__main__':
     CScreen().cutScreen()

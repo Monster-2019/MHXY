@@ -122,6 +122,8 @@ class GengZhong:
                 for item in xhList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item, simi=0.998)
+                    if item == 'gz_td':
+                        btnCoor = self.matchTem(item, simi=0.999)
                     if btnCoor != 0:
                         if item == 'gz_jyh':
                             temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')

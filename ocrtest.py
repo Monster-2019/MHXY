@@ -1,14 +1,15 @@
 import easyocr
-import os
 import re
+import cv2 as cv
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+def test():
+    reader = easyocr.Reader(['en'], gpu=False)
+    img = cv.imread('./images/screen0.jpg')
+    result = reader.readtext(img, detail=0)
 
-reader = easyocr.Reader(['ch_sim', 'en'], gpu=False)
+    res = re.findall(r"\d+", result[0])
 
-result = reader.readtext('./images/imgTem/rw_jyl_wc.JPG', detail=0)
+    print(result[0])
+    print(res[0], res[1])
 
-res = re.findall(r"\d+", result[0])
-
-print(result[0])
-print(res[0], res[1])
+test()
