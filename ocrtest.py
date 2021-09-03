@@ -1,15 +1,14 @@
-import easyocr
 import re
-import cv2 as cv
+from PIL import Image
+import pytesseract
 
-def test():
-    reader = easyocr.Reader(['en'], gpu=False)
-    img = cv.imread('./images/screen0.jpg')
-    result = reader.readtext(img, detail=0)
+def test ():
+    tessdata_dir_config ='--tessdata-dir "D:/dev/Tesseract-OCR/tessdata" --psm 7'
+    img = Image.open('./images/coor/coor281.jpg')
+    result = pytesseract.image_to_string(img, config=tessdata_dir_config, lang='num')
+    print(result)
+    res = re.findall(r"\d+", result)
+    print(res)
 
-    res = re.findall(r"\d+", result[0])
-
-    print(result[0])
-    print(res[0], res[1])
-
-test()
+if __name__ == '__main__':
+    test()

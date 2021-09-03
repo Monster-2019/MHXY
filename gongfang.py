@@ -111,7 +111,7 @@ class Gongfang:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc("gf_wc", simi=0.98, count=0)
+                res = self.smc("gf_wc", simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 工坊任务已完成")
                     complete = True
@@ -158,9 +158,11 @@ class Gongfang:
                 self.smc("jjxx", sleepT=0.5)
                 page = 1
                 while not processing:
+                    print(123)
                     self.cutScreen()
-                    temCoor = self.matchTem("hd_gfrw")
+                    temCoor = self.matchTem("hd_gfrw", simi=0.998)
                     if temCoor != 0:
+                        print(1)
                         btnCoor = self.matchTem("cj", "imgTem/hd_gfrw")
                         newCoor = (
                             (
@@ -170,6 +172,7 @@ class Gongfang:
                             btnCoor[1],
                         )
                         if btnCoor != 0:
+                            print(2)
                             self.B.LBtn(newCoor)
                             processing = True
 
@@ -207,10 +210,9 @@ class Gongfang:
             while not complete or processing:
                 for item in xhList:
                     self.cutScreen()
-                    if item == 'gf_kg' or item == 'gf_gf':
+                    btnCoor = self.matchTem(item)
+                    if item == 'gf_kg' or item == 'gf_gf' or item == 'dh':
                         btnCoor = self.matchTem(item, simi=0.9)
-                    else:
-                        btnCoor = self.matchTem(item)
                     if btnCoor != 0:
                         if item == "hd":
                             if self.g.compare() == True:
@@ -219,7 +221,7 @@ class Gongfang:
                         elif item == "dh" or item == "dhda":
                             while True:
                                 self.cutScreen()
-                                btnCoor = self.matchTem("dh") or self.matchTem("dhda")
+                                btnCoor = self.matchTem("dh", simi=0.9) or self.matchTem("dhda", simi=0.9)
                                 if btnCoor != 0:
                                     newCoor = (
                                         (btnCoor[0][0] + 14, btnCoor[0][1] + 64),

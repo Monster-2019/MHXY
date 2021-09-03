@@ -28,7 +28,7 @@ class KJXS:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc('kj_wc', simi=0.98, count=0)
+                res = self.smc('kj_wc', simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 科举乡试任务已完成")
                     complete = True
@@ -66,7 +66,7 @@ class KJXS:
                     page = 1
                     while True:
                         self.cutScreen()
-                        temCoor = self.matchTem('hd_kjxs', simi=0.95) or self.matchTem('hd_kjxs2', simi=0.95)
+                        temCoor = self.matchTem('hd_kjxs') or self.matchTem('hd_kjxs2')
                         if temCoor != 0:
                             btnCoor = self.matchTem('cj', 'imgTem/hd_kjxs') or self.matchTem('cj', 'imgTem/hd_kjxs2')
                             newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
@@ -83,7 +83,7 @@ class KJXS:
                                 break
 
                 while processing:
-                    res = self.smca(['kj_dw', 'kj_dw1'], simi=0.94, count=0)
+                    res = self.smca(['kj_dw', 'kj_dw1'], count=0)
                     if res != 0:
                         self.B.RBtn()
                         complete = True
@@ -94,7 +94,7 @@ class KJXS:
 
                 while True:
                     self.cutScreen()
-                    temCoor = self.matchTem('hd', simi=0.9)
+                    temCoor = self.matchTem('hd')
                     btnCoor = self.matchTem('sy')
                     if temCoor != 0 and btnCoor != 0:
                         self.B.LBtn(btnCoor, sleepT=0.5)

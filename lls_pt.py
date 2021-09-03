@@ -11,6 +11,7 @@ import time
 
 class LLSPT:
     def __init__(self):
+        super(LLSPT, self).__init__()
         self.g = Glo()
         self.name = self.g.get('name')
         self.B = Btn()
@@ -67,16 +68,16 @@ class LLSPT:
             else:
                 break
 
-        complete = self.isComplete()
+        # complete = self.isComplete()
 
-        if not complete:
-            if not self.g.getObj('config', 'TeamStatus'):
-                Zudui().start()
+        # if not complete:
+            # if not self.g.getObj('config', 'TeamStatus'):
+            #     Zudui().start()
 
-        # self.B.Hotkey('zz', sleepT=1)
-        # self.B.LBtn('zr1', sleepT=0.5)
-        # self.B.LBtn('zr2', sleepT=0.5)
-        # self.B.RBtn()
+        self.B.Hotkey('zz', sleepT=1)
+        self.B.LBtn('zr2', sleepT=0.5)
+        self.B.LBtn('zr2', sleepT=0.5)
+        self.B.RBtn()
 
         if not complete:
             log(f"副本任务进行中")
@@ -85,49 +86,43 @@ class LLSPT:
             self.smc('rchd', sleepT=0.5)
             page = 1
             while True:
-                sTime = time.time()
-                eTime = time.time()
-                while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd_lls_pt') or self.matchTem(
-                        'hd_lls_pt1')
-                    eTime = time.time()
-                    if temCoor != 0 or eTime - sTime >= 8:
-                        break
+                self.cutScreen()
+                temCoor = self.matchTem("hd_ecy_pt")
                 if temCoor != 0:
-                    btnCoor = self.matchTem(
-                        'cj', 'imgTem/hd_lls_pt') or self.matchTem(
-                            'cj', 'imgTem/hd_lls_pt1')
-                    newCoor = ((temCoor[0][0] + btnCoor[0][0],
-                                temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                    btnCoor = self.matchTem("cj", "imgTem/hd_smrw")
+                    newCoor = (
+                        (
+                            temCoor[0][0] + btnCoor[0][0],
+                            temCoor[0][1] + btnCoor[0][1],
+                        ),
+                        btnCoor[1],
+                    )
                     if btnCoor != 0:
-                        self.B.LBtn(newCoor)
+                        self.B.LBtn(newCoor, sleepT=1)
 
-                        while True:
-                            res = self.smc('fb_xzfb')
-                            if res != 0:
-                                break
+                        # 去完成或继续任务
+                        while not processing:
+                            for item in ['fb_xzfb', 'fb_ecy_xz']:
+                                r = self.smc(item, sleepT=1)
+                                if r != 0 and item == 'fb_ecy_xz':
+                                    btnCoor = self.matchTem(
+                                        'fb_jr', 'imgTem/fb_ecy_xz')
+                                    if btnCoor != 0:
+                                        newCoor = (
+                                            (
+                                                r[0][0] + btnCoor[0][0],
+                                                r[0][1] + btnCoor[0][1],
+                                            ),
+                                            btnCoor[1],
+                                        )
+                                        self.B.LBtn(newCoor, sleepT=3)
 
-                        clickStatus = False
-                        while True:
-                            self.cutScreen()
-                            temCoor = self.matchTem('fb_lls_pt')
-                            if temCoor != 0:
-                                btnCoor = self.matchTem(
-                                    'fb_jr', 'imgTem/fb_lls_pt')
-                                newCoor = ((temCoor[0][0] + btnCoor[0][0],
-                                            temCoor[0][1] + btnCoor[0][1]),
-                                           btnCoor[1])
-                                if btnCoor != 0:
-                                    self.B.LBtn(newCoor)
-                                    processing = True
-                                    clickStatus = True
-
-                            elif temCoor == 0 and clickStatus:
-                                break
+                                        r = self.smc('fb_ecy', simi=0.95, count=0)
+                                        if r != 0:
+                                            processing = True
+                                            break
 
                         break
-
                 else:
                     page += 1
                     self.B.VBtn(-1, 10)
@@ -135,15 +130,14 @@ class LLSPT:
                     if page == 4:
                         break
 
-            if not processing:
-                self.B.RBtn()
-
-            fbList = ['sb', 'hd', 'fb_tgjq', 'fb_lls', 'dh', 'djjx']
+            fbList = ['sb', 'hd', 'fb_tgjq', 'fb_ecy', 'dh', 'djjx']
 
             while processing:
                 for item in fbList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item)
+                    if item == 'fb_ecy':
+                        btnCoor = self.matchTem(item, simi=0.95)
                     if btnCoor != 0:
                         if item == 'sb':
                             while True:
@@ -162,7 +156,7 @@ class LLSPT:
                             log(f"副本任务完成")
                             break
 
-                        elif item == 'fb_lls':
+                        elif item == 'fb_ecy':
                             self.B.LBtn(btnCoor, sleepT=3)
 
                         elif item == 'dh':
@@ -230,4 +224,4 @@ class LLSPT:
 
 
 if __name__ == "__main__":
-    LLSPT().leader()
+    LLSPT().start()

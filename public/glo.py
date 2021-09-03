@@ -1,5 +1,6 @@
 import sys
 
+sys.path.append(".")
 sys.path.append("..")
 import config
 import numpy as np
@@ -38,27 +39,19 @@ class Glo:
     def get(self, key):
         return self.obj[key]
 
-    # def compare(self):
-    #     a = np.array(self.get('oldCoor'))
-    #     b = np.array(self.get('newCoor'))
-    #     # c = (a==b).all()
-    #     c = (a==b).any()
-    #     return c
-
     def compare(self, s=0.01):
         status = True
         sTime = time.time()
         eTime = time.time()
         while eTime - sTime < s:
-            a = np.array(self.get("oldCoor"))
-            b = np.array(self.get("newCoor"))
-            res = (a == b).any()
-            if not res:
+            if self.get('oldCoor') == self.get('newCoor'):
                 status = False
                 break
 
             else:
                 eTime = time.time()
+
+            time.sleep(0.5)
 
         return status
 

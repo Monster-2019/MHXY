@@ -136,7 +136,7 @@ class Login(object):
             smc('select_zh')
             page = 1
             while True:
-                res = smc(dlCoor, simi=0.97)
+                res = smc(dlCoor, simi=0.998)
                 if res == 0:
                     B.LBtn(((326, 329), (2, 2)))
                     sleep(0.1)
