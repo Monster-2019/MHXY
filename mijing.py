@@ -31,11 +31,15 @@ class Mijing:
                 sleep(0.5)
                 self.cutScreen()
                 # res = self.matchTem('hd_mjxy') or self.matchTem('hd_mjxy1')
-                res = self.smc('mjxy_wc', simi=0.999, count=0)
-                if res != 0:
+                res = self.smc('hd_mjxy', simi=0.999, count=0)
+                print(res)
+                if res == 0:
                     log(f"账号: { self.name } 秘境任务已完成")
                     complete = True
                     break
+                else:
+                    break
+
             else:
                 self.B.VBtn(-1)
 
@@ -110,17 +114,13 @@ class Mijing:
 
                     self.processing = True
 
-                xhList = [
-                    'hd', 'sb', 'mj_18', 'mj_18_1', 'mj_tg', 'mj_mjxyrw', 'mj_lb',
-                    'mj_jrzd'
-                ]
+                xhList = ['hd', 'sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd']
                 # , 'mj_lq', 'mj_gb'
 
                 while self.processing:
-                    if self.complete:
-                        self.smc('mj_lk')
-
                     for item in xhList:
+                        if self.complete:
+                            self.smc('mj_lk')
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
                         if btnCoor != 0:
@@ -128,19 +128,10 @@ class Mijing:
                                 self.processing = False
                                 break
 
-                            elif item == 'sb' or item == 'mj_18' or item == 'mj_18_1' or item == 'mj_tg':
+                            elif item == 'sb' or item == 'mj_tg':
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.B.LBtn(((520, 380), (10, 10)))
                                 self.complete = True
-
-                            elif item == 'mj_jrzd':
-                                sleep(1)
-                                res = self.smc('mj_18', count=0) or self.smc('mj_18_1', count=0)
-                                if res != 0:
-                                    self.complete = True
-
-                                else:
-                                    self.B.LBtn(btnCoor)
 
                             else:
                                 self.B.LBtn(btnCoor)

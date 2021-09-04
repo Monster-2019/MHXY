@@ -22,36 +22,27 @@ class LLSPT:
 
     def isComplete(self):
         complete = False
-        self.B.Hotkey('hd')
-        self.smc('rchd', sleepT=0.5)
+        self.B.Hotkey("hd")
+
+        self.smc("rchd", sleepT=0.5)
+
         self.B.MBtn(590, 330)
         self.B.VBtn(1, 21)
         sleep(0.5)
-        page = 1
 
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                self.cutScreen()
-                res = self.matchTem('hd_lls_pt') or self.matchTem('hd_lls_pt1')
+                res = self.smc("ecy_wc", simi=0.999, count=0)
                 if res != 0:
-                    self.cutScreen(res)
-                    res = self.matchTem('hd_no', simi=0.9)
-                    if res == 0:
-                        complete = True
-                        self.g.setObj('config', 'FB_WC', True)
-                        log(f"副本任务已完成")
-                        break
-                else:
-                    page += 1
-                    if page >= 4:
-                        complete = True
-                        self.g.setObj('config', 'FB_WC', True)
-                        log(f"副本任务已完成")
-                        break
-            self.B.VBtn(-1)
+                    log(f"账号: { self.name } 副本任务已完成")
+                    complete = True
+                    break
+            else:
+                self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
+
         self.B.RBtn()
 
         return complete
@@ -68,11 +59,11 @@ class LLSPT:
             else:
                 break
 
-        # complete = self.isComplete()
+        complete = self.isComplete()
 
-        # if not complete:
-            # if not self.g.getObj('config', 'TeamStatus'):
-            #     Zudui().start()
+        if not complete:
+            if not self.g.getObj('config', 'TeamStatus'):
+                Zudui().start()
 
         self.B.Hotkey('zz', sleepT=1)
         self.B.LBtn('zr2', sleepT=0.5)

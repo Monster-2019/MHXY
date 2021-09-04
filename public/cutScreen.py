@@ -65,12 +65,12 @@ class CScreen(object):
         saveDC.SelectObject(saveBitMap)
         saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
 
-        # 坐标截图
-        saveDC1 = mfcDC.CreateCompatibleDC()
-        saveBitMap1 = win32ui.CreateBitmap()
-        saveBitMap1.CreateCompatibleBitmap(mfcDC, 86, 22)
-        saveDC1.SelectObject(saveBitMap1)
-        saveDC1.BitBlt((0, 0), (86, 22), mfcDC, (114, 51), win32con.SRCCOPY)
+        # # 坐标截图
+        # saveDC1 = mfcDC.CreateCompatibleDC()
+        # saveBitMap1 = win32ui.CreateBitmap()
+        # saveBitMap1.CreateCompatibleBitmap(mfcDC, 86, 22)
+        # saveDC1.SelectObject(saveBitMap1)
+        # saveDC1.BitBlt((0, 0), (86, 22), mfcDC, (114, 51), win32con.SRCCOPY)
 
         # 将截图保存到文件中
         try:
@@ -82,42 +82,30 @@ class CScreen(object):
             ###PrintWindow成功,保存到文件,显示到屏幕
             im_PIL.save("./images/screen" + self.index + '.jpg') #保存
 
-            ###获取位图信息
-            bmpinfo1 = saveBitMap1.GetInfo()
-            bmpstr1 = saveBitMap1.GetBitmapBits(True)
-            ###生成图像
-            im_PIL1 = Image.frombuffer('RGB',(bmpinfo1['bmWidth'],bmpinfo1['bmHeight']),bmpstr1,'raw','BGRX',0,1)
-            ###PrintWindow成功,保存到文件,显示到屏幕
-            # im_PIL1.save("./images/coor/coor" + str(random.randint(0, 9999)) + '.jpg') #保存
-            im_PIL1.save("./images/coor" + self.index + '.jpg') #保存
+            # ###获取位图信息
+            # bmpinfo1 = saveBitMap1.GetInfo()
+            # bmpstr1 = saveBitMap1.GetBitmapBits(True)
+            # ###生成图像
+            # im_PIL1 = Image.frombuffer('RGB',(bmpinfo1['bmWidth'],bmpinfo1['bmHeight']),bmpstr1,'raw','BGRX',0,1)
+            # ###PrintWindow成功,保存到文件,显示到屏幕
+            # # im_PIL1.save("./images/coor/coor" + str(random.randint(0, 9999)) + '.jpg') #保存
+            # im_PIL1.save("./images/coor" + self.index + '.jpg') #保存
         except Exception as e:
             print(f'报错{e}')
 
         # 释放内存
         win32gui.DeleteObject(saveBitMap.GetHandle())
         saveDC.DeleteDC()
-        win32gui.DeleteObject(saveBitMap1.GetHandle())
-        saveDC1.DeleteDC()
+        # win32gui.DeleteObject(saveBitMap1.GetHandle())
+        # saveDC1.DeleteDC()
         mfcDC.DeleteDC()
         win32gui.ReleaseDC(self.hwnd, hwndDC)
         sleep(0.01)
 
-        # reader = easyocr.Reader(['en'], gpu=False)
-        # result = reader.readtext('./images/coor' + self.index + '.jpg', detail=0)
-
-        # res = re.findall(r"\d+", result[0])
-
-        # print(res[0], res[1])
-        
-        tessdata_dir_config ='--tessdata-dir "D:/dev/Tesseract-OCR/tessdata" --psm 7'
-
-        img = Image.open('./images/coor' + self.index + '.jpg')
-        result = pytesseract.image_to_string(img, config=tessdata_dir_config, lang="num")
-        res = re.findall(r"\d+", result)
-        # print(res[0], res[1])
-        if len(res) == 2:
+        if infoKey == "" and not self.login:
+            img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            self.g.set('newCoor', (res[0], res[1]))
+            self.g.set('newCoor', img[300, 300])
             
 
 if __name__ == '__main__':

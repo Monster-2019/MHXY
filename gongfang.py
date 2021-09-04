@@ -139,7 +139,7 @@ class Gongfang:
                 self.B.VBtn(-1, 20)
                 sleep(0.5)
 
-                r = self.smc('gf_kg', simi=0.9, count=0) or self.smc('gf_gf', simi=0.9, count=0)
+                r = self.smc('gf_kg', simi=0.92, count=0) or self.smc('gf_gf', simi=0.92, count=0)
                 if r != 0:
                     if r[0][0] + r[1][0] > 780:
                         log(f"账号: { self.name } 已领取工坊任务")
@@ -158,11 +158,9 @@ class Gongfang:
                 self.smc("jjxx", sleepT=0.5)
                 page = 1
                 while not processing:
-                    print(123)
                     self.cutScreen()
                     temCoor = self.matchTem("hd_gfrw", simi=0.998)
                     if temCoor != 0:
-                        print(1)
                         btnCoor = self.matchTem("cj", "imgTem/hd_gfrw")
                         newCoor = (
                             (
@@ -172,7 +170,6 @@ class Gongfang:
                             btnCoor[1],
                         )
                         if btnCoor != 0:
-                            print(2)
                             self.B.LBtn(newCoor)
                             processing = True
 
@@ -196,7 +193,6 @@ class Gongfang:
                 "gf_gfrwwc",
                 "hd",
                 "gf_kg",
-                "gf_gf",
                 "gf_xz",
                 "dh",
                 "dhda",
@@ -211,12 +207,23 @@ class Gongfang:
                 for item in xhList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item)
-                    if item == 'gf_kg' or item == 'gf_gf' or item == 'dh':
-                        btnCoor = self.matchTem(item, simi=0.9)
+                    compare = self.g.compare()
+                    if item == 'gf_kg' or item == 'dh' or item == 'gf_gfrwwc':
+                        btnCoor = self.matchTem(item, simi=0.92)
                     if btnCoor != 0:
                         if item == "hd":
-                            if self.g.compare() == True:
+                            if compare == True:
                                 self.B.RBtn()
+                                self.B.MBtn(900, 300)
+                                self.B.VBtn(-1, 20)
+
+                        elif item == 'gf_kg':
+                            if btnCoor[0][0] > 780:
+                                self.B.LBtn(btnCoor)
+                            else:
+                                self.B.RBtn()
+                                self.B.MBtn(157, 686)
+                                self.B.VBtn(-1, 10)
 
                         elif item == "dh" or item == "dhda":
                             while True:
@@ -267,16 +274,18 @@ class Gongfang:
                         else:
                             self.B.LBtn(btnCoor)
 
-                        sleep(1)
+                        sleep(0.2)
 
                     else:
                         if item == "gf_kg":
-                            if self.smc("hd", count=0) != 0:
-                                self.B.RBtn()
-                                self.B.MBtn(900, 300)
-                                self.B.VBtn(-1, 20)
-                            else:
-                                self.B.RBtn()
+                            self.smc('gf_gf', simi=0.9)
+                    #         if r == 0:
+                    #             if self.smc("hd", count=0) != 0:
+                    #                 self.B.RBtn()
+                    #                 self.B.MBtn(900, 300)
+                    #                 self.B.VBtn(-1, 20)
+                    #             else:
+                    #                 self.B.RBtn()
 
         res = self.kaogu()
         if res:

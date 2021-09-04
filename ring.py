@@ -1,7 +1,7 @@
 import time
 from time import sleep
 
-from cv2 import fastAtan2
+from cv2 import compare, fastAtan2
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
@@ -114,16 +114,26 @@ class Ring:
                             if page == 4:
                                 break
 
-                xhList = ["rw_jyl_wc", "rw_jyl", "gm", "gm_1", 'btgm', "dh", "sj"]
+                xhList = [
+                    "rw_jyl_wc", 'hd', "rw_jyl", "gm", "gm_1", 'btgm', "dh",
+                    "sj"
+                ]
 
                 while not complete or processing:
                     for item in xhList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
+                        compare = self.g.compare()
                         if item == 'dh' or item == 'rw_jyl':
                             btnCoor = self.matchTem(item, simi=0.94)
                         if btnCoor != 0:
-                            if item == 'rw_jyl_wc':
+                            if item == "hd":
+                                if compare == True:
+                                    self.B.RBtn()
+                                    self.B.MBtn(900, 300)
+                                    self.B.VBtn(-1, 20)
+
+                            elif item == 'rw_jyl_wc':
                                 complete = True
                                 processing = False
                                 break
@@ -134,7 +144,8 @@ class Ring:
                                     btnCoor = self.matchTem("dh", simi=0.94)
                                     if btnCoor != 0:
                                         newCoor = (
-                                            (btnCoor[0][0] + 14, btnCoor[0][1] + 64),
+                                            (btnCoor[0][0] + 14,
+                                             btnCoor[0][1] + 64),
                                             (87, 22),
                                         )
                                         self.B.LBtn(newCoor)
@@ -152,16 +163,7 @@ class Ring:
                             else:
                                 self.B.LBtn(btnCoor)
 
-                            sleep(1)
-                    
-                        else:
-                            if item == "rw_jyl" and self.smc('hd', count=0):
-                                if self.g.compare():
-                                    self.B.RBtn()
-                                    self.B.MBtn(900, 300)
-                                    self.B.VBtn(-1, 20)
-
-                        sleep(0.5)
+                            sleep(0.5)
 
             if complete:
                 log(f"账号: { self.name } 经验链结束")

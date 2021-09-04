@@ -41,7 +41,7 @@ class OCR():
     @retry(retry_on_result=retry_if_result_none, stop_max_attempt_number=2, wait_random_min=1000, wait_random_max=2000)
     def ocr(self):
         result = ""
-        token = "24.0058d2af14df9096c0f6ffb196941de9.2592000.1631454487.282335-18542329"
+        token = "24.90500a33ea24beeb48a647da8a3196b4.2592000.1633263259.282335-18542329"
         # request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic"
         # request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic"
 

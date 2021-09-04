@@ -73,7 +73,7 @@ ACCTZU = [
             'ZG_COUNT': 2,
             'ZG': False,
             "ZG_WC": None,
-            'FB': False,
+            'FB': True,
             'FB_WC': None,
             'CJMY': CJMY_STATUS,
             'NEXT': False
