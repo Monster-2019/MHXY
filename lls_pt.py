@@ -127,8 +127,8 @@ class LLSPT:
                 for item in fbList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item)
-                    if item == 'fb_ecy':
-                        btnCoor = self.matchTem(item, simi=0.95)
+                    if item == 'fb_ecy' or item == 'dh':
+                        btnCoor = self.matchTem(item, simi=0.9)
                     if btnCoor != 0:
                         if item == 'sb':
                             while True:
@@ -143,7 +143,6 @@ class LLSPT:
                         elif item == 'hd':
                             complete = True
                             processing = False
-                            self.g.setObj('config', 'FB_WC', True)
                             log(f"副本任务完成")
                             break
 
@@ -172,6 +171,7 @@ class LLSPT:
                             self.B.LBtn(btnCoor)
 
         if complete:
+            self.g.setObj('config', 'FB_WC', True)
             log(f"副本任务结束")
             return 1
         else:

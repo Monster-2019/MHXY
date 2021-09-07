@@ -19,7 +19,7 @@ class Mijing:
         self.processing = False
 
     def isComplete(self):
-        complete = False
+        complete = True
         self.B.Hotkey('hd')
         self.smc('rchd', sleepT=0.5)
         self.B.MBtn(590, 330)
@@ -29,23 +29,19 @@ class Mijing:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                self.cutScreen()
-                # res = self.matchTem('hd_mjxy') or self.matchTem('hd_mjxy1')
                 res = self.smc('hd_mjxy', simi=0.999, count=0)
-                print(res)
-                if res == 0:
-                    log(f"账号: { self.name } 秘境任务已完成")
-                    complete = True
-                    break
-                else:
+                if res != 0:
+                    complete = False
                     break
 
             else:
                 self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
-
         self.B.RBtn()
+
+        if complete:
+            log(f"账号: { self.name } 秘境任务已完成")
 
         return complete
 

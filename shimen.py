@@ -113,10 +113,6 @@ class Shimen:
                                         processing = True
                                         break
 
-                                # while True:
-                                #     if self.smc('dh_sm') != 0:
-                                #         break
-
                                 break
                         else:
                             page += 1

@@ -21,7 +21,7 @@ class Zhuogui:
         self.weekday = datetime.today().isoweekday()
 
     def isComplete(self):
-        complete = False
+        complete = True
         self.B.Hotkey('hd')
         self.smc('rchd', sleepT=0.5)
         self.B.MBtn(590, 330)
@@ -32,27 +32,22 @@ class Zhuogui:
             if n % 10 == 0:
                 sleep(0.5)
                 self.cutScreen()
-                res = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
+                res = self.matchTem('hd_zgrw', simi=0.999)
+                #  or self.matchTem('hd_zgrw1')
+                print(3, res)
                 if res != 0:
-                    self.cutScreen(res)
-                    res = self.matchTem('hd_no', simi=0.95)
-                    if res == 0:
-                        complete = True
-                        log(f"捉鬼任务已完成")
-                        self.g.setObj('config', 'ZG_WC', True)
-                        break
-                else:
-                    res = self.smc('zg_wc') or self.smc('zg_wc1')
-                    if res != 0:
-                        complete = True
-                        log(f"捉鬼任务已完成")
-                        self.g.setObj('config', 'ZG_WC', True)
-                        break
-            self.B.VBtn(-1)
+                    complete = False
+                    break
+
+            else:
+                self.B.VBtn(-1)
 
         self.B.VBtn(1, 21)
         self.B.RBtn()
 
+        if complete:
+            log('捉鬼任务已完成')
+        self.g.setObj('config', 'ZG_WC', complete)
         return complete
 
     def leader(self):
@@ -67,13 +62,13 @@ class Zhuogui:
             else:
                 break
 
-        complete = self.isComplete()
 
         ZG_COUNT = int(self.g.getObj('config', 'ZG_COUNT'))
-
         if ZG_COUNT == 0:
             complete = True
             self.g.setObj('config', 'ZG_WC', True)
+        else:
+            complete = self.isComplete()
 
         if not complete:
             if not self.g.getObj('config', 'TeamStatus'):
@@ -131,6 +126,8 @@ class Zhuogui:
                     for item in xlList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
+                        if item == 'zg_zg':
+                            btnCoor = self.matchTem(item, simi=0.9)
                         if btnCoor != 0:
                             if item == 'zg_zg':
                                 count += 1
@@ -222,6 +219,9 @@ class Zhuogui:
             for item in xlList:
                 self.cutScreen()
                 btnCoor = self.matchTem(item)
+                if item == 'zg_zg':
+                    btnCoor = self.matchTem(item, simi=0.9)
+                # compare = self.g.compare()
                 if btnCoor != 0:
                     if item == 'zg_zgrw':
                         self.B.LBtn(btnCoor)
@@ -246,10 +246,8 @@ class Zhuogui:
 
                     elif item == 'zg_zg':
                         self.B.LBtn(btnCoor)
-                        sleep(5)
-                        compareResult = self.g.compare(5)
-                        if compareResult:
-                            self.B.RBtn()
+                        # if compare:
+                        #     self.B.RBtn()
                         sleep(20)
 
                 else:
@@ -282,4 +280,5 @@ class Zhuogui:
 
 
 if __name__ == '__main__':
-    Zhuogui().start()
+    # Zhuogui().start()
+    Zhuogui().loop()

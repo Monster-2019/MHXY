@@ -71,7 +71,7 @@ ACCTZU = [
         'config': {
             'TeamStatus': False,
             'ZG_COUNT': 2,
-            'ZG': False,
+            'ZG': True,
             "ZG_WC": None,
             'FB': True,
             'FB_WC': None,

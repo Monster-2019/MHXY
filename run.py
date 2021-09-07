@@ -27,7 +27,6 @@ from kjxs import KJXS
 from lqhyd import LQHYD
 from upgrade import Upgrade
 from gengzhong import GengZhong
-from trading import Trading
 from clean import Clean
 from logout import Logout
 from login import Login
@@ -35,6 +34,8 @@ from sendMsg import SendMsg
 import config
 
 from public.glo import Glo
+from gongfang import Gongfang
+from ring import Ring
 
 
 class Run(object):
@@ -92,7 +93,7 @@ class Run(object):
         if myDict['ZG']:
             Zhuogui().start()
 
-        if myDict['FB']:
+        if myDict['FB'] and currentWeek <= 6:
             LLSPT().start()
 
         Lidui().start()
@@ -123,14 +124,14 @@ class Run(object):
 
         Clean().start()
 
+        # if level >= 60:
+        #     Gongfang().start()
+        #     Ring().start()
+
         # currentHour = int(time.strftime('%H', time.localtime()))
         # currentHour = 8
         # if int(level) < 69 and currentHour >= 8:
         # Upgrade().start()
-
-        # if myDict['CJMY']:
-        #     Bangpai().start()
-        #     Trading().start()
 
         count = self.g.get('count')
         log(f'账号：{name}, 当前等级{level}, 调用{ count }次接口')
@@ -159,7 +160,8 @@ class Run(object):
             import pythoncom
             pythoncom.CoInitialize()
             clearFile()
-            log('-------------------------------------开始执行--------------------------------------')
+            log('-------------------------------------开始执行--------------------------------------'
+                )
             self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
@@ -177,7 +179,8 @@ class Run(object):
 
                     p = Pool(5)
                     for i in range(5):
-                        p.apply_async(self.richang, args=(str(i), self.hwndList[i], lock, d))
+                        p.apply_async(self.richang,
+                                      args=(str(i), self.hwndList[i], lock, d))
                         sleep(1)
                     p.close()
                     p.join()

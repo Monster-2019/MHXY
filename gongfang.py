@@ -16,10 +16,11 @@ class Gongfang:
         self.cutScreen = CScreen(hwnd).cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC(hwnd).smc
+        self.complete = False
+        self.processing = False
 
     def kaogu(self):
         isStart = False
-        complete = False
         self.B.Hotkey("bb", sleepT=1)
 
         self.B.MBtn(707, 406)
@@ -75,6 +76,7 @@ class Gongfang:
                 r = 0
                 while True:
                     r = self.smc(item)
+                    print(item, r)
                     if r != 0:
                         if item == "lyc_zhsr":
                             sleep(15)
@@ -99,7 +101,26 @@ class Gongfang:
         return 1
 
     def isComplete(self):
-        complete = False
+        while True:
+            res = self.smc("hd", count=0)
+            if res == 0:
+                self.B.RBtn()
+            else:
+                self.B.MBtn(900, 300)
+                self.B.VBtn(-1, 20)
+                sleep(0.5)
+
+                r = self.smc('gf_kg', simi=0.92, count=0) or self.smc('gf_gf', simi=0.92, count=0)
+                if r != 0:
+                    if r[0][0] + r[1][0] > 780:
+                        log(f"账号: { self.name } 已领取工坊任务")
+                        self.processing = True
+                sleep(0.5)
+                break
+
+        if self.processing:
+            return False
+
         self.B.Hotkey("hd")
 
         self.smc("jjxx", sleepT=0.5)
@@ -114,7 +135,7 @@ class Gongfang:
                 res = self.smc("gf_wc", simi=0.999, count=0)
                 if res != 0:
                     log(f"账号: { self.name } 工坊任务已完成")
-                    complete = True
+                    self.complete = True
                     break
             else:
                 self.B.VBtn(-1)
@@ -123,41 +144,22 @@ class Gongfang:
 
         self.B.RBtn()
 
-        return complete
-
     def start(self):
-        processing = False
-        complete = False
+        self.sell()
+
+        return 0
         log(f"账号: { self.name } 开始工坊任务")
 
-        while True:
-            res = self.smc("hd", count=0)
-            if res == 0:
-                self.B.RBtn()
-            else:
-                self.B.MBtn(900, 300)
-                self.B.VBtn(-1, 20)
-                sleep(0.5)
+        self.isComplete()
 
-                r = self.smc('gf_kg', simi=0.92, count=0) or self.smc('gf_gf', simi=0.92, count=0)
-                if r != 0:
-                    if r[0][0] + r[1][0] > 780:
-                        log(f"账号: { self.name } 已领取工坊任务")
-                        processing = True
-                sleep(0.5)
-                break
-
-        if not processing:
-            complete = self.isComplete()
-
-        if processing or not complete:
+        if self.processing or not self.complete:
             print(f"账号: { self.name } 工坊任务进行中")
 
-            if not processing:
+            if not self.processing:
                 self.B.Hotkey("hd")
                 self.smc("jjxx", sleepT=0.5)
                 page = 1
-                while not processing:
+                while not self.processing:
                     self.cutScreen()
                     temCoor = self.matchTem("hd_gfrw", simi=0.998)
                     if temCoor != 0:
@@ -171,7 +173,7 @@ class Gongfang:
                         )
                         if btnCoor != 0:
                             self.B.LBtn(newCoor)
-                            processing = True
+                            self.processing = True
 
                             while True:
                                 r = self.smc("gf_lqrw")
@@ -190,8 +192,6 @@ class Gongfang:
                             break
 
             xhList = [
-                "gf_gfrwwc",
-                "hd",
                 "gf_kg",
                 "gf_xz",
                 "dh",
@@ -203,21 +203,15 @@ class Gongfang:
                 "sj",
             ]
 
-            while not complete or processing:
+            while not self.complete or self.processing:
                 for item in xhList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item)
-                    compare = self.g.compare()
-                    if item == 'gf_kg' or item == 'dh' or item == 'gf_gfrwwc':
-                        btnCoor = self.matchTem(item, simi=0.92)
+                    isHd = self.matchTem('hd')
+                    if item == 'gf_kg' or item == 'dh':
+                        btnCoor = self.matchTem(item, simi=0.9)
                     if btnCoor != 0:
-                        if item == "hd":
-                            if compare == True:
-                                self.B.RBtn()
-                                self.B.MBtn(900, 300)
-                                self.B.VBtn(-1, 20)
-
-                        elif item == 'gf_kg':
+                        if item == 'gf_kg':
                             if btnCoor[0][0] > 780:
                                 self.B.LBtn(btnCoor)
                             else:
@@ -246,14 +240,12 @@ class Gongfang:
                                     break
 
                         elif item == "gfgm":
+                            sleep(0.5)
                             self.B.LBtn(btnCoor)
-                            self.cutScreen()
-                            btnCoor = self.matchTem("gmsb")
-                            if btnCoor != 0:
+                            res = self.smc("gm_sb", count=0)
+                            if res == 0:
                                 newCoor = ((308, 245), (294, 75))
                                 self.B.LBtn(newCoor)
-                            else:
-                                break
 
                         elif item == "sy":
                             if (btnCoor[0][0] + btnCoor[1][0]) < 920:
@@ -261,37 +253,39 @@ class Gongfang:
 
                         elif item == "gfnot":
                             self.B.RBtn()
-                            complete = True
-                            processing = False
-                            break
-
-                        elif item == "gf_gfrwwc":
-                            print(f"账号: { self.name } 工坊任务完成")
-                            complete = True
-                            processing = False
+                            self.complete = True
+                            self.processing = False
                             break
 
                         else:
                             self.B.LBtn(btnCoor)
 
-                        sleep(0.2)
-
                     else:
-                        if item == "gf_kg":
-                            self.smc('gf_gf', simi=0.9)
-                    #         if r == 0:
-                    #             if self.smc("hd", count=0) != 0:
-                    #                 self.B.RBtn()
-                    #                 self.B.MBtn(900, 300)
-                    #                 self.B.VBtn(-1, 20)
-                    #             else:
-                    #                 self.B.RBtn()
+                        if item == "gf_kg" and isHd:
+                            self.B.RBtn()
+                            self.B.MBtn(900, 300)
+                            self.B.VBtn(-1, 20)
+
+                            res = self.smc('gf_kg', simi=0.9) or self.smc('gf_gf', simi=0.9)
+                            if res == 0:
+                                sleep(2)
+                                compare = False
+                                for i in range(5):
+                                    self.cutScreen()
+                                    compare = self.g.compare()
+                                    if compare:
+                                        break
+                                    sleep(0.5)
+
+                                if compare:
+                                    self.processing = False
+                                    self.isComplete()
 
         res = self.kaogu()
         if res:
             self.sell()
 
-        if complete:
+        if self.complete:
             print(f"账号: { self.name } 工坊任务结束")
             return 1
         else:

@@ -98,7 +98,8 @@ class Yunbiao:
                 while processing:
                     res = self.smc('hd', count=0)
                     if res != 0:
-                        btnCoor = self.matchTem('yb_ys')
+                        sleep(3)
+                        btnCoor = self.smc('yb_ys')
                         if btnCoor != 0:
                             ysStatus = False
                             while not ysStatus:
@@ -110,7 +111,7 @@ class Yunbiao:
                                         ysStatus = True
                                         log(f'账号: { self.name } 正在进行第{ count }轮运镖'
                                             )
-                                        sleep(60)
+                                        sleep(30)
 
                                         while True:
                                             res = self.smc('hd', count=0)
@@ -119,14 +120,11 @@ class Yunbiao:
 
                         else:
                             if count != 0:
-                                temCoor = self.matchTem('hd')
-                                if temCoor != 0:
-                                    btnCoor = self.matchTem('yb_ys')
-                                    if btnCoor == 0:
-                                        log(f"账号: { self.name } 运镖任务完成")
-                                        self.complete = True
-                                        processing = False
-                                        break
+                                log(f"账号: { self.name } 运镖任务完成")
+                                self.complete = True
+                                processing = False
+                                break
+
                     sleep(3)
 
             if self.complete:

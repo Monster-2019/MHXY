@@ -154,6 +154,7 @@ class Ring:
                                         break
 
                             elif item == "gm_1" or item == "btgm":
+                                sleep(1)
                                 self.B.LBtn(btnCoor)
                                 res = self.smc("gm_sb", count=0)
                                 if res == 0:
