@@ -152,7 +152,7 @@ class LLSPT:
                         elif item == 'dh':
                             while True:
                                 self.cutScreen()
-                                btnCoor = self.matchTem('dh')
+                                btnCoor = self.matchTem('dh', simi=0.9)
                                 if btnCoor != 0:
                                     newCoor = ((btnCoor[0][0] + 14,
                                                 btnCoor[0][1] + 64), (247, 41))

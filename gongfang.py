@@ -145,9 +145,6 @@ class Gongfang:
         self.B.RBtn()
 
     def start(self):
-        self.sell()
-
-        return 0
         log(f"账号: { self.name } 开始工坊任务")
 
         self.isComplete()
@@ -203,6 +200,7 @@ class Gongfang:
                 "sj",
             ]
 
+            count = 0
             while not self.complete or self.processing:
                 for item in xhList:
                     self.cutScreen()
@@ -262,25 +260,32 @@ class Gongfang:
 
                     else:
                         if item == "gf_kg" and isHd:
-                            self.B.RBtn()
-                            self.B.MBtn(900, 300)
-                            self.B.VBtn(-1, 20)
+                            if count == 3:
+                                self.complete = True
+                                self.processing = False
 
-                            res = self.smc('gf_kg', simi=0.9) or self.smc('gf_gf', simi=0.9)
-                            if res == 0:
-                                sleep(2)
-                                compare = False
-                                for i in range(5):
-                                    self.cutScreen()
-                                    compare = self.g.compare()
-                                    if compare:
-                                        break
-                                    sleep(0.5)
-
+                            compare = False
+                            for i in range(2):
+                                self.cutScreen()
+                                compare = self.g.compare()
                                 if compare:
-                                    self.processing = False
-                                    self.isComplete()
+                                    break
+                                sleep(0.5)
 
+                            if compare:
+                                print(123)
+                                self.B.RBtn()
+                                self.B.RBtn()
+                                sleep(0.5)
+                                self.B.MBtn(900, 300)
+                                self.B.VBtn(-1, 20)
+                                res = self.smc('gf_kg', simi=0.9) or self.smc('gf_gf', simi=0.9)
+                                if res == 0:
+                                    count += 1
+                                else:
+                                    count = 0
+
+        sleep(3)
         res = self.kaogu()
         if res:
             self.sell()

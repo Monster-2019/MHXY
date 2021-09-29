@@ -2,7 +2,9 @@ import requests
 
 
 def SendMsg(message):
-    url = 'https://sctapi.ftqq.com/SCT37678TkfAexmUvgQO2iJLCmQfLCq7o.send'
-    msg = message
-    param = {'title': msg}
+    url = 'https://qmsg.zendee.cn/send/ab1b6ba494c7891e83b3940859ab41ad'
+    param = {'msg': message}
     requests.post(url, param)
+
+if __name__ == '__main__':
+    SendMsg('test')

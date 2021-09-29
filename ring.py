@@ -75,6 +75,11 @@ class Ring:
             if not complete:
                 print(f"账号: { self.name } 经验链进行中")
 
+                self.B.Hotkey('zz', sleepT=1)
+                self.B.LBtn('zr3', sleepT=0.5)
+                self.B.LBtn('zr3', sleepT=0.5)
+                self.B.RBtn()
+
                 if not processing:
                     self.B.Hotkey("hd")
                     self.smc("jjxx", sleepT=0.5)
@@ -115,25 +120,19 @@ class Ring:
                                 break
 
                 xhList = [
-                    "rw_jyl_wc", 'hd', "rw_jyl", "gm", "gm_1", 'btgm', "dh",
-                    "sj"
+                    "rw_jyl_wc", "rw_jyl", "gm", "gm_1", 'btgm', "dh", "sj"
                 ]
 
+                count = 0
                 while not complete or processing:
                     for item in xhList:
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
-                        compare = self.g.compare()
+                        isHd = self.matchTem('hd')
                         if item == 'dh' or item == 'rw_jyl':
-                            btnCoor = self.matchTem(item, simi=0.94)
+                            btnCoor = self.matchTem(item, simi=0.9)
                         if btnCoor != 0:
-                            if item == "hd":
-                                if compare == True:
-                                    self.B.RBtn()
-                                    self.B.MBtn(900, 300)
-                                    self.B.VBtn(-1, 20)
-
-                            elif item == 'rw_jyl_wc':
+                            if item == 'rw_jyl_wc':
                                 complete = True
                                 processing = False
                                 break
@@ -141,7 +140,7 @@ class Ring:
                             elif item == "dh":
                                 while True:
                                     self.cutScreen()
-                                    btnCoor = self.matchTem("dh", simi=0.94)
+                                    btnCoor = self.matchTem("dh", simi=0.9)
                                     if btnCoor != 0:
                                         newCoor = (
                                             (btnCoor[0][0] + 14,
@@ -165,6 +164,35 @@ class Ring:
                                 self.B.LBtn(btnCoor)
 
                             sleep(0.5)
+
+                        else:
+                            if item == 'rw_jyl' and isHd:
+                                if count == 3:
+                                    complete = True
+                                    processing = False
+
+                                compare = False
+                                for i in range(3):
+                                    self.cutScreen()
+                                    compare = self.g.compare()
+                                    if compare:
+                                        break
+                                    sleep(0.5)
+
+                                if compare:
+                                    print(123)
+                                    self.B.RBtn()
+                                    self.B.RBtn()
+                                    sleep(0.5)
+                                    self.B.MBtn(900, 300)
+                                    self.B.VBtn(-1, 20)
+                                    res = self.smc('rw_jyl', simi=0.9)
+                                    if res == 0:
+                                        count += 1
+                                    else:
+                                        count = 0
+
+                        sleep(0.5)
 
             if complete:
                 log(f"账号: { self.name } 经验链结束")

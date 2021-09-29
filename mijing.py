@@ -97,16 +97,20 @@ class Mijing:
                                 break
 
                 xhList = [
-                    'mj_mjxy', 'mj_jr', 'qd', 'mj_mrh', 'mj_yjf', 'mj_nz',
-                    'mj_tz'
+                    'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_nz', 'mj_tz'
                 ]
+                # 'mj_mrh', 'mj_yjf', 'mj_esg', 
                 if self.processing:
                     while self.processing:
                         for item in xhList:
                             res = self.smc(item, sleepT=1)
-                            if res != 0 and item == 'mj_tz':
-                                self.processing = False
-                                break
+                            if res != 0:
+                                if item == 'mj_one':
+                                    self.B.LBtn(((res[0][0] + 46, res[0][1] - 60), res[1]))
+
+                                if item == 'mj_tz':
+                                    self.processing = False
+                                    break
 
                     self.processing = True
 

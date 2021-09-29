@@ -176,15 +176,18 @@ class Shimen:
                                         break
 
                             elif item == "btgm" or item == "gfgm":
+                                sleep(1)
                                 newCoor = ((308, 245), (294, 75))
                                 self.B.LBtn(newCoor)
                                 self.B.LBtn(btnCoor)
+                                self.B.RBtn()
 
                             elif item == "sy":
                                 if (btnCoor[0][0] + btnCoor[1][0]) < 920:
                                     self.B.LBtn(btnCoor)
 
                             elif item == "sm_mpgx":
+                                self.smc('sm_jl')
                                 self.B.RBtn()
                                 print(f"账号: { self.name } 师门任务完成")
                                 processing = False

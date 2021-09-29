@@ -40,7 +40,8 @@ class Glo:
     def compare(self):
         a = np.array(self.get("oldCoor"))
         b = np.array(self.get("newCoor"))
-        return (a == b).all()
+        # print((a == b).sum())
+        return (a == b).any()
 
 
 if __name__ == "__main__":

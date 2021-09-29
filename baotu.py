@@ -65,17 +65,26 @@ class Baotu:
 
             while not empty:
                 while not useComplete:
-                    btnCoor = self.smc('sy')
-                    compare = self.g.compare()
+                    btnCoor = self.smc('sy', count=0)
                     if btnCoor != 0:
                         if btnCoor[0][0] + btnCoor[1][0] < 920:
                             count += 1
                             self.B.LBtn(btnCoor)
                             sleep(4)
 
-                    elif btnCoor == 0 and compare and self.smc('hd', count=0) != 0:
-                        break
+                    else:
+                        if self.smc('hd', count=0):
+                            compare = False
+                            for i in range(3):
+                                self.cutScreen()
+                                compare = self.g.compare()
+                                if compare:
+                                    break
+                                sleep(0.5)
 
+                            if compare:
+                                break
+                                
                     sleep(1)
 
                 empty = self.empty()
