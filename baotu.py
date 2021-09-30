@@ -129,21 +129,17 @@ class Baotu:
             t.start()
             log(f"账号: { self.name } 开始宝图任务")
 
-            while True:
-                res = self.smc('hd', count=0)
-                if res == 0:
-                    self.B.RBtn()
-                else:
-                    self.B.MBtn(900, 300)
-                    self.B.VBtn(1, 10)
-                    sleep(0.5)
+            while self.smc('hd', count=0) == 0:
+                self.B.RBtn()
+            
+            self.B.MBtn(900, 300)
+            self.B.VBtn(1, 20)
+            sleep(0.5)
 
-                    temCoor = self.matchTem('bt_btrw', simi=0.95)
-                    if temCoor != 0:
-                        print(f"账号: { self.name } 已领取宝图任务")
-                        self.processing = True
-                    sleep(0.5)
-                    break
+            if self.matchTem('bt_btrw', simi=0.95):
+                print(f"账号: { self.name } 已领取宝图任务")
+                self.processing = True
+            sleep(0.5)
 
             if not self.processing:
                 self.complete = self.isComplete()
@@ -191,10 +187,11 @@ class Baotu:
                 while self.processing:
                     for item in xhList:
                         self.cutScreen()
-                        btnCoor = self.matchTem(item)
                         isHd = self.matchTem('hd')
                         if item == 'bt_btrw':
                             btnCoor = self.matchTem(item, simi=0.95)
+                        else:
+                            btnCoor = self.matchTem(item)
                         if btnCoor != 0:
                             if item == 'bt_cbthdwc':
                                 self.complete = True

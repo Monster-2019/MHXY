@@ -69,7 +69,7 @@ class SJQY:
                         temCoor = self.matchTem('hd_sjqy') or self.matchTem('hd_sjqy1')
                         if temCoor != 0:
                             btnCoor = self.matchTem('cj', 'imgTem/hd_sjqy') or self.matchTem('cj', 'imgTem/hd_sjqy1')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), (btnCoor[1][0], btnCoor[1][1] / 2))
                             if btnCoor != 0:
                                 self.B.LBtn(newCoor)
                                 processing = True

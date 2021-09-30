@@ -19,7 +19,6 @@ def retry_if_error(exception):
 class Info():
     def __init__(self):
         self.g = Glo()
-        # self.g.set('windowClass', windowClass)
         self.B = Btn()
         self.ocr = OCR().ocr
         self.cutScreen = CScreen().cutScreen
