@@ -51,41 +51,6 @@ class Login(object):
         win32api.keybd_event(self.asc['CR'],0,0,0)
         win32api.keybd_event(self.asc['CR'],0,win32con.KEYEVENTF_KEYUP,0)
 
-    # def filtter(self, hwnd, lparam):
-    #     if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
-    #         self.hwndList.append(hwnd)
-
-    # def openGame(self, arr=[0,1,2,3,4]):
-    #     os.system('start C:\\Users\\dongx\\Desktop\\SSKMH.exe')
-    #     sleep(5)
-    #     win32gui.EnumWindows(self.filtter, 0)
-    #     # 遍历多开器的子窗口，设置多开器句柄
-    #     hwndChildList = []
-    #     win32gui.EnumChildWindows(self.hwnd, lambda hwnd, param: param.append(hwnd), hwndChildList)
-    #     self.hwnd = hwndChildList[len(hwndChildList) - 1]
-    #     self.SetForegroundWindowMy(self.hwnd)
-    #     self.cutScreen = CScreen().cutScreen
-    #     self.mymatchTem = Match().matchTem
-    #     self.B = Btn()
-    #     self.smc = SMC().smc
-    #     for i in arr:
-    #         n = 0
-    #         self.B.LBtn(((638, 483), (178, 38)))
-    #         while True:
-    #             if n > 7:
-    #                 self.B.LBtn(((638, 483), (178, 38)))
-    #                 n = 0
-
-    #             hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + str(i), '《梦幻西游》手游')
-    #             if hwnd != 0:
-    #                 arr.remove(i)
-    #                 sleep(0.5)
-    #                 break
-    #             n += 1
-
-    #     sleep(1)
-    #     os.system('taskkill /F /IM SSKMH.exe')
-
     def login(self, arr=[0,1,2,3,4]):
         openArr = []
         loginArr = []
@@ -94,13 +59,7 @@ class Login(object):
             hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
             if hwnd != 0:
                 loginArr.append(item)
-            # else:
-            #     openArr.append(item)
-            #     loginArr.append(item)
-            
-
-        # if len(openArr) > 0:
-        #     self.openGame(openArr)
+                
         print(loginArr)
 
         for i in loginArr:
