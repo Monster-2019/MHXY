@@ -124,8 +124,8 @@ class Run(object):
 
         Clean().start()
 
-        # if level >= 60:
-            # Gongfang().start()
+        if level >= 60:
+            Gongfang().start()
             # Ring().start()
 
         # currentHour = int(time.strftime('%H', time.localtime()))

@@ -87,7 +87,7 @@ class CScreen(object):
             img = cv.imread('./images/screen' + self.index  + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
             # self.g.set('newCoor', [img[200, 200], img[560, 815]])
-            self.g.set('newCoor', [np.array(img[200, 200]).sum(), np.array(img[560, 815]).sum()])
+            self.g.set('newCoor', [np.array(img[200, 200]).sum(), np.array(img[560, 200]).sum(), np.array(img[200, 815]).sum(), np.array(img[560, 815]).sum()])
             # print([np.array(img[200, 200]).sum(), np.array(img[560, 815]).sum()])
             
 

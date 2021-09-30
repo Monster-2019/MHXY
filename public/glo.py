@@ -41,7 +41,8 @@ class Glo:
         a = np.array(self.get("oldCoor"))
         b = np.array(self.get("newCoor"))
         # print((a == b).sum())
-        return (a == b).any()
+        # return (a == b).any()
+        return (a == b).sum() >= 3
 
 
 if __name__ == "__main__":
