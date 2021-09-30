@@ -73,9 +73,12 @@ class Gongfang:
         isSell = False
         while not isSell:
             for item in xhList:
+                simi = 0.999
                 r = 0
                 while True:
-                    r = self.smc(item)
+                    if item == 'dt_lyc':
+                        simi = 0.99
+                    r = self.smc(item, simi=simi)
                     print(item, r)
                     if r != 0:
                         if item == "lyc_zhsr":

@@ -47,9 +47,6 @@ class Guajiang:
                 sleep(0.3)
 
         sleep(0.5)
-        self.B.RBtn()
-        self.B.RBtn()
-        self.B.RBtn()
 
         while True:
             self.cutScreen()

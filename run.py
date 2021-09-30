@@ -3,11 +3,9 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 from apscheduler.schedulers.blocking import BlockingScheduler
-from multiprocessing import Pool, Lock, Manager, Queue
+from multiprocessing import Pool, Manager
 from datetime import datetime
 from time import sleep
-import requests
-import random
 import os
 import traceback
 import win32gui
@@ -71,12 +69,10 @@ class Run(object):
         else:
             SendMsg(msg)
 
-    def richang(self, screen, windowClass, lock, myDict):
+    def richang(self, lock, myDict):
         currentHour = datetime.today().hour
         currentWeek = datetime.today().isoweekday()
         g = Glo()
-        g.set('screen', screen)
-        g.set('windowClass', windowClass)
         g.set('lock', lock)
         g.set('config', myDict)
 
@@ -126,7 +122,9 @@ class Run(object):
 
         if level >= 60:
             Gongfang().start()
-            # Ring().start()
+
+        if level >= 60 and level <= 69:
+            Ring().start()
 
         # currentHour = int(time.strftime('%H', time.localtime()))
         # currentHour = 8
@@ -138,9 +136,9 @@ class Run(object):
 
         Logout().start(myDict['NEXT'])
 
-    def filtter(self, hwnd, lparam):
-        if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
-            self.hwndList.append(hwnd)
+    # def filtter(self, hwnd, lparam):
+    #     if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
+    #         self.hwndList.append(hwnd)
 
     def getHwndList(self):
         isStart = False
@@ -179,8 +177,7 @@ class Run(object):
 
                     p = Pool(5)
                     for i in range(5):
-                        p.apply_async(self.richang,
-                                      args=(str(i), self.hwndList[i], lock, d))
+                        p.apply_async(self.richang, lock, d)
                         sleep(1)
                     p.close()
                     p.join()

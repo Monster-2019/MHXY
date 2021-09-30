@@ -52,12 +52,8 @@ class LLSPT:
         complete = False
         processing = False
 
-        while True:
-            res = self.smc('hd', count=0)
-            if res == 0:
-                self.B.RBtn()
-            else:
-                break
+        while self.smc('hd', count=0) == 0:
+            self.B.RBtn()
 
         complete = self.isComplete()
 
@@ -126,11 +122,36 @@ class LLSPT:
             while processing:
                 for item in fbList:
                     self.cutScreen()
-                    btnCoor = self.matchTem(item)
                     if item == 'fb_ecy' or item == 'dh':
                         btnCoor = self.matchTem(item, simi=0.9)
+                    else:
+                        btnCoor = self.matchTem(item)
                     if btnCoor != 0:
-                        if item == 'sb':
+                        if item == 'fb_ecy':
+                            self.B.LBtn(btnCoor, sleepT=3)
+
+                        elif item == 'fb_tgjq':
+                            self.B.LBtn(btnCoor, count=2)
+
+                        elif item == 'djjx':
+                            while True:
+                                res = self.smc('djjx', sleepT=0.3)
+                                if res == 0:
+                                    break
+
+                        elif item == 'dh':
+                            while True:
+                                self.cutScreen()
+                                btnCoor = self.matchTem('dh', simi=0.9)
+                                if btnCoor != 0:
+                                    newCoor = ((btnCoor[0][0] + 14,
+                                                btnCoor[0][1] + 64), (247, 41))
+                                    self.B.LBtn(newCoor)
+                                    sleep(0.3)
+                                else:
+                                    break
+
+                        elif item == 'sb':
                             while True:
                                 self.smc('sb', sleepT=0.5)
                                 self.B.Hotkey('dt', sleepT=1)
@@ -146,29 +167,6 @@ class LLSPT:
                             log(f"副本任务完成")
                             break
 
-                        elif item == 'fb_ecy':
-                            self.B.LBtn(btnCoor, sleepT=3)
-
-                        elif item == 'dh':
-                            while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem('dh', simi=0.9)
-                                if btnCoor != 0:
-                                    newCoor = ((btnCoor[0][0] + 14,
-                                                btnCoor[0][1] + 64), (247, 41))
-                                    self.B.LBtn(newCoor)
-                                    sleep(0.3)
-                                else:
-                                    break
-
-                        elif item == 'djjx':
-                            while True:
-                                res = self.smc('djjx', sleepT=0.3)
-                                if res == 0:
-                                    break
-
-                        else:
-                            self.B.LBtn(btnCoor)
 
         if complete:
             self.g.setObj('config', 'FB_WC', True)
