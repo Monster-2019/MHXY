@@ -22,5 +22,5 @@ def log(msg, err = False):
         logger.info(msg)
 
 def clearFile():
-    file = open(str(today) + '.txt', 'w')
+    file = open('./txt/' + str(today) + '.txt', 'w')
     file.truncate()
