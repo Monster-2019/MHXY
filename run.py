@@ -69,10 +69,12 @@ class Run(object):
         else:
             SendMsg(msg)
 
-    def richang(self, lock, myDict):
+    def richang(self, screen, windowClass, lock, myDict):
         currentHour = datetime.today().hour
         currentWeek = datetime.today().isoweekday()
         g = Glo()
+        g.set('screen', screen)
+        g.set('windowClass', windowClass)
         g.set('lock', lock)
         g.set('config', myDict)
 
@@ -120,11 +122,11 @@ class Run(object):
 
         Clean().start()
 
-        if level >= 60:
-            Gongfang().start()
+        # if level >= 60:
+            # Gongfang().start()
 
-        if level >= 60 and level <= 69:
-            Ring().start()
+        # if level >= 60 and level <= 69:
+            # Ring().start()
 
         # currentHour = int(time.strftime('%H', time.localtime()))
         # currentHour = 8
@@ -177,8 +179,9 @@ class Run(object):
 
                     p = Pool(5)
                     for i in range(5):
-                        p.apply_async(self.richang, lock, d)
-                        sleep(1)
+                        p.apply_async(self.richang,
+                                      args=(str(i), self.hwndList[i], lock, d))
+                        sleep(2)
                     p.close()
                     p.join()
 
@@ -192,8 +195,9 @@ class Run(object):
             log('运行完成')
             self.pushMsg(0, True)
 
-        except BaseException as e:
-            self.pushMsg(-1, True)
+        except Exception as e:
+            print(e)
+            # self.pushMsg(-1, True)
 
     def timingStart(self, timingTime):
         time = timingTime.split(':')

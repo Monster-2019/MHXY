@@ -80,20 +80,20 @@ ACCTZU = [
         },
         'acctList': ACCTIFNO_LIST[0]
     },
-    {
-        'status': False,
-        'config': {
-            'TeamStatus': False,
-            'ZG_COUNT': 2,
-            'ZG': True,
-            "ZG_WC": None,
-            'FB': False,
-            'FB_WC': None,
-            'CJMY': CJMY_STATUS,
-            'NEXT': False
-        },
-        'acctList': ACCTIFNO_LIST[1]
-    },
+    # {
+    #     'status': False,
+    #     'config': {
+    #         'TeamStatus': False,
+    #         'ZG_COUNT': 2,
+    #         'ZG': True,
+    #         "ZG_WC": None,
+    #         'FB': False,
+    #         'FB_WC': None,
+    #         'CJMY': CJMY_STATUS,
+    #         'NEXT': False
+    #     },
+    #     'acctList': ACCTIFNO_LIST[1]
+    # },
     # {
     #     'status': True,
     #     'config': {
