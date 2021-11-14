@@ -103,91 +103,9 @@ class Zhuogui:
                 self.B.RBtn()
 
             xlList = ['zg_zg', 'zg_zgwc']
-            count = 0
             total = 0
             start = False
             end = False
-            if self.weekday > 5 and ZG_COUNT < 2:
-                totalMax = 5
-
-            # while processing:
-            #     if not start:
-            #         res = self.smc('zg_zgrw')
-            #         if res != 0:
-            #             self.B.RBtn()
-            #             self.B.RBtn()
-            #             count = 0
-            #             total += 1
-            #             start = True
-
-            #     else:
-            #         for item in xlList:
-            #             self.cutScreen()
-            #             btnCoor = self.matchTem(item)
-            #             if item == 'zg_zg':
-            #                 btnCoor = self.matchTem(item, simi=0.9)
-            #             if btnCoor != 0:
-            #                 if item == 'zg_zg':
-            #                     count += 1
-            #                     if total > ZG_COUNT and count > totalMax:
-            #                         self.B.LBtn(((511, 384), (2, 2)))
-            #                         self.B.LBtn(((511, 384), (2, 2)))
-            #                         isHC = False
-            #                         while True:
-            #                             self.B.Hotkey('dt')
-            #                             hc = self.smc('dt_cac', sleepT=2)
-            #                             isHC = isHC == True or (isHC == False
-            #                                                     and hc != 0)
-            #                             res = self.smc('hd', count=0)
-            #                             if hc and res != 0:
-            #                                 break
-
-            #                         sleep(3)
-
-            #                         complete = True
-            #                         processing = False
-            #                         self.g.setObj('config', 'ZG_WC', True)
-            #                         log(f"捉鬼任务完成")
-            #                         sleep(2)
-            #                         break
-
-            #                     else:
-            #                         self.B.LBtn(btnCoor)
-            #                         print(f'开始刷第{count}次鬼')
-            #                         sleep(30)
-
-            #                 elif item == 'zg_zgwc':
-            #                     if total < ZG_COUNT or (total == ZG_COUNT
-            #                                             and totalMax != 0):
-            #                         btnCoor = self.matchTem('qd')
-            #                         if btnCoor != 0:
-            #                             self.B.LBtn(btnCoor)
-            #                             start = False
-
-            #                     else:
-            #                         btnCoor = self.matchTem('qx')
-            #                         if btnCoor != 0:
-            #                             self.B.LBtn(btnCoor)
-            #                             complete = True
-            #                             processing = False
-            #                             self.g.setObj('config', 'ZG_WC', True)
-            #                             log(f"捉鬼任务完成")
-            #                             break
-
-            #             else:
-            #                 if item == 'zg_zg' and start == True:
-            #                     res = self.smc('hd', count=0)
-            #                     if res != 0:
-            #                         # self.B.LBtn(((511, 384), (2, 2)))
-            #                         # self.B.LBtn(((511, 384), (2, 2)))
-            #                         tem = self.smc('fb_tgjq', count=0)
-            #                         if tem != 0:
-            #                             self.B.Hotkey('dt')
-            #                             self.smc('dt_cac', sleepT=1)
-            #                         else:
-            #                             self.B.MBtn(900, 300)
-            #                             self.B.VBtn(1, 10)
-
 
             for i in range(ZG_COUNT):
                 while not start:
@@ -197,6 +115,7 @@ class Zhuogui:
                         self.B.RBtn()
                         count = 0
                         total += 1
+                        print(f'开始第{total}轮捉鬼')
                         start = True
                         end = False
                     else:
@@ -215,9 +134,7 @@ class Zhuogui:
                             btnCoor = self.matchTem(item)
                         if btnCoor != 0:
                             if item == 'zg_zg':
-                                count += 1
                                 self.B.LBtn(btnCoor)
-                                print(f'开始刷第{count}次鬼')
                                 sleep(30)
 
                             elif item == 'zg_zgwc':
@@ -230,6 +147,8 @@ class Zhuogui:
                                     if self.smc('qx') != 0:
                                         complete = True
                                         processing = False
+                                        start = False
+                                        end = True
                                         self.g.setObj('config', 'ZG_WC', True)
                                         log(f"捉鬼任务完成")
                                         break
@@ -238,13 +157,6 @@ class Zhuogui:
                             if item == 'zg_zg' and start == True:
                                 res = self.smc('hd', count=0)
                                 if res != 0:
-                                    # self.B.LBtn(((511, 384), (2, 2)))
-                                    # self.B.LBtn(((511, 384), (2, 2)))
-                                    # tem = self.smc('fb_tgjq', count=0)
-                                    # if tem != 0:
-                                        # self.B.Hotkey('dt')
-                                        # self.smc('dt_cac', sleepT=1)
-                                    # else:
                                     self.B.MBtn(900, 300)
                                     self.B.VBtn(1, 20)
 

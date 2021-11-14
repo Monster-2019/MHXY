@@ -121,6 +121,8 @@ class Mijing:
                     for item in xhList:
                         if self.complete:
                             self.smc('mj_lk')
+                            continue
+                        
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
                         if btnCoor != 0:

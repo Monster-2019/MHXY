@@ -3,7 +3,7 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 from apscheduler.schedulers.blocking import BlockingScheduler
-from multiprocessing import Pool, Manager
+from multiprocessing import Pool, Manager, Lock
 from datetime import datetime
 from time import sleep
 import os
@@ -178,6 +178,7 @@ class Run(object):
                         d[key] = config.ACCTZU[index]['config'][key]
 
                     p = Pool(5)
+                    print(456)
                     for i in range(5):
                         p.apply_async(self.richang,
                                       args=(str(i), self.hwndList[i], lock, d))
