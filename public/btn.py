@@ -38,6 +38,7 @@ class Btn:
         else:
             # self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.g.get('windowClass'), '《梦幻西游》手游')
             self.hwnd = self.g.get('windowClass')
+        self.lock = self.g.get('lock')
 
     def LBtn(self, btnCoor, sleepT=0.1, count=1):
         Coor = self.fixedCoor.get(btnCoor)
@@ -118,19 +119,31 @@ class Btn:
                                          win32api.MAKELONG(e[0], startH))
                     sleep(0.05)
 
+    # def Hotkey(self, char, sleepT=0.5):
+    #     anjian = self.jwm[char]
+    #     lock = self.g.get('lock')
+    #     lock.acquire()
+    #     win32api.keybd_event(18, 0, 0, 0)
+    #     win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, anjian, 0)
+    #     sleep(0.05)
+    #     win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+    #     win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, anjian, 0)
+    #     win32api.keybd_event(18, 0, 0, 0)
+    #     win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+    #     lock.release()
+    #     sleep(sleepT)
+
     def Hotkey(self, char, sleepT=0.5):
         anjian = self.jwm[char]
-        lock = self.g.get('lock')
-        lock.acquire()
-        win32api.keybd_event(18, 0, 0, 0)
+        if self.lock != None:
+            self.lock.acquire()
+        win32api.SendMessage(self.hwnd, win32con.WM_SYSKEYDOWN, 164, 0)
         win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, anjian, 0)
-        sleep(0.05)
-        win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+        win32gui.SendMessage(self.hwnd, win32con.WM_SYSCHAR, anjian, 0)
         win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, anjian, 0)
-        win32api.keybd_event(18, 0, 0, 0)
-        win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
-        sleep(0.05)
-        lock.release()
+        win32api.SendMessage(self.hwnd, win32con.WM_SYSKEYUP, 164, 0)
+        if self.lock != None:
+            self.lock.release()
         sleep(sleepT)
 
 
