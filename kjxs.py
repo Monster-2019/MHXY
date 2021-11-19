@@ -69,12 +69,13 @@ class KJXS:
                         temCoor = self.matchTem('hd_kjxs') or self.matchTem('hd_kjxs2')
                         if temCoor != 0:
                             btnCoor = self.matchTem('cj', 'imgTem/hd_kjxs') or self.matchTem('cj', 'imgTem/hd_kjxs2')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), (btnCoor[1][0], int(btnCoor[1][1] / 2)))
+                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                             if btnCoor != 0:
-                                self.B.LBtn(newCoor)
-                                processing = True
-                                sleep(2)
-                                break
+                                self.B.LBtn(newCoor, sleepT=1)
+                                if self.smc('kj_start', count=0) != 0:
+                                    processing = True
+                                    sleep(2)
+                                    break
                         else:
                             page += 1
                             self.B.VBtn(-1, 10)

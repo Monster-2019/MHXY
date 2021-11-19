@@ -129,6 +129,7 @@ class Btn:
         win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, anjian, 0)
         win32api.keybd_event(18, 0, 0, 0)
         win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
+        sleep(0.05)
         lock.release()
         sleep(sleepT)
 

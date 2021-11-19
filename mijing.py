@@ -114,14 +114,13 @@ class Mijing:
 
                     self.processing = True
 
-                xhList = ['hd', 'sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd']
+                xhList = ['hd', 'sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
                 # , 'mj_lq', 'mj_gb'
 
                 while self.processing:
                     for item in xhList:
                         if self.complete:
                             self.smc('mj_lk')
-                            continue
                         
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
