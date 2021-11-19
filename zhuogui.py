@@ -113,7 +113,6 @@ class Zhuogui:
                     if res != 0:
                         self.B.RBtn()
                         self.B.RBtn()
-                        count = 0
                         total += 1
                         print(f'开始第{total}轮捉鬼')
                         start = True
