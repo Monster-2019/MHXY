@@ -164,7 +164,7 @@ class Shimen:
 
                             elif item == "djjx":
                                 while True:
-                                    res = self.smc("djjx", simi=0.9, sleepT=0.3)
+                                    res = self.smc("djjx", simi=0.9, sleepT=1)
                                     if res == 0:
                                         break
 

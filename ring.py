@@ -76,8 +76,8 @@ class Ring:
                 print(f"账号: { self.name } 经验链进行中")
 
                 self.B.Hotkey('zz', sleepT=1)
-                self.B.LBtn('zr3', sleepT=0.5)
-                self.B.LBtn('zr3', sleepT=0.5)
+                self.B.LBtn('zr1', sleepT=0.5)
+                self.B.LBtn('zr1', sleepT=0.5)
                 self.B.RBtn()
 
                 if not processing:

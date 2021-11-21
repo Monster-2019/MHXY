@@ -73,13 +73,13 @@ class Gongfang:
         isSell = False
         while not isSell:
             for item in xhList:
-                simi = 0.999
                 r = 0
                 while True:
-                    if item == 'dt_lyc':
+                    if item == 'zb_lyc':
                         simi = 0.99
-                    r = self.smc(item, simi=simi)
-                    print(item, r)
+                        r = self.smc(item, simi=0.99)
+                    else:
+                        r = self.smc(item)
                     if r != 0:
                         if item == "lyc_zhsr":
                             sleep(15)
@@ -148,6 +148,8 @@ class Gongfang:
         self.B.RBtn()
 
     def start(self):
+        self.sell()
+        return
         log(f"账号: { self.name } 开始工坊任务")
 
         self.isComplete()
@@ -276,7 +278,6 @@ class Gongfang:
                                 sleep(0.5)
 
                             if compare:
-                                print(123)
                                 self.B.RBtn()
                                 self.B.RBtn()
                                 sleep(0.5)

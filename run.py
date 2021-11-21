@@ -70,73 +70,76 @@ class Run(object):
             SendMsg(msg)
 
     def richang(self, screen, windowClass, lock, myDict):
-        currentHour = datetime.today().hour
-        currentWeek = datetime.today().isoweekday()
-        g = Glo()
-        g.set('screen', screen)
-        g.set('windowClass', windowClass)
-        g.set('lock', lock)
-        g.set('config', myDict)
+        try:
+            currentHour = datetime.today().hour
+            currentWeek = datetime.today().isoweekday()
+            g = Glo()
+            g.set('screen', screen)
+            g.set('windowClass', windowClass)
+            g.set('lock', lock)
+            g.set('config', myDict)
 
-        Info().getInfo()
+            Info().getInfo()
 
-        name = self.g.get('name')
-        level = self.g.get('level')
+            name = self.g.get('name')
+            level = self.g.get('level')
 
-        Guajiang().start()
+            Guajiang().start()
 
-        if level >= 60:
-            GengZhong().start()
+            if level >= 60:
+                GengZhong().start()
 
-        if myDict['ZG']:
-            Zhuogui().start()
+            if myDict['ZG']:
+                Zhuogui().start()
 
-        if myDict['FB'] and currentWeek <= 6:
-            LLSPT().start()
+            if myDict['FB'] and currentWeek <= 6:
+                LLSPT().start()
 
-        Lidui().start()
+            Lidui().start()
 
-        if level >= 60:
-            GengZhong().start()
+            if level >= 60:
+                GengZhong().start()
 
-        Shimen().start()
+            Shimen().start()
 
-        Baotu().start()
+            Baotu().start()
 
-        Mijing().start()
+            Mijing().start()
 
-        currentHour = datetime.today().hour
-        if currentHour >= 11:
-            SJQY().start()
+            currentHour = datetime.today().hour
+            if currentHour >= 11:
+                SJQY().start()
 
-        currentHour = datetime.today().hour
-        if currentWeek <= 5 and currentHour >= 17:
-            KJXS().start()
+            currentHour = datetime.today().hour
+            if currentWeek <= 5 and currentHour >= 17:
+                KJXS().start()
 
-        Yunbiao().start()
+            Yunbiao().start()
 
-        LQHYD().start()
+            LQHYD().start()
 
-        if level >= 60:
-            GengZhong().start()
+            if level >= 60:
+                GengZhong().start()
 
-        Clean().start()
+            Clean().start()
 
-        # if level >= 60:
-            # Gongfang().start()
+            if level >= 60:
+                Gongfang().start()
 
-        # if level >= 60 and level <= 69:
-            # Ring().start()
+            if level >= 60 and level <= 69:
+                Ring().start()
 
-        # currentHour = int(time.strftime('%H', time.localtime()))
-        # currentHour = 8
-        # if int(level) < 69 and currentHour >= 8:
-        # Upgrade().start()
+            # currentHour = int(time.strftime('%H', time.localtime()))
+            # currentHour = 8
+            # if int(level) < 69 and currentHour >= 8:
+            # Upgrade().start()
 
-        count = self.g.get('count')
-        log(f'账号：{name}, 当前等级{level}, 调用{ count }次接口')
+            count = self.g.get('count')
+            log(f'账号：{name}, 当前等级{level}, 调用{ count }次接口')
 
-        Logout().start(myDict['NEXT'])
+            Logout().start(myDict['NEXT'])
+        except Exception as e:
+            print('日常错误:', e)
 
     # def filtter(self, hwnd, lparam):
     #     if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
@@ -181,7 +184,6 @@ class Run(object):
                     for i in range(5):
                         p.apply_async(self.richang,
                                       args=(str(i), self.hwndList[i], lock, d))
-                        sleep(2)
                     p.close()
                     p.join()
 
