@@ -148,8 +148,6 @@ class Gongfang:
         self.B.RBtn()
 
     def start(self):
-        self.sell()
-        return
         log(f"账号: { self.name } 开始工坊任务")
 
         self.isComplete()
@@ -262,6 +260,8 @@ class Gongfang:
 
                         else:
                             self.B.LBtn(btnCoor)
+
+                        sleep(0.5)
 
                     else:
                         if item == "gf_kg" and isHd:

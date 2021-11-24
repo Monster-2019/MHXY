@@ -11,9 +11,12 @@ class Match:
     default_simi = config.GLOBAL_SIMI
     simi = default_simi
 
-    def __init__(self):
+    def __init__(self, img = 0):
         g = Glo()
-        self.screen = "screen" + g.get("screen")
+        if img == 0:
+            self.screen = "screen" + g.get("screen")
+        else:
+            self.screen = img
 
     def imgProcess(self, img, type=0):
         #     自适应阈值
@@ -40,6 +43,8 @@ class Match:
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
         res = 0
+        if tem == 'hd_jyl':
+            print(max_val)
         if max_val > self.simi:
             # print('匹配成功', tem, max_val, self.simi, max_loc)
             w, h = newTem.shape[::-1]

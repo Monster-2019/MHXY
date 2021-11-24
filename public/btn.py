@@ -41,6 +41,8 @@ class Btn:
         self.lock = self.g.get('lock')
 
     def LBtn(self, btnCoor, sleepT=0.1, count=1):
+        if btnCoor == 0:
+            return False
         Coor = self.fixedCoor.get(btnCoor)
         if Coor != None:
             btnCoor = Coor
@@ -54,6 +56,8 @@ class Btn:
             win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP,
                                  win32con.MK_LBUTTON, win32api.MAKELONG(x, y))
         sleep(sleepT)
+
+        return True
 
     def RBtn(self):
         win32api.PostMessage(self.hwnd, win32con.WM_RBUTTONDOWN,
@@ -91,6 +95,7 @@ class Btn:
             win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP,
                                  win32con.MK_LBUTTON,
                                  win32api.MAKELONG(e[0], e[1]))
+            sleep(0.5)
 
         elif s[1] == e[1]:
             self.MBtn(s[0], s[1])
@@ -103,6 +108,7 @@ class Btn:
             win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP,
                                  win32con.MK_LBUTTON,
                                  win32api.MAKELONG(e[0], e[1]))
+            sleep(0.5)
 
         else:
             for i in range(e[1] - s[1]):

@@ -24,7 +24,7 @@ class Ring:
         complete = False
         self.B.Hotkey("hd")
 
-        self.smc("jjxx", sleepT=0.5)
+        self.smc("rchd", sleepT=0.5)
 
         self.B.MBtn(590, 330)
         self.B.VBtn(1, 21)
@@ -82,11 +82,12 @@ class Ring:
 
                 if not processing:
                     self.B.Hotkey("hd")
-                    self.smc("jjxx", sleepT=0.5)
+                    self.smc("rchd", sleepT=0.5)
                     page = 1
                     while True:
                         self.cutScreen()
                         temCoor = self.matchTem("hd_jyl")
+                        print(temCoor)
                         if temCoor != 0:
                             btnCoor = self.matchTem("cj", "imgTem/hd_jyl")
                             newCoor = (

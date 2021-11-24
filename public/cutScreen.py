@@ -11,6 +11,7 @@ import numpy as np
 
 class CScreen(object):
     login = False
+    screen = ''
     Coor = ()
     WH = ()
     infoCoor = {
@@ -22,17 +23,20 @@ class CScreen(object):
         "gfbt": ((647, 207), (306, 461))
     }
 
-    def __init__(self, hwnd=False):
+    def __init__(self, hwnd=False, saveUrl='./images/'):
         # 初始化窗口的句柄
         super(CScreen, self).__init__()
         self.g = Glo()
         self.index = self.g.get('screen')
+        self.saveUrl = saveUrl
         if hwnd:
             self.hwnd = hwnd
             self.login = True
+            self.screen = 'mnq'
         else:
             # self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
             self.hwnd = self.g.get('windowClass')
+            self.screen = 'screen' + self.index
 
     def cutScreen(self, infoKey=""):
         # 获取句柄窗口的大小信息
@@ -71,7 +75,8 @@ class CScreen(object):
             ###生成图像
             im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
             ###PrintWindow成功,保存到文件,显示到屏幕
-            im_PIL.save("./images/screen" + self.index + '.jpg') #保存
+            # print(self.saveUrl + self.screen + '.jpg')
+            im_PIL.save(self.saveUrl + self.screen + '.jpg') #保存
 
         except Exception as e:
             print(f'报错{e}')
@@ -84,11 +89,9 @@ class CScreen(object):
         sleep(0.01)
 
         if infoKey == "" and not self.login:
-            img = cv.imread('./images/screen' + self.index  + '.jpg')
+            img = cv.imread('./images/' + self.screen + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            # self.g.set('newCoor', [img[200, 200], img[560, 815]])
             self.g.set('newCoor', [np.array(img[200, 200]).sum(), np.array(img[560, 200]).sum(), np.array(img[200, 815]).sum(), np.array(img[560, 815]).sum()])
-            # print([np.array(img[200, 200]).sum(), np.array(img[560, 815]).sum()])
             
 
 if __name__ == '__main__':
