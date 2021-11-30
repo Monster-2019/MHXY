@@ -21,14 +21,16 @@ class Info():
         self.g = Glo()
         self.B = Btn()
         self.ocr = OCR().ocr
-        self.cutScreen = CScreen().cutScreen
+        CScreenObj = CScreen()
+        self.cutScreen = CScreenObj.cutScreen
+        self.customCutScreen = CScreenObj.customCutScreen
         self.matchTem = Match().matchTem
 
     @retry(retry_on_exception=retry_if_error, stop_max_attempt_number=2)
     def useOcr(self):
         self.B.Hotkey(self.hotk)
         sleep(0.5)
-        self.cutScreen(self.ocrText)
+        self.customCutScreen(self.ocrText)
         sleep(0.5)
         self.B.RBtn()
         txt = self.ocr()

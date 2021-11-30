@@ -15,7 +15,9 @@ class GengZhong:
         self.g = Glo()
         self.name = self.g.get('name')
         self.B = Btn()
-        self.cutScreen = CScreen().cutScreen
+        CScreenOjb = CScreen()
+        self.cutScreen = CScreenOjb.cutScreen
+        self.customCutScreen = CScreenOjb.cutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
         self.weekday = datetime.today().isoweekday()
@@ -69,8 +71,12 @@ class GengZhong:
         complete = False
         count = 0
         while not complete:
-            res = self.smc('gfbt_jyh', infoKey='gfbt', sleepT=0.5)
-            if res != 0:
+            self.customCutScreen('gfbt')
+            res = self.matchTem('gfbt_jyh')
+            if res:
+                self.B.LBtn(res, sleepT=0.5)
+            # res = self.smc('gfbt_jyh', infoKey='gfbt', sleepT=0.5)
+            # if res != 0:
                 self.smc('gfbt_sj', sleepT=0.5)
                 res = self.smc('gfbt_max', sleepT=0.5)
                 if res != 0:

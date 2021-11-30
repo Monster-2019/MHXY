@@ -8,14 +8,14 @@ from time import sleep
 
 
 class Gongfang:
-    def __init__(self, hwnd=False):
+    def __init__(self):
         super(Gongfang, self).__init__()
         self.g = Glo()
         self.name = self.g.get("name")
-        self.B = Btn(hwnd)
-        self.cutScreen = CScreen(hwnd).cutScreen
+        self.B = Btn()
+        self.cutScreen = CScreen().cutScreen
         self.matchTem = Match().matchTem
-        self.smc = SMC(hwnd).smc
+        self.smc = SMC().smc
         self.complete = False
         self.processing = False
 
