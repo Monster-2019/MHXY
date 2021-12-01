@@ -15,7 +15,6 @@ class Glo:
         "gold": 0,
         "silver": 0,
         "TeamStatus": False,
-        "count": 0,
         "lock": None,
         "config": None,
         "oldCoor": [],

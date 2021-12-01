@@ -88,7 +88,7 @@ class Login(object):
 
                 # 前置窗口用
                 gameHwnd = self.hwndList[i]
-                self.SetForegroundWindowMy(gameHwnd)
+                # self.SetForegroundWindowMy(gameHwnd)
 
                 # 前置游戏窗口
                 win32api.SendMessage(gameHwnd, win32con.WM_KEYDOWN, 27, 0)

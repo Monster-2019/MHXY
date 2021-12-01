@@ -3,12 +3,13 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 from apscheduler.schedulers.blocking import BlockingScheduler
-from multiprocessing import Pool, Manager
+from multiprocessing import Pool, Manager, queues
 from datetime import datetime
 from time import sleep
 import os
 import traceback
 import win32gui
+import multiprocessing
 
 from public.log import log, clearFile
 from guajiang import Guajiang
@@ -69,7 +70,7 @@ class Run(object):
         else:
             SendMsg(msg)
 
-    def richang(self, screen, windowClass, lock, myDict):
+    def richang(self, screen, windowClass, lock, myDict, q):
         try:
             currentHour = datetime.today().hour
             currentWeek = datetime.today().isoweekday()
@@ -137,8 +138,11 @@ class Run(object):
             # if int(level) < 69 and currentHour >= 8:
             # Upgrade().start()
 
-            count = self.g.get('count')
-            log(f'账号：{name}, 当前等级{level}, 调用{ count }次接口')
+            log(f'账号：{name}  完成!!!!!!!!!!!!!!')
+            q.get(int(screen))
+
+            while q.qsize():
+                pass
 
             Logout().start(myDict['NEXT'])
         except Exception as e:
@@ -183,10 +187,14 @@ class Run(object):
                     for key in config.ACCTZU[index]['config']:
                         d[key] = config.ACCTZU[index]['config'][key]
 
+                    q = queues.Queue(5, ctx=multiprocessing)
+                    for i in range(5):
+                        q.put(i)
+
                     p = Pool(5)
                     for i in range(5):
                         p.apply_async(self.richang,
-                                      args=(str(i), self.hwndList[i], lock, d))
+                                      args=(str(i), self.hwndList[i], lock, d, q))
                     p.close()
                     p.join()
 
