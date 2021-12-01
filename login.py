@@ -18,6 +18,7 @@ class Login(object):
         self.g = Glo()
         self.smc = SMC().smc
         self.shell = win32com.client.Dispatch("WScript.Shell")
+        print('hwndList:', hwndList)
         self.hwndList = hwndList
         self.groupNo = groupNo
         self.hwnd = 0
@@ -32,8 +33,8 @@ class Login(object):
         win32gui.SetForegroundWindow(hwnd)
 
     def mnqInit(self):
-        os.system('start C:\\data\\software\\leidian\\LDPlayer4\\dnplayer.exe')
-        sleep(5)
+        os.system('start C:\\leidian\\LDPlayer4\\dnplayer.exe')
+        sleep(10)
 
         while True:
             sleep(1)
@@ -57,10 +58,10 @@ class Login(object):
                 break
         
         # # 等待8秒跳过动画
-        sleep(6)
+        sleep(10)
         self.mnqBtn.LBtn(((520, 119), (53, 60)))
         # 等待三秒模拟器登陆账号
-        sleep(3)
+        sleep(8)
 
         return
 
@@ -70,11 +71,13 @@ class Login(object):
             for item in arr:
                 self.SetForegroundWindowMy(self.hwndList[item])
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
+                print(hwnd)
                 if hwnd != 0:
                     loginArr.append(item)
                     
             # 如果需要登录打开模拟器
             if len(loginArr) > 0:
+                print(loginArr)
                 self.mnqInit()   
 
             for i in loginArr:
@@ -94,11 +97,10 @@ class Login(object):
 
                 # 截图游戏登陆窗口到共享文件夹进行扫描登陆
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-                cutScreen = CScreen(hwnd, 'C:/Users/DX/Documents/leidian/Pictures/').cutScreen
+                cutScreen = CScreen(hwnd, 'C:/Users/86155/Documents/leidian/Pictures/').cutScreen
                 cutScreen()
 
                 self.SetForegroundWindowMy(self.mnqHwnd)
-                print('索引', i)
 
                 # 'mnq_sm' 'mnq_tk' ((640, 370), (2, 2)) ((640, 370), (2, 2)) sleep(2) 'mnq_dl'
 
@@ -111,10 +113,17 @@ class Login(object):
                         if coor != 0:
                             if item == 'mnq_tk':
                                 self.mnqBtn.LBtn(coor, sleepT=1)
+
+                                while True:
+                                    self.mnqCutScreen()
+                                    coor = self.mnqMatchTem('mnq_dl')
+                                    if coor != 0:
+                                        break
+                                    else:
+                                        self.mnqBtn.LBtn(((640, 370), (2, 2)))
+                                    sleep(0.5)
                                 
-                                for index in range(2):
-                                    self.mnqBtn.LBtn(((640, 370), (2, 2)))
-                                    sleep(1)
+                                sleep(1)
                                 self.mnqBtn.LBtn(((630, 300), (2, 2)))
                             else:
                                 self.mnqBtn.LBtn(coor)
@@ -132,17 +141,18 @@ class Login(object):
                         sleep(1)
 
                 print('模拟器登录完成')
+                # continue
 
                 # 游戏登陆
                 self.g.set('windowClass', self.hwndList[i])
                 self.g.set('screen', str(i))
                 self.smc = SMC().smc
+                sleep(1)
                 xhList = ['dl_qd', 'dl_djxf', 'dl_yyjs', dlServer]
                 status = False
                 while not status:
                     for item in xhList:
                         res = self.smc(item, sleepT=0.5)
-                        print(item, res)
                         if res != 0 and item == dlServer:
                             status = True
                             break

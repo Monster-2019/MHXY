@@ -10,7 +10,7 @@ from public.log import log
 
 # 获取授权token
 # 一个月一次
-#  上次时间：2021/2/3
+#  上次时间：2021/11/29
 
 def getToken():
     url = "https://aip.baidubce.com/oauth/2.0/token"
@@ -41,7 +41,7 @@ class OCR():
     @retry(retry_on_result=retry_if_result_none, stop_max_attempt_number=2, wait_random_min=1000, wait_random_max=2000)
     def ocr(self):
         result = ""
-        token = "24.f33b81083cdf476835c5fdd6d337d462.2592000.1638060879.282335-18542329"
+        token = "24.b05f7ca11035cc875d7f157dcacaaeb4.2592000.1640780385.282335-18542329"
         # request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic"
         # request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic"
 

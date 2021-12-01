@@ -109,7 +109,7 @@ class GengZhong:
 
             self.cutScreen()
             btnCoor = self.matchTem('gz_sh')
-            temCoor = self.matchTem('gz_td', simi=0.998)
+            temCoor = self.matchTem('gz_td', simi=0.999)
             if btnCoor == 0 and temCoor == 0:
                 isTill = False
                 complete = True
@@ -118,12 +118,11 @@ class GengZhong:
                 'gz_sh', 'sh', 'gz_td', 'gz_prve', 'gz_jyh', 'gz_zz'
             ]
 
+            count = 0
             while isTill:
                 for item in xhList:
                     self.cutScreen()
                     btnCoor = self.matchTem(item, simi=0.998)
-                    if item == 'gz_td':
-                        btnCoor = self.matchTem(item, simi=0.999)
                     if btnCoor != 0:
                         if item == 'gz_jyh':
                             temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')
@@ -146,6 +145,15 @@ class GengZhong:
                         else:
                             self.B.LBtn(btnCoor)
                         sleep(0.4)
+
+                    else:
+                        if item == 'gz_td':
+                            count+=1
+
+                if count == 3:
+                    isTill = False
+                    complete = True
+                    break
 
             if ((self.weekday - 1) % 2 == 0) or isSell:
                 self.sell()
