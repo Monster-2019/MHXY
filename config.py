@@ -9,7 +9,7 @@ CJMY_STATUS = False
 # CJMY_STATUS = True
 
 ACCT_LIST = ["0", "1", "2", "3", "4"]
-# ACCT_LIST = ['0', '4']
+# ACCT_LIST = ['0']
 
 
 ACCTZU = [

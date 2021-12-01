@@ -71,6 +71,7 @@ class Run(object):
 
     def richang(self, screen, windowClass, lock, myDict, q):
         try:
+            q.put(screen)
             currentHour = datetime.today().hour
             currentWeek = datetime.today().isoweekday()
             g = Glo()
@@ -138,13 +139,13 @@ class Run(object):
             # Upgrade().start()
 
             log(f'账号：{name}  完成!!!!!!!!!!!!!!')
-            q.get(int(screen))
+            q.get(screen)
 
             while q.qsize():
                 pass
 
             Logout().start(myDict['NEXT'])
-        except Exception as e:
+        except BaseException as e:
             print('日常错误:', e)
 
     # def filtter(self, hwnd, lparam):
@@ -183,12 +184,9 @@ class Run(object):
                     # 进程共享数据
                     lock = Manager().Lock()
                     d = Manager().dict()
+                    q = Manager().Queue()
                     for key in config.ACCTZU[index]['config']:
                         d[key] = config.ACCTZU[index]['config'][key]
-
-                    q = queues.Queue(5, ctx=multiprocessing)
-                    for i in range(5):
-                        q.put(i)
 
                     p = Pool(5)
                     for i in range(5):
@@ -207,7 +205,7 @@ class Run(object):
             log('运行完成')
             self.pushMsg(0, True)
 
-        except Exception as e:
+        except BaseException as e:
             print(e)
             # self.pushMsg(-1, True)
 

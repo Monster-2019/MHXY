@@ -16,12 +16,15 @@ class OCR:
         self.g = Glo()
 
     def ocr(self):
-        image = cv.imread("./images/screen" + self.g.get("screen") + ".jpg", 0)
-        content = pytesseract.image_to_string(image, lang="chi_sim").splitlines()
-        content = list(filter(not_empty, content))
-        if content:
-            return content[0]
-        return 0
+        try:
+            image = cv.imread("./images/screen" + self.g.get("screen") + ".jpg", 0)
+            content = pytesseract.image_to_string(image, lang="chi_sim").splitlines()
+            content = list(filter(not_empty, content))
+            if content:
+                return content[0]
+            return 0
+        except BaseException as e:
+            print('识别错误:', e)
 
 
 if __name__ == "__main__":

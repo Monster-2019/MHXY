@@ -51,27 +51,30 @@ class Info():
                 else:
                     break
             # 获取角色名字和等级
-            tem = self.setOcr('js', 'name')
+            nameLevel = self.setOcr('js', 'name')
 
-            if tem:
-                res = re.match(r"(.+)(\d{2})级?$", str)
+            if nameLevel:
+                res = re.match(r"(.+)(\d{2})级?$", nameLevel)
                 name = res.group(1)
-                level = res.group(2)
+                level = int(res.group(2))
                 self.g.set("name", name)
                 self.g.set("level", level)
                 sleep(0.5)
 
             # 获取金币数量和银币数量
-            gold = self.setOcr('bb', 'gold')
-            if gold:
-                self.g.set("gold", gold)
-                sleep(0.5)
+            # gold = self.setOcr('bb', 'gold')
+            # print(gold)
+            # if gold:
+            #     self.g.set("gold", gold)
+            #     sleep(0.5)
             
-            silver = self.setOcr('bb', 'silver')
-            if silver:
-                self.g.set("silver", silver)
+            # silver = self.setOcr('js', 'silver')
+            # print(silver)
+            # if silver:
+            #     self.g.set("silver", silver)
 
-            log(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
+            log(f"账号:{name}, 等级:{level}级")
+            # log(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
         except Exception as e:
             log(e, True)
 
