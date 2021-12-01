@@ -1,6 +1,6 @@
+import sys
 sys.path.append(".")
 sys.path.append("..")
-import sys
 import cv2 as cv
 import pytesseract
 from public.glo import Glo

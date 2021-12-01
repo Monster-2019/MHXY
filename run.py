@@ -24,7 +24,6 @@ from yunbiao import Yunbiao
 from sjqy import SJQY
 from kjxs import KJXS
 from lqhyd import LQHYD
-from upgrade import Upgrade
 from gengzhong import GengZhong
 from clean import Clean
 from logout import Logout
