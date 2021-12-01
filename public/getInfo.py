@@ -4,7 +4,7 @@ from public.glo import Glo
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
-from public.ocr import OCR
+from ocr import OCR
 from public.log import log
 from retrying import retry
 
@@ -29,7 +29,7 @@ class Info():
     @retry(retry_on_exception=retry_if_error, stop_max_attempt_number=2)
     def useOcr(self):
         self.B.Hotkey(self.hotk)
-        sleep(0.5)
+        sleep(1)
         self.customCutScreen(self.ocrText)
         sleep(0.5)
         self.B.RBtn()
@@ -53,32 +53,27 @@ class Info():
             # 获取角色名字和等级
             tem = self.setOcr('js', 'name')
 
-            if tem != None:
-                name = re.findall(r"[1-5a-zA-Z_\u4e00-\u9fa5]+", tem)
-                name = name[0]
+            if tem:
+                res = re.match(r"(.+)(\d{2})级?$", str)
+                name = res.group(1)
+                level = res.group(2)
                 self.g.set("name", name)
-                level = re.findall(r"\d+", tem)
-                if int(level[0]) > 1000:
-                    level = int(level[0]) % 100
-                else:
-                    level = int(level[0])
                 self.g.set("level", level)
                 sleep(0.5)
 
             # 获取金币数量和银币数量
-            # gold = self.setOcr('bb', 'gold')
-            # if gold != None:
-            #     self.g.set("gold", gold)
-            #     sleep(0.5)
+            gold = self.setOcr('bb', 'gold')
+            if gold:
+                self.g.set("gold", gold)
+                sleep(0.5)
             
-            # silver = self.setOcr('bb', 'silver')
-            # if silver != None:
-            #     self.g.set("silver", silver)
+            silver = self.setOcr('bb', 'silver')
+            if silver:
+                self.g.set("silver", silver)
 
-            log(f"账号:{name}, 等级:{level}级")
+            log(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
         except Exception as e:
             log(e, True)
 
 if __name__ == '__main__':
-    g = Info()
-    g.getInfo()
+    Info().getInfo()
