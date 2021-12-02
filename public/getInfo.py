@@ -68,7 +68,7 @@ class Info():
                 self.g.set("gold", gold)
                 sleep(0.5)
             
-            silver = self.setOcr('js', 'silver', True)
+            silver = self.setOcr('bb', 'silver', True)
             print(1, silver)
             if silver:
                 self.g.set("silver", silver)
