@@ -114,6 +114,9 @@ class GengZhong:
 
             self.smc('jy_hj', sleepT=3)
 
+            while not self.smc('hd', count=0):
+                sleep(1)
+
             self.cutScreen()
             btnCoor = self.matchTem('gz_sh')
             temCoor = self.matchTem('gz_td', simi=0.999)

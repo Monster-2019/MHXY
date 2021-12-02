@@ -27,19 +27,19 @@ class Info():
         self.matchTem = Match().matchTem
 
     @retry(retry_on_exception=retry_if_error, stop_max_attempt_number=2)
-    def useOcr(self):
+    def useOcr(self, isNum):
         self.B.Hotkey(self.hotk)
         sleep(1)
         self.customCutScreen(self.ocrText)
         sleep(0.5)
         self.B.RBtn()
-        txt = self.ocr()
+        txt = self.ocr(isNum)
         return txt
 
-    def setOcr(self, hotk, ocrText):
+    def setOcr(self, hotk, ocrText, isNum=False):
         self.hotk = hotk
         self.ocrText = ocrText
-        return self.useOcr()
+        return self.useOcr(isNum)
 
     def getInfo(self):
         try:
@@ -51,7 +51,7 @@ class Info():
                 else:
                     break
             # 获取角色名字和等级
-            nameLevel = self.setOcr('js', 'name')
+            nameLevel = self.setOcr('js', 'name', False)
 
             if nameLevel:
                 res = re.match(r"(.+)(\d{2})级?", nameLevel)
@@ -62,19 +62,19 @@ class Info():
                 sleep(0.5)
 
             # 获取金币数量和银币数量
-            # gold = self.setOcr('bb', 'gold')
-            # print(gold)
-            # if gold:
-            #     self.g.set("gold", gold)
-            #     sleep(0.5)
+            gold = self.setOcr('bb', 'gold', True)
+            print(gold)
+            if gold:
+                self.g.set("gold", gold)
+                sleep(0.5)
             
-            # silver = self.setOcr('js', 'silver')
-            # print(silver)
-            # if silver:
-            #     self.g.set("silver", silver)
+            silver = self.setOcr('js', 'silver', True)
+            print(1, silver)
+            if silver:
+                self.g.set("silver", silver)
 
-            log(f"账号:{name}, 等级:{level}级")
-            # log(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
+            # log(f"账号:{name}, 等级:{level}级")
+            log(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
         except Exception as e:
             log(e, True)
 

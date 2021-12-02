@@ -15,10 +15,14 @@ class OCR:
         super(OCR, self).__init__()
         self.g = Glo()
 
-    def ocr(self):
+    def ocr(self, isNum=False):
         try:
             image = cv.imread("./images/screen" + self.g.get("screen") + ".jpg", 0)
-            content = pytesseract.image_to_string(image, lang="chi_sim").splitlines()
+            content = None
+            if not isNum:
+                content = pytesseract.image_to_string(image, lang="chi_sim", config="--psm 6").splitlines()
+            else:
+                content = pytesseract.image_to_string(image, lang="num", config="--psm 6").splitlines()
             content = list(filter(not_empty, content))
             if content:
                 return content[0]
