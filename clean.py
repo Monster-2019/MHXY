@@ -41,7 +41,8 @@ class Clean(object):
 				self.customCutScreen('bb')
 				res = self.matchArrTem(ckList)
 				if res:
-					self.B.LBtn(res, count=2, sleepT=0.5)
+					Coor = ((513 + res[0][0], 202 + res[0][1]), res[1])
+					self.B.LBtn(Coor, count=2, sleepT=0.5)
 				# res = self.smca(ckList, infoKey='bb', count=2, sleepT=0.5)
 				rs = self.smc('bb_max', count=0)
 				if rs != 0:

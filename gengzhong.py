@@ -74,7 +74,8 @@ class GengZhong:
             self.customCutScreen('gfbt')
             res = self.matchTem('gfbt_jyh')
             if res:
-                self.B.LBtn(res, sleepT=0.5)
+                Coor = ((647 + res[0][0], 207 + res[0][1]), res[1])
+                self.B.LBtn(Coor, sleepT=0.5)
             # res = self.smc('gfbt_jyh', infoKey='gfbt', sleepT=0.5)
             # if res != 0:
                 self.smc('gfbt_sj', sleepT=0.5)
