@@ -122,7 +122,7 @@ class Run(object):
             if level >= 60:
                 GengZhong().start()
 
-            Clean().start()
+            # Clean().start()
 
             if not level:
                 level = 50

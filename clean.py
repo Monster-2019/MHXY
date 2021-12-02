@@ -3,12 +3,19 @@ from public.smc import SMC
 from public.btn import Btn
 from public.glo import Glo
 from public.log import log
+from public.cutScreen import CScreen
+from public.matchTem import Match
 
 class Clean(object):
 	"""docstring for Clean"""
 	def __init__(self):
 		super(Clean, self).__init__()
 		self.name = Glo().get('name')
+		CScreenOjb = CScreen()
+		self.cutScreen = CScreenOjb.cutScreen
+		self.customCutScreen = CScreenOjb.customCutScreen
+		self.matchTem = Match().matchTem
+		self.matchArrTem = Match().matchArrTem
 		self.smc = SMC().smc
 		self.smca = SMC().smca
 		self.B = Btn()
@@ -31,7 +38,11 @@ class Clean(object):
 			ckList = ['bb_qls', 'bb_bhs', 'bb_zqs', 'bb_xws', 'bb_tys', 'bb_yls', 'bb_sls', 'bb_fcs', 'bb_hbs', 'bb_kls']
 			page = 1
 			while True:
-				res = self.smca(ckList, infoKey='bb', count=2, sleepT=0.5)
+				self.customCutScreen('bb')
+				res = self.matchArrTem(ckList)
+				if res:
+					self.B.LBtn(res, count=2, sleepT=0.5)
+				# res = self.smca(ckList, infoKey='bb', count=2, sleepT=0.5)
 				rs = self.smc('bb_max', count=0)
 				if rs != 0:
 					break
