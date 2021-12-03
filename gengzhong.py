@@ -17,7 +17,7 @@ class GengZhong:
         self.B = Btn()
         CScreenOjb = CScreen()
         self.cutScreen = CScreenOjb.cutScreen
-        self.customCutScreen = CScreenOjb.cutScreen
+        self.customCutScreen = CScreenOjb.customCutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
         self.weekday = datetime.today().isoweekday()
