@@ -122,7 +122,7 @@ class Run(object):
             if level >= 60:
                 GengZhong().start()
 
-            # Clean().start()
+            Clean().start()
 
             if not level:
                 level = 50
@@ -172,9 +172,9 @@ class Run(object):
             clearFile()
             log('-------------------------------------开始执行--------------------------------------'
                 )
-            self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
+                self.getHwndList()
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:
