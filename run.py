@@ -126,12 +126,13 @@ class Run(object):
 
             if not level:
                 level = 50
+            
+            if currentWeek == 6:
+                if level >= 50 and level <= 69:
+                    Ring().start()
 
-            if level >= 50 and level <= 69:
-                Ring().start()
-
-            if level >= 60:
-                Gongfang().start()
+                if level >= 60:
+                    Gongfang().start()
 
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8

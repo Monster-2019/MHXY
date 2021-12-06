@@ -125,6 +125,7 @@ class Login(object):
                                 
                                 sleep(1)
                                 self.mnqBtn.LBtn(((630, 300), (2, 2)))
+                                sleep(1)
                             else:
                                 self.mnqBtn.LBtn(coor)
 
