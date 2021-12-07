@@ -154,13 +154,14 @@ class GengZhong:
 
                         else:
                             self.B.LBtn(btnCoor)
-                        sleep(0.4)
 
                     else:
                         if item == 'gz_td':
                             count+=1
 
-                if count == 3:
+                    sleep(0.5)
+
+                if count == 5:
                     isTill = False
                     complete = True
                     break

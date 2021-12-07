@@ -122,16 +122,17 @@ class Run(object):
             if level >= 60:
                 GengZhong().start()
 
-            # Clean().start()
+            Clean().start()
 
             if not level:
                 level = 50
+            
+            if currentWeek == 6:
+                if level >= 50 and level <= 69:
+                    Ring().start()
 
-            if level >= 50 and level <= 69:
-                Ring().start()
-
-            if level >= 60:
-                Gongfang().start()
+                if level >= 60:
+                    Gongfang().start()
 
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8
@@ -172,9 +173,9 @@ class Run(object):
             clearFile()
             log('-------------------------------------开始执行--------------------------------------'
                 )
-            self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
+                self.getHwndList()
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:

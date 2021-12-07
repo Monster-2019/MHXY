@@ -170,6 +170,8 @@ class Shimen:
                                 
                                 sleep(2)
 
+                                sleep(2)
+
                             elif item == "btgm" or item == "gfgm":
                                 sleep(1)
                                 newCoor = ((308, 245), (294, 75))
