@@ -98,9 +98,7 @@ class Zhuogui:
                     self.B.VBtn(-1, 10)
                     sleep(0.5)
                     if page == 4:
-                        break
-            if not processing:
-                self.B.RBtn()
+                        self.B.VBtn(1, 30)
 
             xlList = ['zg_zg', 'zg_zgwc']
             total = 0
