@@ -29,6 +29,7 @@ class Logout(object):
 			while not complete:
 				for item in xhList:
 					res = self.smc(item)
+					sleep(0.5)
 					if res != 0 and item == 'dc':
 						complete = True
 						break
