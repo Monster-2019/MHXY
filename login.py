@@ -149,7 +149,7 @@ class Login(object):
                 self.g.set('screen', str(i))
                 self.smc = SMC().smc
                 sleep(1)
-                xhList = ['dl_qd', 'dl_djxf', 'dl_yyjs', dlServer]
+                xhList = ['dl_qd', 'dl_js', 'dl_djxf', 'dl_yyjs', dlServer]
                 status = False
                 while not status:
                     for item in xhList:

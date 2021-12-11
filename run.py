@@ -146,6 +146,8 @@ class Run(object):
                 pass
 
             Logout().start(myDict['NEXT'])
+
+            return 1
         except BaseException as e:
             print('日常错误:', e)
 

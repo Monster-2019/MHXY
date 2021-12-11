@@ -130,8 +130,8 @@ class Mijing:
                                 break
 
                             elif item == 'sb' or item == 'mj_tg':
-                                self.B.LBtn(((520, 380), (10, 10)))
-                                self.B.LBtn(((520, 380), (10, 10)))
+                                self.B.LBtn(btnCoor)
+                                # self.B.LBtn(((520, 380), (10, 10)))
                                 self.complete = True
 
                             else:
