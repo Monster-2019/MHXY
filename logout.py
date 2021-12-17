@@ -23,7 +23,10 @@ class Logout(object):
 				break
 
 		if next:
-			self.B.Hotkey('xt')
+			while True:
+				self.B.Hotkey('xt')
+				if not self.smc('hd', count=0):
+					break
 
 			xhList = ['qhzh', 'dc']
 			while not complete:

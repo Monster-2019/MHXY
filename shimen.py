@@ -173,10 +173,10 @@ class Shimen:
                                 sleep(2)
 
                             elif item == "btgm" or item == "gfgm":
-                                sleep(1)
+                                sleep(2)
                                 newCoor = ((308, 245), (294, 75))
-                                self.B.LBtn(newCoor)
-                                self.B.LBtn(btnCoor)
+                                self.B.LBtn(newCoor, sleepT=0.5)
+                                self.B.LBtn(btnCoor, sleepT=0.5)
                                 self.B.RBtn()
 
                             elif item == "sy":

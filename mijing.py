@@ -139,11 +139,11 @@ class Mijing:
 
                             sleep(2)
 
-                while True:
-                    res = self.smc('sy')
-                    if res == 0:
-                        break
-                    sleep(0.5)
+                # while True:
+                #     res = self.smc('sy')
+                #     if res == 0:
+                #         break
+                #     sleep(0.5)
 
             if self.complete:
                 log(f"账号: { self.name } 秘境任务结束")

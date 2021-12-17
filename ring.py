@@ -125,6 +125,7 @@ class Ring:
                 ]
 
                 count = 0
+                loopCount = 0
                 while not complete or processing:
                     for item in xhList:
                         self.cutScreen()
@@ -133,6 +134,7 @@ class Ring:
                         if item == 'dh' or item == 'rw_jyl':
                             btnCoor = self.matchTem(item, simi=0.9)
                         if btnCoor != 0:
+                            loopCount = 0
                             if item == 'rw_jyl_wc':
                                 complete = True
                                 processing = False
@@ -154,12 +156,15 @@ class Ring:
                                         break
 
                             elif item == "gm_1" or item == "btgm":
-                                sleep(1)
+                                sleep(2)
                                 self.B.LBtn(btnCoor)
                                 res = self.smc("gm_sb", count=0)
                                 if res == 0:
                                     newCoor = ((308, 245), (294, 75))
                                     self.B.LBtn(newCoor)
+                                    continue
+                                sleep(0.5)
+                                self.B.RBtn()
 
                             else:
                                 self.B.LBtn(btnCoor)
@@ -181,7 +186,7 @@ class Ring:
                                     sleep(0.5)
 
                                 if compare:
-                                    print(123)
+                                    print('站立不动')
                                     self.B.RBtn()
                                     self.B.RBtn()
                                     sleep(0.5)
@@ -194,6 +199,11 @@ class Ring:
                                         count = 0
 
                         sleep(0.5)
+                    
+                    loopCount += 1
+                    if loopCount == 3:
+                        self.B.RBtn()
+                        loopCount = 0
 
             if complete:
                 log(f"账号: { self.name } 经验链结束")
