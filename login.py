@@ -145,19 +145,32 @@ class Login(object):
                 # continue
 
                 # 游戏登陆
-                self.g.set('windowClass', self.hwndList[i])
-                self.g.set('screen', str(i))
+                # self.g.set('windowClass', self.hwndList[i])
+                # self.g.set('screen', str(i))
                 sleep(0.5)
-                self.smc = SMC().smc
+                # self.smc = SMC().smc
+
+                cutScreen = CScreen(self.hwndList[i]).cutScreen
+                matchTem = Match('mnq').matchTem
+                Btn = Btn(self.hwndList[i])
+
                 sleep(0.5)
+
                 xhList = ['dl_qd', 'dl_js', 'dl_djxf', 'dl_yyjs', dlServer]
                 status = False
                 while not status:
                     for item in xhList:
-                        res = self.smc(item, sleepT=0.5)
-                        if res != 0 and item == dlServer:
-                            status = True
-                            break
+                        # res = self.smc(item, sleepT=0.5)
+                        cutScreen()
+                        res = matchTem(item)
+                        if res:
+                            Btn.LBtn(res)
+                            if item == dlServer:
+                                status = True
+                                break
+                        # if res != 0 and item == dlServer:
+                        #     status = True
+                        #     break
 
                 log(f'账号 {dlAccount} 游戏登陆完成')
 
