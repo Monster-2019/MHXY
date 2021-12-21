@@ -56,7 +56,7 @@ class Info():
             name = '空'
             level = '空'
             if nameLevel:
-                res = re.match(r"(.+)(\d{2})级?", nameLevel)
+                res = re.match(r"(.+)(\d{2})", nameLevel)
                 name = res.group(1)
                 level = int(res.group(2))
                 self.g.set("name", name)

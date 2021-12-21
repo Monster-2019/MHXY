@@ -100,7 +100,7 @@ class Login(object):
                 cutScreen = CScreen(hwnd, 'C:/Users/86155/Documents/leidian/Pictures/').cutScreen
                 cutScreen()
 
-                # self.SetForegroundWindowMy(self.mnqHwnd)
+                self.SetForegroundWindowMy(self.mnqHwnd)
 
                 # 'mnq_sm' 'mnq_tk' ((640, 370), (2, 2)) ((640, 370), (2, 2)) sleep(2) 'mnq_dl'
 
