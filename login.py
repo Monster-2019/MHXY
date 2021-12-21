@@ -16,7 +16,7 @@ class Login(object):
     def __init__(self, groupNo, hwndList):
         super(Login, self).__init__()
         self.g = Glo()
-        self.smc = SMC().smc
+        self.smc = None
         self.shell = win32com.client.Dispatch("WScript.Shell")
         print('hwndList:', hwndList)
         self.hwndList = hwndList
@@ -100,7 +100,7 @@ class Login(object):
                 cutScreen = CScreen(hwnd, 'C:/Users/86155/Documents/leidian/Pictures/').cutScreen
                 cutScreen()
 
-                self.SetForegroundWindowMy(self.mnqHwnd)
+                # self.SetForegroundWindowMy(self.mnqHwnd)
 
                 # 'mnq_sm' 'mnq_tk' ((640, 370), (2, 2)) ((640, 370), (2, 2)) sleep(2) 'mnq_dl'
 
@@ -147,8 +147,9 @@ class Login(object):
                 # 游戏登陆
                 self.g.set('windowClass', self.hwndList[i])
                 self.g.set('screen', str(i))
+                sleep(0.5)
                 self.smc = SMC().smc
-                sleep(1)
+                sleep(0.5)
                 xhList = ['dl_qd', 'dl_js', 'dl_djxf', 'dl_yyjs', dlServer]
                 status = False
                 while not status:

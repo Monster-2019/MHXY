@@ -42,7 +42,7 @@ class Clean(object):
 				res = self.matchArrTem(ckList)
 				if res:
 					Coor = ((513 + res[0][0], 202 + res[0][1]), res[1])
-					self.B.LBtn(Coor, count=2, sleepT=0.5)
+					self.B.LBtn(Coor, count=2, sleepT=1)
 				# res = self.smca(ckList, infoKey='bb', count=2, sleepT=0.5)
 				rs = self.smc('bb_max', count=0)
 				if rs != 0:

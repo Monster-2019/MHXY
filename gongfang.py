@@ -247,6 +247,8 @@ class Gongfang:
                             if res == 0:
                                 newCoor = ((308, 245), (294, 75))
                                 self.B.LBtn(newCoor)
+                                self.B.RBtn()
+                                self.B.RBtn()
 
                         elif item == "sy":
                             if (btnCoor[0][0] + btnCoor[1][0]) < 920:

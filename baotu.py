@@ -74,8 +74,9 @@ class Baotu:
 
                     else:
                         if self.smc('hd', count=0):
+                            sleep(3)
                             compare = False
-                            for i in range(3):
+                            for i in range(6):
                                 self.cutScreen()
                                 compare = self.g.compare()
                                 if compare:

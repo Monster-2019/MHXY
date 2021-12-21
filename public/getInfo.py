@@ -53,6 +53,8 @@ class Info():
             # 获取角色名字和等级
             nameLevel = self.setOcr('js', 'name', False)
 
+            name = '空'
+            level = '空'
             if nameLevel:
                 res = re.match(r"(.+)(\d{2})级?", nameLevel)
                 name = res.group(1)

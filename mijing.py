@@ -10,6 +10,7 @@ import threading
 
 class Mijing:
     def __init__(self):
+        self.g = Glo()
         self.name = Glo().get('name')
         self.B = Btn()
         self.cutScreen = CScreen().cutScreen
@@ -97,7 +98,7 @@ class Mijing:
                                 break
 
                 xhList = [
-                    'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_nz', 'mj_tz'
+                    'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_nz', 'mj_tz', 'mj_mjxyrw'
                 ]
                 # 'mj_mrh', 'mj_yjf', 'mj_esg', 
                 if self.processing:
@@ -108,13 +109,13 @@ class Mijing:
                                 if item == 'mj_one':
                                     self.B.LBtn(((res[0][0] + 46, res[0][1] - 60), res[1]))
 
-                                if item == 'mj_tz':
+                                if item == 'mj_mjxyrw':
                                     self.processing = False
                                     break
 
                     self.processing = True
 
-                xhList = ['hd', 'sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
+                xhList = ['hd', 'sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb', 'fl']
                 # , 'mj_lq', 'mj_gb'
 
                 while self.processing:
@@ -134,10 +135,34 @@ class Mijing:
                                 # self.B.LBtn(((520, 380), (10, 10)))
                                 self.complete = True
 
+                            elif item == 'fl':
+                                sleep(15)
+                                if self.smc('fl', count=0):
+                                    self.B.RBtn()
+                                    self.B.RBtn()
+                                    sleep(0.5)
+                                    self.smc('mj_mjxyrw', simi=0.95)
+
                             else:
                                 self.B.LBtn(btnCoor)
 
                             sleep(2)
+                        
+                        # else:
+                                # compare = False
+                                # for i in range(8):
+                                #     self.cutScreen()
+                                #     compare = self.g.compare()
+                                #     if compare:
+                                #         break
+                                #     sleep(0.5)
+
+                                # if compare:
+                                #     print('站立不动')
+                                #     self.B.RBtn()
+                                #     self.B.RBtn()
+                                #     self.smc('mj_mjxyrw', simi=0.9)
+                                #     sleep(2)
 
                 # while True:
                 #     res = self.smc('sy')
