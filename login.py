@@ -152,7 +152,7 @@ class Login(object):
 
                 cutScreen = CScreen(self.hwndList[i]).cutScreen
                 matchTem = Match('mnq').matchTem
-                Btn = Btn(self.hwndList[i])
+                gameBtn = Btn(self.hwndList[i])
 
                 sleep(0.5)
 
@@ -164,7 +164,7 @@ class Login(object):
                         cutScreen()
                         res = matchTem(item)
                         if res:
-                            Btn.LBtn(res)
+                            gameBtn.LBtn(res)
                             if item == dlServer:
                                 status = True
                                 break
