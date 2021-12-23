@@ -76,16 +76,14 @@ class Baotu:
                         if self.smc('hd', count=0):
                             sleep(3)
                             compare = False
-                            for i in range(6):
-                                self.cutScreen()
-                                compare = self.g.compare()
-                                if compare:
-                                    break
-                                sleep(0.5)
-
-                            if compare:
+                            self.cutScreen()
+                            sleep(5)
+                            res = self.smc('sy')
+                            self.cutScreen()
+                            compare = self.g.compare()
+                            if not res and compare:
                                 break
-                                
+
                     sleep(1)
 
                 empty = self.empty()
@@ -204,14 +202,11 @@ class Baotu:
 
                         else:
                             if item == "bt_btrw" and isHd:
-                                sleep(2)
-                                compare = False
-                                for i in range(5):
-                                    self.cutScreen()
-                                    compare = self.g.compare()
-                                    if compare:
-                                        break
-                                    sleep(0.5)
+                                sleep(1)
+                                self.cutScreen()
+                                sleep(3)
+                                self.cutScreen()
+                                compare = self.g.compare()
 
                                 if compare:
                                     self.processing = not self.isComplete()

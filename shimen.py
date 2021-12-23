@@ -131,9 +131,10 @@ class Shimen:
                     "sy",
                     "sm_hdwp",
                     "sm_rwdh",
-                    "jm_gb",
+                    # "jm_gb",
                 ]
 
+                count = 0
                 while processing:
                     for item in smList:
                         self.cutScreen()
@@ -145,6 +146,7 @@ class Shimen:
                             if item == "hd":
                                 if self.g.compare() == True:
                                     self.B.RBtn()
+                                    continue
 
                             elif item == "dh" or item == "dhda":
                                 while True:
@@ -170,8 +172,6 @@ class Shimen:
                                 
                                 sleep(2)
 
-                                sleep(2)
-
                             elif item == "btgm" or item == "gfgm":
                                 sleep(2)
                                 newCoor = ((308, 245), (294, 75))
@@ -194,6 +194,8 @@ class Shimen:
                             else:
                                 self.B.LBtn(btnCoor)
 
+                            count = 0
+
                             sleep(0.5)
 
                         else:
@@ -202,6 +204,13 @@ class Shimen:
                                     self.B.RBtn()
                                     self.B.MBtn(900, 300)
                                     self.B.VBtn(1, 10)
+                                    count += 1
+
+                            if count == 5:
+                                print(f"账号: { self.name } 师门任务完成1")
+                                processing = False
+                                self.complete = True
+                                break
 
                 sleep(0.5)
                 while True:
