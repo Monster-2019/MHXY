@@ -44,10 +44,6 @@ class SJQY:
 
     def start(self):
         try:
-            # while True:
-            #     self.smc('jh')
-            #     sleep(0.1)
-
             log(f"账号: { self.name } 开始三界奇缘任务")
             complete = False
             processing = False
