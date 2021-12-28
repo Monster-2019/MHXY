@@ -120,7 +120,7 @@ class Login(object):
                                     if coor != 0:
                                         break
                                     else:
-                                        self.mnqBtn.LBtn(((640, 370), (2, 2)))
+                                        self.mnqBtn.LBtn(((640, 320), (2, 2)))
                                     sleep(0.5)
                                 
                                 sleep(1)
