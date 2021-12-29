@@ -11,7 +11,7 @@ import traceback
 import win32gui
 import multiprocessing
 
-from public.log import log, clearFile
+from public.log import log
 from guajiang import Guajiang
 from public.getInfo import Info
 from zhuogui import Zhuogui
@@ -172,7 +172,6 @@ class Run(object):
         try:
             import pythoncom
             pythoncom.CoInitialize()
-            clearFile()
             log('-------------------------------------开始执行--------------------------------------'
                 )
 
