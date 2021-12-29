@@ -27,7 +27,7 @@
 
 from loguru import logger
 
-logger.add("{time}.log", rotation="00:00", format="{time} | {level} | {message}", enqueue=True)
+logger.add("logger.log", rotation="00:00", format="{time} | {level} | {message}", enqueue=True)
 
 def log(msg, err = False):
     if err:
