@@ -22,6 +22,9 @@ class Baotu:
         self.processing = False
 
     def empty(self):
+        while self.smc('hd', count=0) == 0:
+                self.B.RBtn()
+                
         self.B.Hotkey("bb")
         sleep(0.5)
 
@@ -194,6 +197,7 @@ class Baotu:
                         if btnCoor != 0:
                             if item == 'bt_cbthdwc':
                                 self.complete = True
+                                self.processing = False
                                 sleep(1)
                                 break
 
