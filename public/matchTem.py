@@ -43,8 +43,6 @@ class Match:
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
         res = 0
-        if tem == 'hd_jyl':
-            print(max_val)
         if max_val > self.simi:
             # print('匹配成功', tem, max_val, self.simi, max_loc)
             w, h = newTem.shape[::-1]

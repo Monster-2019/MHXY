@@ -131,7 +131,7 @@ class Btn:
             self.lock.acquire()
         win32api.keybd_event(18, 0, 0, 0)
         win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, anjian, 0)
-        sleep(0.05)
+        sleep(0.01)
         win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
         win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, anjian, 0)
         win32api.keybd_event(18, 0, 0, 0)
@@ -140,23 +140,6 @@ class Btn:
             self.lock.release()
         sleep(sleepT)
 
-    # def Hotkey(self, char, sleepT=0.5):
-    #     anjian = self.jwm[char]
-    #     if self.lock != None:
-    #         self.lock.acquire()
-    #     win32api.SendMessage(self.hwnd, win32con.WM_SYSKEYDOWN, 164, 0)
-    #     win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, anjian, 0)
-    #     win32gui.SendMessage(self.hwnd, win32con.WM_SYSCHAR, anjian, 0)
-    #     win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, anjian, 0)
-    #     win32api.SendMessage(self.hwnd, win32con.WM_SYSKEYUP, 164, 0)
-    #     if self.lock != None:
-    #         self.lock.release()
-    #     sleep(sleepT)
-
 
 if __name__ == "__main__":
     t = Btn()
-    # t.MBtn(715, 410)
-    # t.VBtn(-1, 10)
-    # t.MBtn(572, 360)
-    # t.VBtn(-1, 5)

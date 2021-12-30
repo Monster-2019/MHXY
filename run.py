@@ -11,7 +11,7 @@ import traceback
 import win32gui
 import multiprocessing
 
-from public.log import log, clearFile
+from public.log import log
 from guajiang import Guajiang
 from public.getInfo import Info
 from zhuogui import Zhuogui
@@ -172,12 +172,11 @@ class Run(object):
         try:
             import pythoncom
             pythoncom.CoInitialize()
-            clearFile()
             log('-------------------------------------开始执行--------------------------------------'
                 )
-            self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
+                self.getHwndList()
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:

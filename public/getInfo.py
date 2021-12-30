@@ -65,13 +65,11 @@ class Info():
 
             # 获取金币数量和银币数量
             gold = self.setOcr('bb', 'gold', True)
-            print(gold)
             if gold:
                 self.g.set("gold", gold)
                 sleep(0.5)
             
             silver = self.setOcr('bb', 'silver', True)
-            print(1, silver)
             if silver:
                 self.g.set("silver", silver)
 
