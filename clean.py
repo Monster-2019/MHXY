@@ -110,7 +110,7 @@ class Clean(object):
 			self.B.VBtn(1, 50)
 			sleep(0.5)
 
-			dqList = ['bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1', 'bb_dq_zz2', 'bb_dq_zz3', 'bb_dq_zz4', 'bb_dq_zz5', 'bb_dq_zz6'] # 'bb_dq_fu1', 'bb_dq_fu2', 'bb_dq_fu3', 
+			dqList = ['bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1', 'bb_dq_zz2', 'bb_dq_zz3', 'bb_dq_zz4', 'bb_dq_zz5', 'bb_dq_zz6', 'bb_hd_wz', 'bb_hd_piao'] # 'bb_dq_fu1', 'bb_dq_fu2', 'bb_dq_fu3', 
 			page = 1
 			while True:
 				res = self.smca(dqList)

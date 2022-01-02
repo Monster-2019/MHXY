@@ -11,11 +11,6 @@ from retrying import retry
 from time import sleep
 import re
 
-def retry_if_error(exception):
-    if isinstance(exception, Exception):
-        log('获取账号信息错误', True)
-    return isinstance(exception, Exception)
-
 class Info():
     def __init__(self):
         self.g = Glo()
@@ -26,10 +21,8 @@ class Info():
         self.customCutScreen = CScreenObj.customCutScreen
         self.matchTem = Match().matchTem
 
-    @retry(retry_on_exception=retry_if_error, stop_max_attempt_number=2)
+    @retry(stop_max_attempt_number=3)
     def useOcr(self, isNum):
-        self.B.Hotkey(self.hotk)
-        sleep(1)
         self.customCutScreen(self.ocrText)
         sleep(0.5)
         self.B.RBtn()
@@ -37,7 +30,8 @@ class Info():
         return txt
 
     def setOcr(self, hotk, ocrText, isNum=False):
-        self.hotk = hotk
+        self.B.Hotkey(hotk)
+        sleep(1)
         self.ocrText = ocrText
         return self.useOcr(isNum)
 
