@@ -127,12 +127,12 @@ class Run(object):
             if not level:
                 level = 50
             
-            if currentWeek == 6:
-                if level >= 50 and level <= 69:
-                    Ring().start()
+            # if currentWeek == 6:
+            #     if level >= 50 and level <= 69:
+            #         Ring().start()
 
-                if level >= 60:
-                    Gongfang().start()
+            #     if level >= 60:
+            #         Gongfang().start()
 
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8
@@ -156,6 +156,7 @@ class Run(object):
     #         self.hwndList.append(hwnd)
 
     def getHwndList(self):
+        self.hwndList = []
         isStart = False
         hwnd = 0
         while not isStart:
@@ -174,9 +175,9 @@ class Run(object):
             pythoncom.CoInitialize()
             log('-------------------------------------开始执行--------------------------------------'
                 )
+            self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
-                self.getHwndList()
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:

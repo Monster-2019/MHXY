@@ -57,11 +57,12 @@ class Info():
             level = '空'
             if nameLevel:
                 res = re.match(r"(.+)(\d{2})", nameLevel)
-                name = res.group(1)
-                level = int(res.group(2))
-                self.g.set("name", name)
-                self.g.set("level", level)
-                sleep(0.5)
+                if res:
+                    name = res.group(1)
+                    level = int(res.group(2))
+                    self.g.set("name", name)
+                    self.g.set("level", level)
+                    sleep(0.5)
 
             # 获取金币数量和银币数量
             gold = self.setOcr('bb', 'gold', True)
