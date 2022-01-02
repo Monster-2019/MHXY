@@ -56,12 +56,28 @@ class Login(object):
             if res != 0:
                 self.mnqBtn.LBtn(res)
                 break
-        
+
         # # 等待8秒跳过动画
-        sleep(10)
-        self.mnqBtn.LBtn(((520, 119), (53, 60)))
+        sleep(5)
+
+        while True
+            self.mnqCutScreen()
+            res = self.mnqMatchTem('mnq_animation')
+            if res != 0:
+                self.mnqBtn.LBtn(res)
+                break
+            sleep(1)
+
+        while True
+            self.mnqCutScreen()
+            res = self.mnqMatchTem('mnq_sm')
+            if res != 0:
+                self.mnqBtn.LBtn(res)
+                sleep(5)
+                break
+            sleep(1)
+
         # 等待三秒模拟器登陆账号
-        sleep(8)
 
         return
 
@@ -78,7 +94,7 @@ class Login(object):
             # 如果需要登录打开模拟器
             if len(loginArr) > 0:
                 print(loginArr)
-                self.mnqInit()   
+                self.mnqInit()
 
             for i in loginArr:
                 # 登陆用户名和区

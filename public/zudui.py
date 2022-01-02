@@ -49,7 +49,7 @@ class Zudui(object):
             # startT = time.time()
             # endT = time.time()
             while n < 4:
-                res = self.smc('dw_js')
+                res = self.smc('dw_js', sleepT=1)
                 if res != 0:
                     n+=1
                 # endT = time.time()

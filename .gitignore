@@ -2,3 +2,4 @@
 .vscode
 images/*.jpg
 *.txt
+*.log

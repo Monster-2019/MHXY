@@ -14,7 +14,7 @@ ACCT_LIST = ["0", "1", "2", "3", "4"]
 
 ACCTZU = [
     {
-        "status": False,
+        "status": True,
         "config": {
             "TeamStatus": False,
             "ZG_COUNT": 2,
@@ -33,7 +33,7 @@ ACCTZU = [
         ]
     },
     {
-        "status": False,
+        "status": True,
         "config": {
             "TeamStatus": False,
             "ZG_COUNT": 2,
