@@ -58,26 +58,19 @@ class Login(object):
                 break
 
         # # 等待8秒跳过动画
-        sleep(5)
+        sleep(10)
+        self.mnqBtn.LBtn(((520, 119), (53, 60)))
 
-        while True
-            self.mnqCutScreen()
-            res = self.mnqMatchTem('mnq_animation')
-            if res != 0:
-                self.mnqBtn.LBtn(res)
-                break
-            sleep(1)
-
-        while True
+        while True:
             self.mnqCutScreen()
             res = self.mnqMatchTem('mnq_sm')
-            if res != 0:
-                self.mnqBtn.LBtn(res)
+            if res:
                 sleep(5)
                 break
             sleep(1)
 
         # 等待三秒模拟器登陆账号
+        print('模拟器初始化完成')
 
         return
 
