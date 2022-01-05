@@ -119,13 +119,13 @@ class GengZhong:
 
             self.cutScreen()
             btnCoor = self.matchTem('gz_sh')
-            temCoor = self.matchTem('gz_td', simi=0.999)
+            temCoor = self.matchTem('gz_td', simi=0.999) or self.matchTem('gz_td_l', simi=0.999) or self.matchTem('gz_td_r', simi=0.999)
             if btnCoor == 0 and temCoor == 0:
                 isTill = False
                 complete = True
 
             xhList = [
-                'gz_sh', 'sh', 'gz_td', 'gz_prve', 'gz_jyh', 'gz_zz'
+                'gz_sh', 'sh', 'gz_td', 'gz_td_l', 'gz_td_r', 'gz_prve', 'gz_jyh', 'gz_zz'
             ]
 
             count = 0
@@ -156,7 +156,7 @@ class GengZhong:
                             self.B.LBtn(btnCoor)
 
                     else:
-                        if item == 'gz_td':
+                        if item == 'gz_td' or item == 'gz_td_l' or item == 'gz_td_r':
                             count+=1
 
                     sleep(0.5)

@@ -22,7 +22,7 @@ ACCTZU = [
             "ZG_WC": None,
             "FB": False,
             "FB_WC": None,
-            "NEXT": True,
+            "NEXT": False,
         },
         "acctList": [
             {"server": "zh1_z6", "status": False, "account": "zh1"},
@@ -33,7 +33,7 @@ ACCTZU = [
         ]
     },
     {
-        "status": True,
+        "status": False,
         "config": {
             "TeamStatus": False,
             "ZG_COUNT": 2,
@@ -41,7 +41,7 @@ ACCTZU = [
             "ZG_WC": None,
             "FB": False,
             "FB_WC": None,
-            "NEXT": True,
+            "NEXT": False,
         },
         "acctList": [
             {"server": "zh1_z7", "status": False, "account": "zh1"},
@@ -52,7 +52,7 @@ ACCTZU = [
         ]
     },
     {
-        "status": True,
+        "status": False,
         "config": {
             "TeamStatus": False,
             "ZG_COUNT": 2,
