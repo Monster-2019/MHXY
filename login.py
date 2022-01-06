@@ -1,4 +1,3 @@
-from io import SEEK_END
 import win32gui, win32con, win32api, win32com.client
 from time import sleep
 import config

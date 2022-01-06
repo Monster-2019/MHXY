@@ -1,31 +1,35 @@
-import sys
-sys.path.append(".")
-sys.path.append("..")
-import cv2 as cv
-import pytesseract
+import os
+import win32gui, win32con, win32api
+from public.btn import Btn
+from time import sleep
+import psutil
+from win32 import win32process
 
+def start():
+    try:
+        os.system('start C:\\Users\\86155\\Desktop\\duokai\\mhxy.exe')
+        sleep(2)
 
-def not_empty(s):
-    return s and s.strip()
+        while True:
+            sleep(1)
+            hwnd = win32gui.FindWindow(None, 'UnityWndClass')
+            if hwnd:
+                break
 
+        # mnqBtn = Btn(hwnd)
+        # for i in range(5):
+        #     mnqBtn.LBtn(((350, 150), (2, 2)))
+        #     sleep(1)
 
-class OCR:
-    def __init__(self):
-        super(OCR, self).__init__()
+        # os.system('taskkill /F /IM mhxy.exe')
 
-    def ocr(self):
-        try:
-            image = cv.imread("./unnamed.jpg", 0)
-            # cv.imwrite('unnamed1.jpg', image)
-            content = pytesseract.image_to_string(image, lang="num", config="--psm 6").splitlines()
-            content = list(filter(not_empty, content))
-            print(content[0].replace(',', ''))
-            if content:
-                return content[0]
-            return 0
-        except BaseException as e:
-            print('识别错误:', e)
+        win32gui.PostMessage(hwnd,win32con.WM_CLOSE,0,0)
 
+        # thread_id, process_id = win32process.GetWindowThreadProcessId(hwnd)
 
-if __name__ == "__main__":
-    OCR().ocr()
+        # os.system('taskkill /f /pid %s' % str(process_id))
+
+    except Exception as e:
+        print(e)
+
+start()

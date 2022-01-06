@@ -3,42 +3,52 @@ from public.smc import SMC
 from public.btn import Btn
 from public.glo import Glo
 from public.log import log
+import win32gui, win32con
+from win32 import win32process
 
 class Logout(object):
 	"""docstring for Logout"""
 	def __init__(self):
 		super(Logout, self).__init__()
-		self.name = Glo().get('name')
+		self.glo = Glo()
+		self.name = self.glo.get('name')
 		self.smc = SMC().smc
 		self.B = Btn()
+		self.hwnd = self.glo.get('windowClass')
 
 	def start(self, next):
-		complete = False
+		complete = True
 
-		while True:
-			res = self.smc('hd', count=0)
-			if res == 0:
-				self.B.RBtn()
-			else:
-				break
+		thread_id, process_id = win32process.GetWindowThreadProcessId(self.hwnd)
 
-		if next:
-			while True:
-				self.B.Hotkey('xt')
-				if not self.smc('hd', count=0):
-					break
+        os.system('taskkill /f /pid %s' % str(process_id))
 
-			xhList = ['qhzh', 'dc']
-			while not complete:
-				for item in xhList:
-					res = self.smc(item)
-					sleep(0.5)
-					if res != 0 and item == 'dc':
-						complete = True
-						break
+		# win32gui.PostMessage(self.hwnd, win32con.WM_CLOSE, 0, 0)
 
-		else:
-			complete = True
+		# while True:
+		# 	res = self.smc('hd', count=0)
+		# 	if res == 0:
+		# 		self.B.RBtn()
+		# 	else:
+		# 		break
+
+		# if next:
+		# 	while True:
+		# 		self.B.Hotkey('xt')
+		# 		if not self.smc('hd', count=0):
+		# 			break
+
+		# 	xhList = ['qhzh', 'dc']
+		# 	while not complete:
+		# 		for item in xhList:
+		# 			res = self.smc(item)
+		# 			sleep(0.5)
+		# 			if res != 0 and item == 'dc':
+		# 				complete = True
+		# 				break
+
+		# else:
+		# 	complete = True
 
 		if complete:
 			log(f"账号: { self.name } 登出")

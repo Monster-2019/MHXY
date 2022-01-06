@@ -32,6 +32,7 @@ from sendMsg import SendMsg
 import config
 
 from public.glo import Glo
+from public.btn import Btn
 from gongfang import Gongfang
 from ring import Ring
 
@@ -142,8 +143,8 @@ class Run(object):
             log(f'账号：{name}  完成!!!!!!!!!!!!!!')
             q.get(screen)
 
-            while q.qsize():
-                pass
+            # while q.qsize():
+                # pass
 
             Logout().start(myDict['NEXT'])
 
@@ -169,18 +170,39 @@ class Run(object):
             else:
                 isStart = True
 
+    def openGame(self):
+        os.system('start C:\\Users\\86155\\Desktop\\duokai\\mhxy.exe')
+        sleep(2)
+
+        while True:
+            hwnd = win32gui.FindWindow(None, 'UnityWndClass')
+            if hwnd:
+                break
+            sleep(2)
+
+        mnqBtn = Btn(hwnd)
+        for i in range(5):
+            mnqBtn.LBtn(((350, 150), (2, 2)))
+            sleep(1)
+
+        os.system('taskkill /F /IM mhxy.exe')
+        sleep(5)
+
+        return
+
     def start(self, shutdown=False):
         try:
             import pythoncom
             pythoncom.CoInitialize()
             log('-------------------------------------开始执行--------------------------------------'
                 )
-            self.getHwndList()
 
             for index in range(len(config.ACCTZU)):
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 if config.ACCTZU[index]['status']:
+                    self.openGame()
+                    self.getHwndList()
                     log(f'开始第{GROUP_NO}组号')
                     Login(index, self.hwndList).login()
 
@@ -195,6 +217,7 @@ class Run(object):
                     for i in range(5):
                         p.apply_async(self.richang,
                                       args=(str(i), self.hwndList[i], lock, d, q))
+                        sleep(1)
                     p.close()
                     p.join()
 
