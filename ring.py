@@ -126,6 +126,8 @@ class Ring:
 
                 count = 0
                 loopCount = 0
+                CS = False
+
                 while not complete or processing:
                     for item in xhList:
                         self.cutScreen()
@@ -155,11 +157,53 @@ class Ring:
                                     else:
                                         break
 
-                            elif item == "gm_1" or item == "btgm":
+                            elif item == "btgm":
+                                sleep(2)
+                                res = self.smc('bt_sj') or self.smc('bt_jlh') or self.smc('bt_mgh')
+                                if res and not CS:
+                                    CS = True
+                                    self.B.RBtn()
+                                    self.B.RBtn()
+
+                                    self.B.Hotkey('gj')
+
+                                    while True:
+                                        self.B.DBtn((900, 350), (130, 350))
+                                        sleep(1)
+                                        res = self.smc('gj_xysm')
+                                        if res:
+                                            break
+
+                                    start = int(time.time())
+                                    end = int(time.time())
+                                    while end - start < 1200:
+                                        print(end - start)
+                                        end = int(time.time())
+                                        res = self.smc('sj')
+                                        if res:
+                                            CS = False
+                                            break
+                                        sleep(1)
+
+                                    self.B.LBtn(((500, 450), (2, 2)))
+                                    
+                                else:
+                                    self.B.LBtn(btnCoor)
+                                    CS = False
+                                    res = self.smc("gm_sb", count=0)
+                                    if res:
+                                        newCoor = ((308, 245), (294, 75))
+                                        CS = True
+                                        self.B.LBtn(newCoor)
+                                        continue
+                                    sleep(0.5)
+                                    self.B.RBtn()
+
+                            elif item == "gm_1":
                                 sleep(2)
                                 self.B.LBtn(btnCoor)
                                 res = self.smc("gm_sb", count=0)
-                                if res == 0:
+                                if res:
                                     newCoor = ((308, 245), (294, 75))
                                     self.B.LBtn(newCoor)
                                     continue
@@ -168,8 +212,6 @@ class Ring:
 
                             else:
                                 self.B.LBtn(btnCoor)
-
-                            sleep(0.5)
 
                         else:
                             if item == 'rw_jyl' and isHd:
@@ -198,8 +240,6 @@ class Ring:
                                     else:
                                         count = 0
 
-                        sleep(0.5)
-                    
                     loopCount += 1
                     if loopCount == 3:
                         self.B.RBtn()
