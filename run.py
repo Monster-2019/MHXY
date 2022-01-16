@@ -132,8 +132,8 @@ class Run(object):
                 if level >= 60:
                     Gongfang().start()
 
-                if level >= 50 and level <= 69:
-                    Ring().start()
+            #     if level >= 50 and level <= 69:
+            #         Ring().start()
 
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8

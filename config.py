@@ -14,7 +14,7 @@ ACCT_LIST = ["0", "1", "2", "3", "4"]
 
 ACCTZU = [
     {
-        "status": True,
+        "status": False,
         "config": {
             "TeamStatus": False,
             "ZG_COUNT": 2,
@@ -41,7 +41,7 @@ ACCTZU = [
             "ZG_WC": None,
             "FB": False,
             "FB_WC": None,
-            "NEXT": False,
+            "NEXT": True,
         },
         "acctList": [
             {"server": "zh1_z7", "status": False, "account": "zh1"},
@@ -52,7 +52,7 @@ ACCTZU = [
         ]
     },
     {
-        "status": False,
+        "status": True,
         "config": {
             "TeamStatus": False,
             "ZG_COUNT": 2,

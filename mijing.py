@@ -125,6 +125,8 @@ class Mijing:
                         
                         self.cutScreen()
                         btnCoor = self.matchTem(item)
+                        if item == 'mj_mjxyrw':
+                            btnCoor = self.matchTem(item, simi=0.9)
                         if btnCoor != 0:
                             if item == 'hd':
                                 self.processing = False
@@ -136,18 +138,16 @@ class Mijing:
                                 self.complete = True
 
                             elif item == 'fl':
-                                sleep(15)
+                                sleep(3)
                                 if self.smc('fl', count=0):
                                     self.B.RBtn()
                                     self.B.RBtn()
                                     sleep(0.5)
-                                    self.smc('mj_mjxyrw', simi=0.95)
+                                    self.smc('mj_mjxyrw', simi=0.9)
 
                             else:
                                 self.B.LBtn(btnCoor)
 
-                            sleep(2)
-                        
                         # else:
                                 # compare = False
                                 # for i in range(8):

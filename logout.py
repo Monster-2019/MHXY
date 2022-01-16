@@ -5,6 +5,7 @@ from public.glo import Glo
 from public.log import log
 import win32gui, win32con
 from win32 import win32process
+import os
 
 class Logout(object):
 	"""docstring for Logout"""
@@ -19,9 +20,9 @@ class Logout(object):
 	def start(self, next):
 		complete = True
 
-		thread_id, process_id = win32process.GetWindowThreadProcessId(self.hwnd)
-
-        os.system('taskkill /f /pid %s' % str(process_id))
+		if next:
+			thread_id, process_id = win32process.GetWindowThreadProcessId(self.hwnd)
+			os.system('taskkill /f /pid %s' % str(process_id))
 
 		# win32gui.PostMessage(self.hwnd, win32con.WM_CLOSE, 0, 0)
 
