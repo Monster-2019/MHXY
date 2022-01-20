@@ -16,6 +16,7 @@ from guajiang import Guajiang
 from public.getInfo import Info
 from zhuogui import Zhuogui
 from lls_pt import LLSPT
+from fuben import FuBen
 from public.lidui import Lidui
 from shimen import Shimen
 from baotu import Baotu
@@ -94,8 +95,16 @@ class Run(object):
             if myDict['ZG']:
                 Zhuogui().start()
 
-            if myDict['FB'] and currentWeek <= 6:
-                LLSPT().start()
+            if myDict['FB']:
+                if currentWeek <= 6:
+                    FuBen('ecy').start()
+                    sleep(1)
+                
+                # FuBen('lls').start()
+                # if currentWeek % 2 == 1:
+                #     FuBen('lyrm').start()
+                #     sleep(1)
+                # LLSPT().start()
 
             Lidui().start()
 
