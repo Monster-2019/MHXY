@@ -100,11 +100,13 @@ class Run(object):
                     FuBen('ecy').start()
                     sleep(1)
                 
-                # FuBen('lls').start()
                 # if currentWeek % 2 == 1:
                 #     FuBen('lyrm').start()
                 #     sleep(1)
-                # LLSPT().start()
+
+                # if currentWeek % 2 == 0 or currentWeek == 7:
+                #     FuBen('lls').start()
+
 
             Lidui().start()
 
