@@ -96,11 +96,14 @@ class Run(object):
                 Zhuogui().start()
 
             if myDict['FB']:
-                FuBen('ecy').start()
-                sleep(1)
-                FuBen('lls').start()
-                sleep(1)
-                FuBen('lyrm').start()
+                if currentWeek <= 6:
+                    FuBen('ecy').start()
+                    sleep(1)
+                
+                # FuBen('lls').start()
+                # if currentWeek % 2 == 1:
+                #     FuBen('lyrm').start()
+                #     sleep(1)
                 # LLSPT().start()
 
             Lidui().start()
