@@ -104,8 +104,8 @@ class Run(object):
                 #     FuBen('lyrm').start()
                 #     sleep(1)
 
-                # if currentWeek % 2 == 0 or currentWeek == 7:
-                #     FuBen('lls').start()
+                if currentWeek % 2 == 0 or currentWeek == 7:
+                    FuBen('lls').start()
 
 
             Lidui().start()

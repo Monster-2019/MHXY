@@ -7,6 +7,15 @@ from public.glo import Glo
 from public.smc import SMC
 from public.log import log
 import time
+import traceback
+
+empty = {
+    "name": "",
+    "wc": "",
+    "hd": "",
+    "xz": "",
+    "rw": "",
+}
 
 ecy = {
     "name": "二重影",
@@ -36,12 +45,13 @@ class FuBen:
     def __init__(self, fbName):
         super(FuBen, self).__init__()
         self.g = Glo()
-        self.name = self.g.get('name')
+        self.name = Glo().get("name")
         self.B = Btn()
         self.smc = SMC().smc
         self.matchTem = Match().matchTem
         self.cutScreen = CScreen().cutScreen
         self.index = self.g.get('screen')
+        self.fbImg = empty
         if fbName == "ecy":
             self.fbImg = ecy
         if fbName == "lyrm":
@@ -59,12 +69,14 @@ class FuBen:
         self.B.VBtn(1, 21)
         sleep(0.5)
 
+        print(123)
+
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc(self.fbImg.wc, simi=0.999, count=0)
+                res = self.smc(self.fbImg['wc'], simi=0.999, count=0)
                 if res != 0:
-                    log(f"账号: { self.name } 副本 { self.fbImg.name } 已完成")
+                    log(f"账号: { self.name } 副本 { self.fbImg['name'] } 已完成")
                     complete = True
                     break
             else:
@@ -77,7 +89,8 @@ class FuBen:
         return complete
 
     def leader(self):
-        log(f"开始副本 { self.fbImg.name }")
+        self.g.setObj('config', 'FB_WC', None)
+        log(f"开始副本 { self.fbImg['name'] }")
         complete = False
         processing = False
 
@@ -96,16 +109,16 @@ class FuBen:
         self.B.RBtn()
 
         if not complete:
-            log(f"副本 { self.fbImg.name } 进行中")
+            log(f"副本 { self.fbImg['name'] } 进行中")
 
             self.B.Hotkey('hd')
             self.smc('rchd', sleepT=0.5)
             page = 1
             while True:
                 self.cutScreen()
-                temCoor = self.matchTem(self.fbImg.hd)
+                temCoor = self.matchTem(self.fbImg["hd"])
                 if temCoor != 0:
-                    btnCoor = self.matchTem("cj", "imgTem/" + self.fbImg.hd)
+                    btnCoor = self.matchTem("cj", "imgTem/" + self.fbImg["hd"])
                     newCoor = (
                         (
                             temCoor[0][0] + btnCoor[0][0],
@@ -118,11 +131,11 @@ class FuBen:
 
                         # 去完成或继续任务
                         while not processing:
-                            for item in ['fb_xzfb', self.fbImg.xz]:
+                            for item in ['fb_xzfb', self.fbImg["xz"]]:
                                 r = self.smc(item, sleepT=1)
-                                if r != 0 and item == self.fbImg.xz:
+                                if r != 0 and item == self.fbImg["xz"]:
                                     btnCoor = self.matchTem(
-                                        'fb_jr', 'imgTem/' + 'self.fbImg.xz')
+                                        'fb_jr', 'imgTem/' + self.fbImg["xz"])
                                     if btnCoor != 0:
                                         newCoor = (
                                             (
@@ -133,7 +146,7 @@ class FuBen:
                                         )
                                         self.B.LBtn(newCoor, sleepT=3)
 
-                                        r = self.smc(self.fbImg.rw, simi=0.95, count=0)
+                                        r = self.smc(self.fbImg["rw"], simi=0.95, count=0)
                                         if r != 0:
                                             processing = True
                                             break
@@ -146,17 +159,17 @@ class FuBen:
                     if page == 4:
                         break
 
-            fbList = ['sb', 'hd', 'fb_tgjq', self.fbImg.rw, 'dh', 'djjx']
+            fbList = ['sb', 'hd', 'fb_tgjq', self.fbImg["rw"], 'dh', 'djjx']
 
             while processing:
                 for item in fbList:
                     self.cutScreen()
-                    if item == self.fbImg.rw or item == 'dh':
+                    if item == self.fbImg["rw"] or item == 'dh':
                         btnCoor = self.matchTem(item, simi=0.9)
                     else:
                         btnCoor = self.matchTem(item)
                     if btnCoor != 0:
-                        if item == self.fbImg.rw:
+                        if item == self.fbImg["rw"]:
                             self.B.LBtn(btnCoor, sleepT=3)
 
                         elif item == 'fb_tgjq':
@@ -193,13 +206,13 @@ class FuBen:
                         elif item == 'hd':
                             complete = True
                             processing = False
-                            log(f"副本 { self.fbImg.name } 完成")
+                            log(f"副本 { self.fbImg['name'] } 完成")
                             break
 
 
         if complete:
             self.g.setObj('config', 'FB_WC', True)
-            log(f"副本 { self.fbImg.name } 结束")
+            log(f"副本 { self.fbImg['name'] } 结束")
             return 1
         else:
             self.leader()
@@ -238,8 +251,10 @@ class FuBen:
                 self.start()
 
         except Exception as e:
-            log(e, True)
+            # log(e, True)
+            # print(e)
+            traceback.print_exc()
 
 
 if __name__ == "__main__":
-    FuBen().start()
+    FuBen('ecy').start()
