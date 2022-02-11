@@ -143,8 +143,8 @@ class Run(object):
                 if level >= 60:
                     Gongfang().start()
 
-            #     if level >= 50 and level <= 69:
-            #         Ring().start()
+                if level >= 50 and level <= 69:
+                    Ring().start()
 
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8
@@ -182,6 +182,8 @@ class Run(object):
                 isStart = True
 
     def openGame(self):
+        if (len(self.hwndList)) == 5:
+            return
         os.system('start C:\\Users\\86155\\Desktop\\duokai\\mhxy.exe')
         sleep(2)
 
@@ -211,6 +213,7 @@ class Run(object):
             for index in range(len(config.ACCTZU)):
                 GROUP_NO = index + 1
                 # 登陆/切换账号
+                self.getHwndList()
                 if config.ACCTZU[index]['status']:
                     self.openGame()
                     self.getHwndList()

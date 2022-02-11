@@ -79,8 +79,8 @@ class Login(object):
             for item in arr:
                 self.SetForegroundWindowMy(self.hwndList[item])
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-                print(hwnd)
-                if hwnd != 0:
+                res = win32gui.IsWindowVisible(hwnd)
+                if hwnd != 0 and res != 0:
                     loginArr.append(item)
                     
             # 如果需要登录打开模拟器
@@ -128,12 +128,12 @@ class Login(object):
                                     if coor != 0:
                                         break
                                     else:
-                                        self.mnqBtn.LBtn(((640, 320), (2, 2)))
+                                        self.mnqBtn.LBtn(((150, 280), (2, 2)))
                                     sleep(0.5)
                                 
-                                sleep(1)
+                                sleep(0.5)
                                 self.mnqBtn.LBtn(((630, 300), (2, 2)))
-                                sleep(1)
+                                sleep(0.5)
                             else:
                                 self.mnqBtn.LBtn(coor)
 
@@ -182,7 +182,8 @@ class Login(object):
 
                 log(f'账号 {dlAccount} 游戏登陆完成')
 
-            os.system('taskkill /F /IM dnplayer.exe')
+            if len(loginArr) > 0:
+                os.system('taskkill /F /IM dnplayer.exe')
 
             sleep(1)
 
