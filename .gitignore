@@ -3,3 +3,4 @@
 images/*.jpg
 *.txt
 *.log
+logger.log
