@@ -69,8 +69,6 @@ class FuBen:
         self.B.VBtn(1, 21)
         sleep(0.5)
 
-        print(123)
-
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
@@ -159,7 +157,7 @@ class FuBen:
                     if page == 4:
                         break
 
-            fbList = ['sb', 'hd', 'fb_tgjq', self.fbImg["rw"], 'dh', 'djjx']
+            fbList = ['zd_qx', 'sb', 'hd', 'fb_tgjq', self.fbImg["rw"], 'dh', 'djjx']
 
             while processing:
                 for item in fbList:
@@ -169,7 +167,11 @@ class FuBen:
                     else:
                         btnCoor = self.matchTem(item)
                     if btnCoor != 0:
-                        if item == self.fbImg["rw"]:
+                        if item == 'zd_qx':
+                            sleep(10)
+                            break
+
+                        elif item == self.fbImg["rw"]:
                             self.B.LBtn(btnCoor, sleepT=3)
 
                         elif item == 'fb_tgjq':
@@ -257,4 +259,4 @@ class FuBen:
 
 
 if __name__ == "__main__":
-    FuBen('ecy').start()
+    FuBen('lls').start()

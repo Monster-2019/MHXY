@@ -87,7 +87,6 @@ class Ring:
                     while True:
                         self.cutScreen()
                         temCoor = self.matchTem("hd_jyl")
-                        print(temCoor)
                         if temCoor != 0:
                             btnCoor = self.matchTem("cj", "imgTem/hd_jyl")
                             newCoor = (
@@ -177,7 +176,6 @@ class Ring:
                                     start = int(time.time())
                                     end = int(time.time())
                                     while end - start < 1200:
-                                        print(end - start)
                                         end = int(time.time())
                                         res = self.smc('sj')
                                         if res:

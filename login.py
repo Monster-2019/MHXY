@@ -17,7 +17,6 @@ class Login(object):
         self.g = Glo()
         self.smc = None
         self.shell = win32com.client.Dispatch("WScript.Shell")
-        print('hwndList:', hwndList)
         self.hwndList = hwndList
         self.groupNo = groupNo
         self.hwnd = 0
@@ -85,7 +84,6 @@ class Login(object):
                     
             # 如果需要登录打开模拟器
             if len(loginArr) > 0:
-                print(loginArr)
                 self.mnqInit()
 
             for i in loginArr:
@@ -128,7 +126,8 @@ class Login(object):
                                     if coor != 0:
                                         break
                                     else:
-                                        self.mnqBtn.LBtn(((150, 280), (2, 2)))
+                                        # self.mnqBtn.LBtn(((150, 280), (2, 2)))
+                                        self.mnqBtn.LBtn(((650, 480), (2, 2)))
                                     sleep(0.5)
                                 
                                 sleep(0.5)
