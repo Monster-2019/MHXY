@@ -138,7 +138,7 @@ class Run(object):
             Clean().start()
 
             if not level:
-                level = 50
+                level = 69
             
             if currentWeek >= 6:
                 Bangpai().start()
