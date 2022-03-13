@@ -137,6 +137,9 @@ class Mijing:
                                 # self.B.LBtn(((520, 380), (10, 10)))
                                 self.complete = True
 
+                            elif item == 'mj_mjxyrw':
+                                self.B.LBtn(btnCoor, sleepT=2)
+
                             elif item == 'fl':
                                 sleep(3)
                                 if self.smc('fl', count=0):

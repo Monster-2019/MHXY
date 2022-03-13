@@ -3,7 +3,7 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 from apscheduler.schedulers.blocking import BlockingScheduler
-from multiprocessing import Pool, Manager, queues
+from multiprocessing import Pool, Manager
 from datetime import datetime
 from time import sleep
 import os
@@ -36,6 +36,7 @@ from public.glo import Glo
 from public.btn import Btn
 from gongfang import Gongfang
 from ring import Ring
+from bangpai import Bangpai
 
 
 class Run(object):
@@ -137,9 +138,11 @@ class Run(object):
             Clean().start()
 
             if not level:
-                level = 50
+                level = 69
             
             if currentWeek >= 6:
+                Bangpai().start()
+
                 if level >= 60:
                     Gongfang().start()
 
