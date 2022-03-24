@@ -137,17 +137,14 @@ class Run(object):
 
             Clean().start()
 
-            if not level:
-                level = 69
-            
             if currentWeek >= 6:
-                Bangpai().start()
+                if level >= 50 and level <= 69:
+                    Ring().start()
 
                 if level >= 60:
                     Gongfang().start()
 
-                if level >= 50 and level <= 69:
-                    Ring().start()
+                Bangpai().start()
 
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8
@@ -194,12 +191,12 @@ class Run(object):
             hwnd = win32gui.FindWindow(None, 'UnityWndClass')
             if hwnd:
                 break
-            sleep(2)
+            sleep(1)
 
         mnqBtn = Btn(hwnd)
         for i in range(5):
             mnqBtn.LBtn(((350, 150), (2, 2)))
-            sleep(1.5)
+            sleep(2)
 
         os.system('taskkill /F /IM mhxy.exe')
         sleep(5)

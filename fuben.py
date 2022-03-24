@@ -172,7 +172,8 @@ class FuBen:
                             break
 
                         elif item == self.fbImg["rw"]:
-                            self.B.LBtn(btnCoor, sleepT=3)
+                            if btnCoor[0][0] > 800 and btnCoor[0][1] < 240:
+                                self.B.LBtn(btnCoor, sleepT=3)
 
                         elif item == 'fb_tgjq':
                             self.B.LBtn(btnCoor, count=2)
@@ -259,4 +260,4 @@ class FuBen:
 
 
 if __name__ == "__main__":
-    FuBen('lls').start()
+    FuBen('ecy').start()
