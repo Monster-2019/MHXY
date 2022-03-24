@@ -4,3 +4,4 @@ images/*.jpg
 *.txt
 *.log
 logger.log
+config.py
