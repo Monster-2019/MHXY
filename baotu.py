@@ -107,7 +107,7 @@ class Baotu:
         for n in range(21):
             if n % 10 == 0:
                 sleep(0.5)
-                res = self.smc('bt_wc', simi=0.999, count=0)
+                res = self.smc('bt_wc', count=0)
                 if res != 0:
                     log(f"账号: { self.name } 宝图任务已完成")
                     complete = True

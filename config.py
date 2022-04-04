@@ -20,16 +20,16 @@ ACCTZU = [
             "ZG_COUNT": 2,
             "ZG": True,
             "ZG_WC": None,
-            "FB": False,
+            "FB": True,
             "FB_WC": None,
             "NEXT": False,
         },
         "acctList": [
-            {"server": "zh1_z9", "status": False, "account": "zh1"},
-            {"server": "zh2_z9", "status": False, "account": "zh2"},
-            {"server": "zh3_z9", "status": False, "account": "zh3"},
-            {"server": "zh4_z9", "status": False, "account": "zh4"},
-            {"server": "zh5_z9", "status": False, "account": "zh5"},
+            {"server": "zh1_z8", "status": False, "account": "zh1"},
+            {"server": "zh2_z8", "status": False, "account": "zh2"},
+            {"server": "zh3_z8", "status": False, "account": "zh3"},
+            {"server": "zh4_z8", "status": False, "account": "zh4"},
+            {"server": "zh5_z8", "status": False, "account": "zh5"},
         ]
     }
 ]

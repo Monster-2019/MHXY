@@ -166,11 +166,11 @@ class Shimen:
 
                             elif item == "djjx":
                                 while True:
-                                    res = self.smc("djjx", simi=0.9, sleepT=1)
+                                    res = self.smc("djjx", simi=0.9, sleepT=0.5)
                                     if res == 0:
                                         break
                                 
-                                sleep(2)
+                                sleep(5)
 
                             elif item == "btgm" or item == "gfgm":
                                 sleep(2)

@@ -42,4 +42,4 @@ class SMC(object):
         return 0
 
 if __name__ == '__main__':
-    SMC().smc('bb_zzs')
+    SMC().smc('bt_wc')

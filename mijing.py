@@ -98,7 +98,7 @@ class Mijing:
                                 break
 
                 xhList = [
-                    'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_nz', 'mj_tz', 'mj_mjxyrw'
+                    'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz', 'mj_mjxyrw'
                 ]
                 # 'mj_mrh', 'mj_yjf', 'mj_esg', 
                 if self.processing:
