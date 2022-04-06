@@ -10,7 +10,7 @@ from public.log import log
 
 # 获取授权token
 # 一个月一次
-#  上次时间：2021/11/29
+#  上次时间：2031/11/29
 
 def getToken():
     url = "https://aip.baidubce.com/oauth/2.0/token"

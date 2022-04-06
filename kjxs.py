@@ -22,10 +22,10 @@ class KJXS:
         self.smc('rchd', sleepT=0.5)
 
         self.B.MBtn(590, 330)
-        self.B.VBtn(1, 21)
+        self.B.VBtn(1, 31)
         sleep(0.5)
 
-        for n in range(21):
+        for n in range(31):
             if n % 10 == 0:
                 sleep(0.5)
                 res = self.smc('kj_wc', simi=0.999, count=0)
@@ -36,7 +36,7 @@ class KJXS:
             else:
                 self.B.VBtn(-1)
 
-        self.B.VBtn(1, 21)
+        self.B.VBtn(1, 31)
 
         self.B.RBtn()
 

@@ -25,10 +25,10 @@ class Zhuogui:
         self.B.Hotkey('hd')
         self.smc('rchd', sleepT=0.5)
         self.B.MBtn(590, 330)
-        self.B.VBtn(1, 21)
+        self.B.VBtn(1, 31)
         sleep(0.5)
 
-        for n in range(21):
+        for n in range(31):
             if n % 10 == 0:
                 sleep(0.5)
                 self.cutScreen()
@@ -40,7 +40,7 @@ class Zhuogui:
             else:
                 self.B.VBtn(-1)
 
-        self.B.VBtn(1, 21)
+        self.B.VBtn(1, 31)
         self.B.RBtn()
 
         if complete:
