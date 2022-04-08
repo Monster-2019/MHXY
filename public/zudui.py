@@ -92,7 +92,7 @@ class Zudui(object):
                         newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
                         self.B.LBtn(newCoor, sleepT=1)
 
-                        res = self.smc('sqrd')
+                        res = self.smc('sqrd') or self.smc('sqrd1')
                         if res != 0:
                             break
 
