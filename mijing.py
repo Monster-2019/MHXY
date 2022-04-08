@@ -139,39 +139,17 @@ class Mijing:
 
                             elif item == 'mj_mjxyrw':
                                 self.B.LBtn(btnCoor, sleepT=2)
+                                continue
 
                             elif item == 'fl':
-                                sleep(3)
-                                if self.smc('fl', count=0):
-                                    self.B.RBtn()
-                                    self.B.RBtn()
-                                    sleep(0.5)
-                                    self.smc('mj_mjxyrw', simi=0.9)
+                                self.B.RBtn()
+                                self.B.RBtn()
+                                sleep(0.5)
 
                             else:
                                 self.B.LBtn(btnCoor)
 
-                        # else:
-                                # compare = False
-                                # for i in range(8):
-                                #     self.cutScreen()
-                                #     compare = self.g.compare()
-                                #     if compare:
-                                #         break
-                                #     sleep(0.5)
-
-                                # if compare:
-                                #     print('站立不动')
-                                #     self.B.RBtn()
-                                #     self.B.RBtn()
-                                #     self.smc('mj_mjxyrw', simi=0.9)
-                                #     sleep(2)
-
-                # while True:
-                #     res = self.smc('sy')
-                #     if res == 0:
-                #         break
-                #     sleep(0.5)
+                        sleep(0.5)
 
             if self.complete:
                 log(f"账号: { self.name } 秘境任务结束")

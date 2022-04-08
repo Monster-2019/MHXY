@@ -1,7 +1,6 @@
 **/__pycache__
 .vscode
 images/*.jpg
-*.txt
 *.log
 logger.log
 config.py
