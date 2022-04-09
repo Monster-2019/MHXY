@@ -60,6 +60,8 @@ class Bangpai:
                         if res:
                             processing = True
                             break
+                        else:
+                            self.B.LBtn(newCoor)
 
                     break
 

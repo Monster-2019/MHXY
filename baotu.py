@@ -39,6 +39,9 @@ class Baotu:
         while True:
             res = self.smc('bb_cbt', sleepT=1)
             if res != 0:
+                if self.smc('sy', sleepT=0.5):
+                    self.B.RBtn()
+                    break
                 self.smc('bb_sy', sleepT=0.5)
                 break
 
