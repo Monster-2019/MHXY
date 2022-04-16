@@ -61,7 +61,8 @@ class Bangpai:
                             processing = True
                             break
                         else:
-                            self.B.LBtn(newCoor)
+                            if self.smc('hd_bprw', count=0):
+                                self.B.LBtn(newCoor)
 
                     break
 
