@@ -196,10 +196,10 @@ class Run(object):
         mnqBtn = Btn(hwnd)
         for i in range(5):
             mnqBtn.LBtn(((350, 150), (2, 2)))
-            sleep(2)
+            sleep(1)
 
         os.system('taskkill /F /IM mhxy.exe')
-        sleep(5)
+        sleep(1)
 
         return
 

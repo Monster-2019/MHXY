@@ -226,6 +226,8 @@ class FuBen:
         while not self.g.getObj('config', 'FB_WC'):
             sleep(5)
 
+        self.smc('sb')
+
         complete = True
 
         if complete:
