@@ -1,6 +1,6 @@
 import win32gui, win32con, win32api, win32com.client
 from time import sleep
-import config
+from config import user
 import os
 
 from public.glo import Glo
@@ -89,8 +89,8 @@ class Login(object):
             for i in loginArr:
                 # 登陆用户名和区
                 status = False
-                dlAccount = config.ACCTZU[self.groupNo]['acctList'][i]['account']
-                dlServer = config.ACCTZU[self.groupNo]['acctList'][i]['server']
+                dlAccount = user.ACCTZU[self.groupNo]['acctList'][i]['account']
+                dlServer = user.ACCTZU[self.groupNo]['acctList'][i]['server']
 
                 # 前置窗口用
                 gameHwnd = self.hwndList[i]

@@ -4,11 +4,11 @@ sys.path.append(".")
 sys.path.append("..")
 import cv2 as cv
 from public.glo import Glo
-import config
+from config import base
 
 
 class Match:
-    default_simi = config.GLOBAL_SIMI
+    default_simi = base.GLOBAL_SIMI
     simi = default_simi
 
     def __init__(self, img = 0):

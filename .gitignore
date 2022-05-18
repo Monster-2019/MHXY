@@ -3,4 +3,4 @@
 images/*.jpg
 *.log
 logger.log
-config.py
+user.py

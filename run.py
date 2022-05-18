@@ -30,7 +30,7 @@ from clean import Clean
 from logout import Logout
 from login import Login
 from sendMsg import SendMsg
-import config
+from config import user
 
 from public.glo import Glo
 from public.btn import Btn
@@ -57,7 +57,7 @@ class Run(object):
         msg = '完成第' + str(groupNo) + '组号, 用时' + str(self.m) + '分钟'
         self.startTime = datetime.now()
 
-        if groupNo == len(config.ACCTZU):
+        if groupNo == len(user.ACCTZU):
             currentHour = datetime.today().hour
             currentWeek = datetime.today().isoweekday()
             if currentHour <= 6 or (
@@ -198,7 +198,7 @@ class Run(object):
             sleep(1)
 
         os.system('taskkill /F /IM mhxy.exe')
-        sleep(1)
+        sleep(3)
 
         return
 
@@ -209,11 +209,11 @@ class Run(object):
             log('-------------------------------------开始执行--------------------------------------'
                 )
 
-            for index in range(len(config.ACCTZU)):
+            for index in range(len(user.ACCTZU)):
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 self.getHwndList()
-                if config.ACCTZU[index]['status']:
+                if user.ACCTZU[index]['status']:
                     self.openGame()
                     self.getHwndList()
                     log(f'开始第{GROUP_NO}组号')
@@ -223,8 +223,8 @@ class Run(object):
                     lock = Manager().Lock()
                     d = Manager().dict()
                     q = Manager().Queue()
-                    for key in config.ACCTZU[index]['config']:
-                        d[key] = config.ACCTZU[index]['config'][key]
+                    for key in user.ACCTZU[index]['config']:
+                        d[key] = user.ACCTZU[index]['config'][key]
 
                     p = Pool(5)
                     for i in range(5):

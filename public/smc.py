@@ -4,7 +4,6 @@ from public.cutScreen import CScreen
 from public.matchTem import Match
 from public.btn import Btn
 from time import sleep
-import config
 
 class SMC(object):
     bb = (513, 202)

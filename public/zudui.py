@@ -6,8 +6,6 @@ from public.btn import Btn
 from public.matchTem import Match
 from public.glo import Glo
 from public.smc import SMC
-import config
-import time
 
 class Zudui(object):
     def __init__(self):
@@ -46,15 +44,10 @@ class Zudui(object):
             self.smc('dw_sq')
 
             n = 0
-            # startT = time.time()
-            # endT = time.time()
             while n < 4:
                 res = self.smc('dw_js', sleepT=1)
                 if res != 0:
                     n+=1
-                # endT = time.time()
-                # if endT > startT + 30:
-                    # break
                 sleep(0.5)
 
             self.g.setObj('config', 'TeamStatus', True)
