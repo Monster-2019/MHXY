@@ -3,7 +3,7 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 from time import sleep
-import win32api, win32con, win32gui
+import win32api, win32con
 import random
 from public.glo import Glo
 
@@ -36,7 +36,6 @@ class Btn:
         if hwnd:
             self.hwnd = hwnd
         else:
-            # self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.g.get('windowClass'), '《梦幻西游》手游')
             self.hwnd = self.g.get('windowClass')
         self.lock = self.g.get('lock')
 

@@ -1,14 +1,11 @@
 import sys
 sys.path.append('..')
-from time import sleep
 
 from public.cutScreen import CScreen
 from public.btn import Btn
 from public.matchTem import Match
 from public.glo import Glo
 from public.smc import SMC
-
-import random
 
 class Lidui:
     def __init__(self):

@@ -16,24 +16,20 @@ class Info():
         self.g = Glo()
         self.B = Btn()
         self.ocr = OCR().ocr
-        CScreenObj = CScreen()
-        self.cutScreen = CScreenObj.cutScreen
-        self.customCutScreen = CScreenObj.customCutScreen
+        self.cutScreen = CScreen().cutScreen
+        self.customCutScreen = CScreen().customCutScreen
         self.matchTem = Match().matchTem
 
-    @retry(stop_max_attempt_number=3)
-    def useOcr(self, isNum):
-        self.customCutScreen(self.ocrText)
+    @retry
+    def handleOcr(self, ocrText, isNum=False):
+        self.customCutScreen(ocrText)
         sleep(0.5)
-        self.B.RBtn()
         txt = self.ocr(isNum)
-        return txt
+        if not txt:
+            raise IOError("ocr err")
+        else:
+            return txt
 
-    def setOcr(self, hotk, ocrText, isNum=False):
-        self.B.Hotkey(hotk)
-        sleep(1)
-        self.ocrText = ocrText
-        return self.useOcr(isNum)
 
     def getInfo(self):
         try:
@@ -45,7 +41,9 @@ class Info():
                 else:
                     break
             # 获取角色名字和等级
-            nameLevel = self.setOcr('js', 'name', False)
+            self.B.Hotkey('js')
+            nameLevel = self.handleOcr('name', False)
+            self.B.RBtn()
 
             name = '空'
             level = '空'
@@ -59,16 +57,17 @@ class Info():
                     sleep(0.5)
 
             # 获取金币数量和银币数量
-            gold = self.setOcr('bb', 'gold', True)
+            self.B.Hotkey('bb')
+            gold = self.handleOcr('gold', True)
             if gold:
                 self.g.set("gold", gold)
                 sleep(0.5)
             
-            silver = self.setOcr('bb', 'silver', True)
+            silver = self.handleOcr('silver', True)
             if silver:
                 self.g.set("silver", silver)
 
-            # log(f"账号:{name}, 等级:{level}级")
+            self.B.RBtn()
             log(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
         except Exception as e:
             log(e, True)

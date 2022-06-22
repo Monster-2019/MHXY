@@ -22,33 +22,6 @@ class Shimen:
         self.smca = SMC().smca
         self.complete = False
 
-    def isComplete(self):
-        complete = False
-        self.B.Hotkey("hd")
-
-        self.smc("rchd", sleepT=0.5)
-
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
-        sleep(0.5)
-
-        for n in range(31):
-            if n % 10 == 0:
-                sleep(0.5)
-                res = self.smc("sm_wc", simi=0.999, count=0)
-                if res != 0:
-                    log(f"账号: { self.name } 师门任务已完成")
-                    complete = True
-                    break
-            else:
-                self.B.VBtn(-1)
-
-        self.B.VBtn(1, 31)
-
-        self.B.RBtn()
-
-        return complete
-
     def timing(self):
         self.complete = True
 
@@ -62,29 +35,31 @@ class Shimen:
             while self.smc("hd", count=0) == 0:
                 self.B.RBtn()
 
-            self.B.Hotkey("zz", sleepT=1)
-            self.B.LBtn("zr1", sleepT=0.5)
-            self.B.LBtn("zr1", sleepT=0.5)
-            self.B.RBtn()
-
             while True:
                 res = self.smc("sygb", sleepT=0.5)
                 if res == 0:
                     break
 
-            self.complete = self.isComplete()
+            self.B.Hotkey("hd")
 
-            if not self.complete:
-                print(f"账号: { self.name } 师门任务未完成")
+            self.smc("rchd", sleepT=0.5)
 
-                if not processing:
-                    self.B.Hotkey("hd")
-                    self.smc("rchd", sleepT=0.5)
-                    page = 1
-                    while True:
+            self.B.MBtn(590, 330)
+            self.B.VBtn(1, 31)
+            sleep(0.5)
+
+            for n in range(31):
+                if n % 10 == 0:
+                    sleep(0.5)
+                    if self.smc("sm_wc", simi=0.999, count=0) != 0:
+                        log(f"账号: { self.name } 师门任务已完成")
+                        complete = True
+                        break
+
+                    else:
                         self.cutScreen()
                         temCoor = self.matchTem("hd_smrw") or self.matchTem("hd_smrw1")
-                        if temCoor != 0:
+                        if temCoor:
                             btnCoor = self.matchTem(
                                 "cj", "imgTem/hd_smrw"
                             ) or self.matchTem("cj", "imgTem/hd_smrw1")
@@ -110,12 +85,13 @@ class Shimen:
                                         break
 
                                 break
-                        else:
-                            page += 1
-                            self.B.VBtn(-1, 10)
-                            sleep(0.5)
-                            if page == 4:
-                                break
+                else:
+                    self.B.VBtn(-1)
+
+            self.B.RBtn()
+
+            if not self.complete:
+                print(f"账号: { self.name } 师门任务未完成")
 
                 smList = [
                     "sm_mpgx",
@@ -142,7 +118,7 @@ class Shimen:
                             btnCoor = self.matchTem(item, simi=0.94)
                         else:
                             btnCoor = self.matchTem(item)
-                        if btnCoor != 0:
+                        if btnCoor:
                             if item == "hd":
                                 if self.g.compare() == True:
                                     self.B.RBtn()
@@ -166,17 +142,16 @@ class Shimen:
 
                             elif item == "djjx":
                                 while True:
-                                    res = self.smc("djjx", simi=0.9, sleepT=0.5)
+                                    res = self.smc("djjx", simi=0.9, sleepT=0.1)
                                     if res == 0:
                                         break
                                 
-                                sleep(5)
+                                sleep(3)
 
                             elif item == "btgm" or item == "gfgm":
-                                sleep(2)
+                                sleep(1.5)
                                 newCoor = ((308, 245), (294, 75))
                                 self.B.LBtn(newCoor, sleepT=0.5)
-                                self.B.LBtn(btnCoor, sleepT=0.5)
                                 self.B.RBtn()
 
                             elif item == "sy":

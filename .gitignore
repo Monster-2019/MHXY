@@ -3,4 +3,3 @@
 images/*.jpg
 *.log
 logger.log
-user.py

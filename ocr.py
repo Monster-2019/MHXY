@@ -4,6 +4,7 @@ sys.path.append("..")
 import cv2 as cv
 import pytesseract
 from public.glo import Glo
+import traceback
 
 
 def not_empty(s):
@@ -24,12 +25,15 @@ class OCR:
             else:
                 content = pytesseract.image_to_string(image, lang="num", config="--psm 6").splitlines()
             content = list(filter(not_empty, content))
-            if content:
-                return content[0]
-            return 0
+            result = ''
+            for item in content:
+                result += item
+            return result or 0
         except BaseException as e:
-            print('识别错误:', e)
+            traceback.print_exc()
+            # print('识别错误:', e)
 
 
 if __name__ == "__main__":
-    OCR().ocr()
+    r = OCR().ocr()
+    print(r)

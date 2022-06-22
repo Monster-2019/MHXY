@@ -27,12 +27,6 @@ class Zudui(object):
                 else:
                     break
 
-            # 领取双倍
-            # self.B.Hotkey('gj')
-            # self.smc('gj_lq')
-            # self.B.RBtn()
-            # sleep(0.5)
-
             self.B.Hotkey('dw')
 
             self.smc('cjdw', sleepT=0.5)
@@ -66,11 +60,6 @@ class Zudui(object):
                     self.B.RBtn()
                 else:
                     break
-
-            # 领取双倍
-            # self.B.Hotkey('gj')
-            # self.smc('gj_lq')
-            # self.B.RBtn()
 
             # n = 0
             while True:

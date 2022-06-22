@@ -2,12 +2,9 @@ import sys
 sys.path.append('.')
 sys.path.append('..')
 import win32gui, win32ui, win32con
-from PIL import Image
 from time import sleep
 from public.glo import Glo
 import cv2 as cv
-from PIL import Image
-import numpy as np
 
 class CScreen(object):
     login = False
@@ -34,69 +31,33 @@ class CScreen(object):
             self.login = True
             self.screen = 'mnq'
         else:
-            # self.hwnd = win32gui.FindWindow('class neox::toolkit::Win32Window' + self.index, None)
             self.hwnd = self.g.get('windowClass')
             self.screen = 'screen' + self.index
 
-    def cutScreen(self, infoKey=""):
-        # 获取句柄窗口的大小信息
-        # 可以通过修改该位置实现自定义大小截图
+    def cutScreen(self):
         left, top, right, bot = win32gui.GetWindowRect(self.hwnd)
         self.Coor = (0, 0)
         self.WH = (right - left - 17, bot - top - 39)
 
-        # 返回句柄窗口的设备环境、覆盖整个窗口，包括非客户区，标题栏，菜单，边框
-        hwndDC = win32gui.GetDC(self.hwnd)
-
-        # 创建设备描述表
-        mfcDC = win32ui.CreateDCFromHandle(hwndDC)
-
-        # 创建内存设备描述表
-        # 创建位图对象
-        # 截图至内存设备描述表
-        saveDC = mfcDC.CreateCompatibleDC()
-        saveBitMap = win32ui.CreateBitmap()
-        saveBitMap.CreateCompatibleBitmap(mfcDC, self.WH[0], self.WH[1])
-        saveDC.SelectObject(saveBitMap)
-        saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
-
-        # 将截图保存到文件中
-        try:
-            ###获取位图信息
-            bmpinfo = saveBitMap.GetInfo()
-            bmpstr = saveBitMap.GetBitmapBits(True)
-            ###生成图像
-            im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
-            ###PrintWindow成功,保存到文件,显示到屏幕
-            # print(self.saveUrl + self.screen + '.jpg')
-            im_PIL.save(self.saveUrl + self.screen + '.jpg') #保存
-
-        except Exception as e:
-            print(f'报错{e}')
-
-        # 释放内存
-        win32gui.DeleteObject(saveBitMap.GetHandle())
-        saveDC.DeleteDC()
-        mfcDC.DeleteDC()
-        win32gui.ReleaseDC(self.hwnd, hwndDC)
-        sleep(0.01)
+        self.saveImg()
 
         if not self.login:
             img = cv.imread('./images/' + self.screen + '.jpg')
             self.g.set('oldCoor', self.g.get('newCoor'))
-            self.g.set('newCoor', [np.array(img[200, 200]).sum(), np.array(img[560, 200]).sum(), np.array(img[200, 815]).sum(), np.array(img[560, 815]).sum()])
+            self.g.set('newCoor', [img[200, 200], img[560, 200], img[200, 815], img[560, 815]])
 
     def customCutScreen(self, infoKey=""):
-        # 获取句柄窗口的大小信息
-        # 可以通过修改该位置实现自定义大小截图
-        left, top, right, bot = win32gui.GetWindowRect(self.hwnd)
-        if (isinstance(infoKey, str)):
-            self.Coor = self.infoCoor[infoKey][0]
-            self.WH = self.infoCoor[infoKey][1]
-        else:
-            self.Coor = infoKey[0]
-            self.WH = infoKey[1]
+        if not infoKey:
+            return 0
 
+        self.Coor = self.infoCoor[infoKey][0]
+        self.WH = self.infoCoor[infoKey][1]
+
+        self.saveImg()
+
+        sleep(0.01)
+
+    def saveImg (self):
         # 返回句柄窗口的设备环境、覆盖整个窗口，包括非客户区，标题栏，菜单，边框
         hwndDC = win32gui.GetDC(self.hwnd)
 
@@ -111,27 +72,15 @@ class CScreen(object):
         saveBitMap.CreateCompatibleBitmap(mfcDC, self.WH[0], self.WH[1])
         saveDC.SelectObject(saveBitMap)
         saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
-
-        # 将截图保存到文件中
-        try:
-            ###获取位图信息
-            bmpinfo = saveBitMap.GetInfo()
-            bmpstr = saveBitMap.GetBitmapBits(True)
-            ###生成图像
-            im_PIL = Image.frombuffer('RGB',(bmpinfo['bmWidth'],bmpinfo['bmHeight']),bmpstr,'raw','BGRX',0,1)
-            ###PrintWindow成功,保存到文件,显示到屏幕
-            # print(self.saveUrl + self.screen + '.jpg')
-            im_PIL.save(self.saveUrl + self.screen + '.jpg') #保存
-
-        except Exception as e:
-            print(f'报错{e}')
+        saveBitMap.SaveBitmapFile(saveDC, self.saveUrl + self.screen + '.jpg')
 
         # 释放内存
         win32gui.DeleteObject(saveBitMap.GetHandle())
         saveDC.DeleteDC()
         mfcDC.DeleteDC()
         win32gui.ReleaseDC(self.hwnd, hwndDC)
-        sleep(0.01)
 
 if __name__ == '__main__':
-    CScreen().cutScreen()
+    hwnd = win32gui.FindWindow(None, "企业微信")
+    print(hwnd)
+    CScreen(hwnd).cutScreen()

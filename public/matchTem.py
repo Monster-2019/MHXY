@@ -37,8 +37,8 @@ class Match:
             self.simi = simi
         s = cv.imread("./images/" + img + ".jpg", 0)
         n = cv.imread("./images/imgTem/" + tem + ".JPG", 0)
-        screen = self.imgProcess(s)
-        newTem = self.imgProcess(n)
+        screen = s
+        newTem = n
         result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
@@ -59,10 +59,10 @@ class Match:
             self.simi = simi
 
         s = cv.imread("./images/" + img + ".jpg", 0)
-        screen = self.imgProcess(s)
+        screen = s
         for item in tem:
             n = cv.imread("./images/imgTem/" + item + ".jpg", 0)
-            newTem = self.imgProcess(n)
+            newTem = n
             result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if max_val > self.simi:
