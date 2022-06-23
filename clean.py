@@ -23,7 +23,7 @@ class Clean(object):
 	def start(self):
 		try:
 			while self.smc("hd", count=0) == 0:
-                self.B.RBtn()
+				self.B.RBtn()
 
 			self.B.Hotkey('bb')
 			self.B.MBtn(710, 410)

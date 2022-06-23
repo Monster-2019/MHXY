@@ -133,7 +133,7 @@ class Run(object):
 
             Clean().start()
 
-            if currentWeek === 1:
+            if currentWeek == 1:
                 if level >= 50 and level <= 69:
                     Ring().start()
                     Bangpai().start()

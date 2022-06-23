@@ -10,6 +10,7 @@ import traceback
 def not_empty(s):
     return s and s.strip()
 
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class OCR:
     def __init__(self):
@@ -19,11 +20,7 @@ class OCR:
     def ocr(self, isNum=False):
         try:
             image = cv.imread("./images/screen" + self.g.get("screen") + ".jpg", 0)
-            content = None
-            if not isNum:
-                content = pytesseract.image_to_string(image, lang="chi_sim", config="--psm 6").splitlines()
-            else:
-                content = pytesseract.image_to_string(image, lang="num", config="--psm 6").splitlines()
+            content = pytesseract.image_to_string(image, lang="chi_sim", config="--psm 6").splitlines()
             content = list(filter(not_empty, content))
             result = ''
             for item in content:
