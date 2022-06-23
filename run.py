@@ -90,8 +90,8 @@ class Run(object):
 
             Guajiang().start()
 
-            if level >= 60:
-                GengZhong().start()
+            # if level >= 60:
+                # GengZhong().start()
 
             if myDict['ZG']:
                 Zhuogui().start()
@@ -101,18 +101,14 @@ class Run(object):
                     FuBen('ecy').start()
                     sleep(1)
                 
-                # if currentWeek % 2 == 1:
-                #     FuBen('lyrm').start()
-                #     sleep(1)
-
                 if currentWeek % 2 == 0 or currentWeek == 7:
                     FuBen('lls').start()
 
 
             Lidui().start()
 
-            if level >= 60:
-                GengZhong().start()
+            # if level >= 60:
+                # GengZhong().start()
 
             Shimen().start()
 
@@ -132,18 +128,18 @@ class Run(object):
 
             LQHYD().start()
 
-            if level >= 60:
-                GengZhong().start()
+            # if level >= 60:
+                # GengZhong().start()
 
             Clean().start()
 
-            if currentWeek >= 6:
+            if currentWeek === 1:
                 if level >= 50 and level <= 69:
                     Ring().start()
                     Bangpai().start()
 
-                if level >= 60:
-                    Gongfang().start()
+                # if level >= 60:
+                    # Gongfang().start()
                     
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8
@@ -206,15 +202,14 @@ class Run(object):
         try:
             import pythoncom
             pythoncom.CoInitialize()
-            log('-------------------------------------开始执行--------------------------------------'
-                )
+            log('-------------------------------------开始执行--------------------------------------')
 
             for index in range(len(user.ACCTZU)):
                 GROUP_NO = index + 1
                 # 登陆/切换账号
                 self.getHwndList()
                 if user.ACCTZU[index]['status']:
-                    self.openGame()
+                    # self.openGame()
                     self.getHwndList()
                     log(f'开始第{GROUP_NO}组号')
                     Login(index, self.hwndList).login()
@@ -226,8 +221,8 @@ class Run(object):
                     for key in user.ACCTZU[index]['config']:
                         d[key] = user.ACCTZU[index]['config'][key]
 
-                    p = Pool(5)
-                    for i in range(5):
+                    p = Pool(len(self.hwndList))
+                    for i in range(len(self.hwndList)):
                         p.apply_async(self.richang,
                                       args=(str(i), self.hwndList[i], lock, d, q))
                         sleep(1)

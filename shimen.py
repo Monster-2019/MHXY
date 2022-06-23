@@ -7,7 +7,6 @@ from public.glo import Glo
 from public.log import log
 from sendMsg import SendMsg
 import threading
-import sys
 
 
 class Shimen:
@@ -21,16 +20,17 @@ class Shimen:
         self.smc = SMC().smc
         self.smca = SMC().smca
         self.complete = False
+        self.processing = False
 
     def timing(self):
         self.complete = True
+        self.processing = False
 
     def start(self):
         try:
             t = threading.Timer(600, self.timing)
             t.start()
             log(f"账号: { self.name } 开始师门任务")
-            processing = False
 
             while self.smc("hd", count=0) == 0:
                 self.B.RBtn()
@@ -53,7 +53,7 @@ class Shimen:
                     sleep(0.5)
                     if self.smc("sm_wc", simi=0.999, count=0) != 0:
                         log(f"账号: { self.name } 师门任务已完成")
-                        complete = True
+                        self.complete = True
                         break
 
                     else:
@@ -70,7 +70,7 @@ class Shimen:
                                 ),
                                 btnCoor[1],
                             )
-                            if btnCoor != 0:
+                            if btnCoor:
                                 self.B.LBtn(newCoor, sleepT=1)
 
                                 # 去完成或继续任务
@@ -81,7 +81,7 @@ class Shimen:
                                     )
                                     if btnCoor != 0:
                                         self.B.LBtn(btnCoor, sleepT=1)
-                                        processing = True
+                                        self.processing = True
                                         break
 
                                 break
@@ -111,18 +111,17 @@ class Shimen:
                 ]
 
                 count = 0
-                while processing:
+                while self.processing:
                     for item in smList:
                         self.cutScreen()
+                        compare = self.g.compare()
                         if item == "dh" or item == "sm_sm":
                             btnCoor = self.matchTem(item, simi=0.94)
                         else:
                             btnCoor = self.matchTem(item)
-                        if btnCoor:
+                        if btnCoor and compare:
                             if item == "hd":
-                                if self.g.compare() == True:
-                                    self.B.RBtn()
-                                    continue
+                                self.B.RBtn()
 
                             elif item == "dh" or item == "dhda":
                                 while True:
@@ -162,7 +161,7 @@ class Shimen:
                                 self.smc("sm_jl")
                                 self.B.RBtn()
                                 print(f"账号: { self.name } 师门任务完成")
-                                processing = False
+                                self.processing = False
                                 self.complete = True
                                 break
 
@@ -183,7 +182,7 @@ class Shimen:
 
                             if count == 5:
                                 print(f"账号: { self.name } 师门任务完成1")
-                                processing = False
+                                self.processing = False
                                 self.complete = True
                                 break
 
@@ -209,7 +208,6 @@ class Shimen:
 
         except Exception as e:
             log(e, True)
-            sys.exit(0)
 
 
 if __name__ == "__main__":

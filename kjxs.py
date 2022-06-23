@@ -14,6 +14,8 @@ class KJXS:
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
         self.smca = SMC().smca
+        self.complete = False
+        self.processing = False
 
     def isComplete(self):
         complete = False
@@ -44,68 +46,68 @@ class KJXS:
 
     def start(self):
         try:
+            t = threading.Timer(300, self.timing)
+            t.start()
             log(f"账号: { self.name } 开始科举乡试任务")
-            complete = False
-            processing = False
 
-            while True:
-                res = self.smc('hd', count=0)
-                if res == 0:
-                    self.B.RBtn()
-                else:
-                    break
+            while self.smc("hd", count=0) == 0:
+                self.B.RBtn()
 
-            complete = self.isComplete()
+            self.B.Hotkey("hd")
 
-            if not complete:
-                log(f"账号: { self.name } 科举乡试任务进行中")
+            self.smc("rchd", sleepT=0.5)
 
-                if not processing:
-                    self.B.Hotkey('hd')
-                    self.smc('rchd', sleepT=0.5)
-                    page = 1
-                    while True:
+            self.B.MBtn(590, 330)
+            self.B.VBtn(1, 31)
+            sleep(0.5)
+
+            for n in range(31):
+                if n % 10 == 0:
+                    sleep(0.5)
+                    if self.smc('kj_wc', simi=0.999, count=0):
+                        log(f"账号: { self.name } 科举乡试任务已完成")
+                        self.complete = True
+                        break
+
+                    else:
                         self.cutScreen()
                         temCoor = self.matchTem('hd_kjxs') or self.matchTem('hd_kjxs2')
-                        if temCoor != 0:
+                        if temCoor:
                             btnCoor = self.matchTem('cj', 'imgTem/hd_kjxs') or self.matchTem('cj', 'imgTem/hd_kjxs2')
                             newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                            if btnCoor != 0:
+                            if btnCoor:
                                 self.B.LBtn(newCoor, sleepT=1)
-                                if self.smc('kj_start', count=0) != 0:
-                                    processing = True
-                                    sleep(2)
+                                if self.smc('kj_start', count=0):
+                                    self.processing = True
                                     break
-                        else:
-                            page += 1
-                            self.B.VBtn(-1, 10)
-                            sleep(0.5)
-                            if page == 4:
-                                break
 
-                while processing:
+                else:
+                    self.B.VBtn(-1)
+
+            if not self.complete:
+                while self.processing:
                     res = self.smca(['kj_dw', 'kj_dw1'], count=0)
-                    if res != 0:
+                    if res:
                         self.B.RBtn()
-                        complete = True
-                        processing = False
+                        self.complete = True
+                        self.processing = False
                         break
                     else:
                         self.B.LBtn(((375, 390), (250, 50)), sleepT=0.5)
 
                 while True:
                     self.cutScreen()
-                    temCoor = self.matchTem('hd')
+                    isHd = self.matchTem('hd')
                     btnCoor = self.matchTem('sy')
-                    if temCoor != 0 and btnCoor != 0:
+                    if isHd and btnCoor:
                         self.B.LBtn(btnCoor, sleepT=0.5)
-                    elif temCoor != 0 and btnCoor == 0:
+                    elif isHd and btnCoor == 0:
                         break
                     else:
                         self.B.RBtn()
                     sleep(0.5)
 
-            if complete:
+            if self.complete:
                 log(f"账号: { self.name } 科举乡试任务结束")
                 return 1
             else:

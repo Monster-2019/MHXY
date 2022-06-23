@@ -17,115 +17,72 @@ class Yunbiao:
         self.smc = SMC().smc
         self.smca = SMC().smca
         self.complete = False
-
-    def isComplete(self):
-        complete = False
-        self.B.Hotkey('hd')
-
-        self.smc('rchd', sleepT=0.5)
-
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
-        sleep(0.5)
-
-        for n in range(31):
-            if n % 10 == 0:
-                sleep(0.5)
-                res = self.smc('yb_wc', simi=0.999, count=0)
-                if res != 0:
-                    log(f"账号: { self.name } 运镖任务已完成")
-                    complete = True
-                    break
-            else:
-                self.B.VBtn(-1)
-
-        self.B.VBtn(1, 31)
-
-        self.B.RBtn()
-
-        return complete
+        self.processing = False
 
     def timing(self):
         self.complete = True
+        self.processing = False
 
     def start(self):
         try:
-            t = threading.Timer(600, self.timing)
+            t = threading.Timer(900, self.timing)
             t.start()
             log(f"账号: { self.name } 开始运镖任务")
-            processing = False
 
-            while True:
-                res = self.smc('hd', count=0)
-                if res == 0:
-                    self.B.RBtn()
-                else:
-                    break
+            while self.smc("hd", count=0) == 0:
+                self.B.RBtn()
 
-            self.complete = self.isComplete()
+            self.B.Hotkey("hd")
 
-            if not self.complete:
-                log(f"账号: { self.name } 运镖任务进行中")
+            self.smc("rchd", sleepT=0.5)
 
-                if not processing:
-                    self.B.Hotkey('hd')
-                    self.smc('rchd', sleepT=0.5)
-                    page = 1
-                    while True:
+            self.B.MBtn(590, 330)
+            self.B.VBtn(1, 31)
+            sleep(0.5)
+
+            for n in range(31):
+                if n % 10 == 0:
+                    sleep(0.5)
+                    if self.smc('yb_wc', simi=0.999, count=0):
+                        log(f"账号: { self.name } 运镖任务已完成")
+                        self.complete = True
+                        break
+                    
+                    else:
                         self.cutScreen()
                         temCoor = self.matchTem('hd_yb1') or self.matchTem(
                             'hd_yb')
-                        if temCoor != 0:
+                        if temCoor:
                             btnCoor = self.matchTem(
                                 'cj', 'imgTem/hd_yb1') or self.matchTem(
                                     'cj', 'imgTem/hd_yb')
                             newCoor = ((temCoor[0][0] + btnCoor[0][0],
                                         temCoor[0][1] + btnCoor[0][1]),
                                        btnCoor[1])
-                            if btnCoor != 0:
+                            if btnCoor:
                                 self.B.LBtn(newCoor)
-                                processing = True
-                                break
-                        else:
-                            page += 1
-                            self.B.VBtn(-1, 10)
-                            sleep(0.5)
-                            if page == 4:
+                                self.processing = True
                                 break
 
+                else:
+                    self.B.VBtn(-1)
+
+            if not self.complete:
                 count = 0
                 xhList = ['yb_ys', 'qd']
-                while processing:
-                    res = self.smc('hd', count=0)
-                    if res != 0:
-                        sleep(3)
-                        btnCoor = self.smc('yb_ys')
-                        if btnCoor != 0:
-                            ysStatus = False
-                            while not ysStatus:
-                                for item in xhList:
-                                    res = self.smc(item, sleepT=0.5)
-                                    if res != 0 and item == 'qd':
-                                        sleep(3)
-                                        count += 1
-                                        ysStatus = True
-                                        log(f'账号: { self.name } 正在进行第{ count }轮运镖'
-                                            )
-                                        sleep(30)
+                while self.processing:
+                    isHd = self.smc('hd', count=0)
+                    if isHd:
+                        if count >= 3:
+                            self.complete = True
+                            self.processing = False
+                            break
+                        while self.smc('hd', count=0):
+                            self.smca(xhList)
 
-                                        while True:
-                                            res = self.smc('hd', count=0)
-                                            if res != 0:
-                                                break
+                        count += 1
 
-                        else:
-                            if count != 0:
-                                log(f"账号: { self.name } 运镖任务完成")
-                                self.complete = True
-                                processing = False
-                                break
-
-                    sleep(3)
+                    sleep(5)
 
             if self.complete:
                 log(f"账号: { self.name } 运镖任务结束")

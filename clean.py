@@ -22,12 +22,8 @@ class Clean(object):
 
 	def start(self):
 		try:
-			while True:
-				res = self.smc('hd', count=0)
-				if res == 0:
-					self.B.RBtn()
-				else:
-					break
+			while self.smc("hd", count=0) == 0:
+                self.B.RBtn()
 
 			self.B.Hotkey('bb')
 			self.B.MBtn(710, 410)
@@ -43,18 +39,17 @@ class Clean(object):
 				if res:
 					Coor = ((513 + res[0][0], 202 + res[0][1]), res[1])
 					self.B.LBtn(Coor, count=2, sleepT=1)
-				# res = self.smca(ckList, infoKey='bb', count=2, sleepT=0.5)
-				rs = self.smc('bb_max', count=0)
-				if rs != 0:
-					break
-				if res == 0:
+				else:
 					self.B.MBtn(710, 410)
 					self.B.VBtn(-1, 6)
 					sleep(0.5)
 					page+=1
-					if page == 8:
+					if page == 8 or self.smc('bb_empty'):
 						self.B.RBtn()
 						break
+				if self.smc('bb_max', count=0):
+					break
+				
 
 			self.B.Hotkey('bb')
 			self.smc('bb_zl')
@@ -63,68 +58,29 @@ class Clean(object):
 			sleep(0.5)
 
 			syList = ['bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4', 'bb_sy5', 'bb_sy6', 'bb_sy7', 'bb_sy8', 'bb_sy9'] #'bb_jr'
+			csList = ['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf']
+			dqList = ['bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1', 'bb_dq_zz2', 'bb_dq_zz3', 'bb_dq_zz4', 'bb_dq_zz5', 'bb_dq_zz6', 'bb_hd_wz', 'bb_hd_piao'] # 'bb_dq_fu1', 'bb_dq_fu2', 'bb_dq_fu3', 
 			page = 1
 			while True:
-				res = self.smca(syList, count=2, sleepT=0.5)
-				if res == 0:
-					rs = self.smc('hd', count=0)
-					if rs != 0:
-						self.B.Hotkey('bb')
-					res = self.smc('bb_zl', count=0)
-					if res == 0:
-						self.B.RBtn()
-						sleep(0.5)
-					else:
-						self.B.MBtn(710, 410)
-						self.B.VBtn(-1, 6)
-						sleep(0.5)
-						page+=1
-						if page == 8:
-							break
-
-			self.smc('bb_zl')
-			self.B.MBtn(710, 410)
-			self.B.VBtn(1, 50)
-			sleep(0.5)
-
-			list = ['bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf']
-			page = 1
-			while True:
-				res = self.smca(list, simi=0.98, sleepT=0.5)
-				if res != 0:
+				sy = self.smca(syList, count=2, sleepT=0.5)
+				cs = self.smca(csList, simi=0.98, sleepT=0.5)
+				if cs:
 					self.smc('bb_gd', sleepT=0.5)
 					self.smc('bb_smcs', sleepT=0.5)
 					self.smc('bb_add_max', sleepT=0.5)
 					self.smc('bb_cs', sleepT=0.5)
-					self.smc('bb_zl', sleepT=0.5)
-					sleep(1)
-				else:
-					self.B.MBtn(710, 410)
-					self.B.VBtn(-1, 6)
 					sleep(0.5)
-					page+=1
-					if page == 8:
-						break
-
-			self.B.MBtn(710, 410)
-			self.B.VBtn(1, 50)
-			sleep(0.5)
-
-			dqList = ['bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1', 'bb_dq_zz2', 'bb_dq_zz3', 'bb_dq_zz4', 'bb_dq_zz5', 'bb_dq_zz6', 'bb_hd_wz', 'bb_hd_piao'] # 'bb_dq_fu1', 'bb_dq_fu2', 'bb_dq_fu3', 
-			page = 1
-			while True:
-				res = self.smca(dqList)
-				if res != 0:
+				dq = self.smca(dqList)
+				if dq:
 					self.smc('bb_dq', sleepT=0.5)
 					self.smc('qd', sleepT=0.5)
-					self.smc('bb_zl', sleepT=0.5)
-					sleep(1)
-				else:
+				
+				if not sy and not cs and not dq:
 					self.B.MBtn(710, 410)
 					self.B.VBtn(-1, 6)
 					sleep(0.5)
 					page+=1
-					if page == 8:
+					if page == 8 or self.smc('bb_empty'):
 						self.B.RBtn()
 						break
 

@@ -19,33 +19,6 @@ class Mijing:
         self.complete = False
         self.processing = False
 
-    def isComplete(self):
-        complete = True
-        self.B.Hotkey('hd')
-        self.smc('rchd', sleepT=0.5)
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
-        sleep(0.5)
-
-        for n in range(31):
-            if n % 10 == 0:
-                sleep(0.5)
-                res = self.smc('hd_mjxy', simi=0.999, count=0)
-                if res != 0:
-                    complete = False
-                    break
-
-            else:
-                self.B.VBtn(-1)
-
-        self.B.VBtn(1, 31)
-        self.B.RBtn()
-
-        if complete:
-            log(f"账号: { self.name } 秘境任务已完成")
-
-        return complete
-
     def timing(self):
         self.complete = True
 
@@ -55,24 +28,24 @@ class Mijing:
             t.start()
             log(f"账号: { self.name } 开始秘境任务")
 
-            while True:
-                res = self.smc('hd', count=0)
-                if res == 0:
-                    self.B.RBtn()
-                else:
-                    break
+            while self.smc("hd", count=0) == 0:
+                self.B.RBtn()
 
-            self.complete = self.isComplete()
+            self.B.Hotkey("hd")
 
-            # 匹配秘境降妖
-            if not self.complete:
-                log(f"账号: { self.name } 秘境任务进行中")
+            self.smc("rchd", sleepT=0.5)
 
-                if not self.processing:
-                    self.B.Hotkey('hd')
-                    self.smc('rchd', sleepT=0.5)
-                    page = 1
-                    while True:
+            self.B.MBtn(590, 330)
+            self.B.VBtn(1, 31)
+            sleep(0.5)
+
+            self.complete = True
+
+            for n in range(31):
+                if n % 10 == 0:
+                    sleep(0.5)
+                    res = self.smc('hd_mjxy', simi=0.999, count=0)
+                    if res:
                         self.cutScreen()
                         temCoor = self.matchTem('hd_mjxy') or self.matchTem(
                             'hd_mjxy1')
@@ -83,73 +56,63 @@ class Mijing:
                             newCoor = ((temCoor[0][0] + btnCoor[0][0],
                                         temCoor[0][1] + btnCoor[0][1]),
                                        btnCoor[1])
-                            if btnCoor != 0:
+                            if btnCoor:
                                 self.B.LBtn(newCoor, sleepT=3)
+                                self.complete = False
                                 self.processing = True
                                 break
 
-                        else:
-                            page += 1
-                            self.B.VBtn(-1, 10)
-                            sleep(0.5)
-                            if page == 4:
-                                self.complete = True
-                                self.processing = False
-                                break
+                else:
+                    self.B.VBtn(-1)
 
-                xhList = [
-                    'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz', 'mj_mjxyrw'
-                ]
-                # 'mj_mrh', 'mj_yjf', 'mj_esg', 
-                if self.processing:
-                    while self.processing:
-                        for item in xhList:
-                            res = self.smc(item, sleepT=1)
-                            if res != 0:
-                                if item == 'mj_one':
-                                    self.B.LBtn(((res[0][0] + 46, res[0][1] - 60), res[1]))
-
-                                if item == 'mj_mjxyrw':
-                                    self.processing = False
-                                    break
-
-                    self.processing = True
-
-                xhList = ['hd', 'sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb', 'fl']
-                # , 'mj_lq', 'mj_gb'
-
+            xhList = [
+                'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz', 'mj_mjxyrw'
+            ]
+            # 'mj_mrh', 'mj_yjf', 'mj_esg', 
+            if self.processing:
                 while self.processing:
                     for item in xhList:
-                        if self.complete:
-                            self.smc('mj_lk')
-                        
-                        self.cutScreen()
-                        btnCoor = self.matchTem(item)
-                        if item == 'mj_mjxyrw':
-                            btnCoor = self.matchTem(item, simi=0.9)
-                        if btnCoor != 0:
-                            if item == 'hd':
+                        res = self.smc(item, sleepT=1)
+                        if res != 0:
+                            if item == 'mj_one':
+                                self.B.LBtn(((res[0][0] + 46, res[0][1] - 60), res[1]))
+
+                            if item == 'mj_mjxyrw':
                                 self.processing = False
                                 break
 
-                            elif item == 'sb' or item == 'mj_tg':
-                                self.B.LBtn(btnCoor)
-                                # self.B.LBtn(((520, 380), (10, 10)))
-                                self.complete = True
+                self.processing = True
 
-                            elif item == 'mj_mjxyrw':
-                                self.B.LBtn(btnCoor, sleepT=2)
-                                continue
+            xhList = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
+            # , 'mj_lq', 'mj_gb'
 
-                            elif item == 'fl':
-                                self.B.RBtn()
-                                self.B.RBtn()
-                                sleep(0.5)
+            while self.processing:
+                for item in xhList:
+                    self.cutScreen()
+                    isFl = self.matchTem('fl')
+                    if item == 'mj_mjxyrw':
+                        btnCoor = self.matchTem(item, simi=0.9)
+                    else:
+                        btnCoor = self.matchTem(item)
+                    if isFl and btnCoor:
+                        if item == 'sb' or item == 'mj_tg':
+                            self.B.LBtn(btnCoor)
+                            # self.B.LBtn(((520, 380), (10, 10)))
+                            self.complete = True
+                            self.processing = False
+                            break
 
-                            else:
-                                self.B.LBtn(btnCoor)
+                        elif item == 'mj_mjxyrw':
+                            self.B.LBtn(btnCoor, sleepT=2)
+                            continue
 
-                        sleep(0.5)
+                        else:
+                            self.B.LBtn(btnCoor)
+
+                    sleep(0.5)
+
+            while self.smc('hd') == 0:
+                self.smc('mj_lk')
 
             if self.complete:
                 log(f"账号: { self.name } 秘境任务结束")
