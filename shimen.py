@@ -95,7 +95,6 @@ class Shimen:
 
                 smList = [
                     "sm_mpgx",
-                    "hd",
                     "sm_sm",
                     "djjx",
                     "dh",
@@ -114,16 +113,14 @@ class Shimen:
                 while self.processing:
                     for item in smList:
                         self.cutScreen()
+                        isHd = self.smc('hd', count=0)
                         compare = self.g.compare()
                         if item == "dh" or item == "sm_sm":
                             btnCoor = self.matchTem(item, simi=0.94)
                         else:
                             btnCoor = self.matchTem(item)
-                        if btnCoor and compare:
-                            if item == "hd":
-                                self.B.RBtn()
-
-                            elif item == "dh" or item == "dhda":
+                        if btnCoor and isHd:
+                            if item == "dh" or item == "dhda":
                                 while True:
                                     self.cutScreen()
                                     btnCoor = self.matchTem(
@@ -150,7 +147,7 @@ class Shimen:
                             elif item == "btgm" or item == "gfgm":
                                 sleep(1)
                                 newCoor = ((308, 245), (294, 75))
-                                self.B.LBtn(newCoor, sleepT=0.5)
+                                self.B.LBtn(newCoor, sleepT=1)
                                 if self.smca(['btgm', 'gfgm']):
                                     sefl.B.RBtn()
 
@@ -173,7 +170,7 @@ class Shimen:
 
                             sleep(0.5)
 
-                        else:
+                        elif isHd:
                             if item == "sm_sm":
                                 if self.smc("hd", count=0) != 0:
                                     self.B.RBtn()
