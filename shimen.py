@@ -148,10 +148,11 @@ class Shimen:
                                 sleep(3)
 
                             elif item == "btgm" or item == "gfgm":
-                                sleep(1.5)
+                                sleep(1)
                                 newCoor = ((308, 245), (294, 75))
                                 self.B.LBtn(newCoor, sleepT=0.5)
-                                self.B.RBtn()
+                                if self.smca(['btgm', 'gfgm']):
+                                    sefl.B.RBtn()
 
                             elif item == "sy":
                                 if (btnCoor[0][0] + btnCoor[1][0]) < 920:
