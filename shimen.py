@@ -54,6 +54,7 @@ class Shimen:
                     if self.smc("sm_wc", simi=0.999, count=0) != 0:
                         log(f"账号: { self.name } 师门任务已完成")
                         self.complete = True
+                        self.B.RBtn()
                         break
 
                     else:
@@ -88,7 +89,6 @@ class Shimen:
                 else:
                     self.B.VBtn(-1)
 
-            self.B.RBtn()
 
             if not self.complete:
                 print(f"账号: { self.name } 师门任务未完成")
@@ -119,7 +119,7 @@ class Shimen:
                             btnCoor = self.matchTem(item, simi=0.94)
                         else:
                             btnCoor = self.matchTem(item)
-                        if btnCoor and isHd:
+                        if btnCoor:
                             if item == "dh" or item == "dhda":
                                 while True:
                                     self.cutScreen()
@@ -145,11 +145,12 @@ class Shimen:
                                 sleep(3)
 
                             elif item == "btgm" or item == "gfgm":
-                                sleep(1)
+                                sleep(3)
                                 newCoor = ((308, 245), (294, 75))
-                                self.B.LBtn(newCoor, sleepT=1)
+                                self.B.LBtn(newCoor, sleepT=0.5)
+                                self.B.LBtn(btnCoor, sleepT=1)
                                 if self.smca(['btgm', 'gfgm']):
-                                    sefl.B.RBtn()
+                                    self.B.RBtn()
 
                             elif item == "sy":
                                 if (btnCoor[0][0] + btnCoor[1][0]) < 920:
@@ -162,6 +163,9 @@ class Shimen:
                                 self.processing = False
                                 self.complete = True
                                 break
+
+                            elif item == 'sm_sm' and isHd:
+                                self.B.LBtn(btnCoor)
 
                             else:
                                 self.B.LBtn(btnCoor)
@@ -183,6 +187,8 @@ class Shimen:
                                 self.processing = False
                                 self.complete = True
                                 break
+
+                        sleep(0.1)
 
                 sleep(0.5)
                 while True:

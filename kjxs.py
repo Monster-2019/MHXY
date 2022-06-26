@@ -5,6 +5,7 @@ from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
+import threading
 
 class KJXS:
     def __init__(self):
@@ -17,32 +18,9 @@ class KJXS:
         self.complete = False
         self.processing = False
 
-    def isComplete(self):
-        complete = False
-        self.B.Hotkey('hd')
-
-        self.smc('rchd', sleepT=0.5)
-
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
-        sleep(0.5)
-
-        for n in range(31):
-            if n % 10 == 0:
-                sleep(0.5)
-                res = self.smc('kj_wc', simi=0.999, count=0)
-                if res != 0:
-                    log(f"账号: { self.name } 科举乡试任务已完成")
-                    complete = True
-                    break
-            else:
-                self.B.VBtn(-1)
-
-        self.B.VBtn(1, 31)
-
-        self.B.RBtn()
-
-        return complete
+    def timing(self):
+        self.complete = True
+        self.processing = False
 
     def start(self):
         try:
@@ -67,6 +45,7 @@ class KJXS:
                     if self.smc('kj_wc', simi=0.999, count=0):
                         log(f"账号: { self.name } 科举乡试任务已完成")
                         self.complete = True
+                        self.B.RBtn()
                         break
 
                     else:
@@ -84,6 +63,7 @@ class KJXS:
                 else:
                     self.B.VBtn(-1)
 
+            
             if not self.complete:
                 while self.processing:
                     res = self.smca(['kj_dw', 'kj_dw1'], count=0)

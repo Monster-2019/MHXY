@@ -65,6 +65,9 @@ class Mijing:
                 else:
                     self.B.VBtn(-1)
 
+            if self.complete:
+                self.B.RBtn()
+
             xhList = [
                 'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz', 'mj_mjxyrw'
             ]
@@ -89,12 +92,18 @@ class Mijing:
             while self.processing:
                 for item in xhList:
                     self.cutScreen()
+                    isHd = self.matchTem('hd')
+                    if isHd:
+                        self.complete = True
+                        self.processing = False
+                        break
                     isFl = self.matchTem('fl')
+                    compare = self.g.compare()
                     if item == 'mj_mjxyrw':
                         btnCoor = self.matchTem(item, simi=0.9)
                     else:
                         btnCoor = self.matchTem(item)
-                    if isFl and btnCoor:
+                    if btnCoor:
                         if item == 'sb' or item == 'mj_tg':
                             self.B.LBtn(btnCoor)
                             # self.B.LBtn(((520, 380), (10, 10)))
@@ -102,7 +111,7 @@ class Mijing:
                             self.processing = False
                             break
 
-                        elif item == 'mj_mjxyrw':
+                        elif item == 'mj_mjxyrw' and isFl and compare:
                             self.B.LBtn(btnCoor, sleepT=2)
                             continue
 

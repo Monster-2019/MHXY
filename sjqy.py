@@ -45,6 +45,7 @@ class SJQY:
                     if self.smc('sj_wc', simi=0.999, count=0):
                         log(f"账号: { self.name } 三界奇缘任务已完成")
                         self.complete = True
+                        self.B.RBtn()
                         break
 
                     else:
@@ -61,6 +62,7 @@ class SJQY:
 
                 else:
                     self.B.VBtn(-1)
+
 
             if not self.complete:
                 while self.processing:

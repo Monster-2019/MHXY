@@ -89,13 +89,13 @@ class Baotu:
                             useComplete = True
                             break
 
-                    else:
-                        standingCount = 0
-
                     if btnCoor and btnCoor[0][0] + btnCoor[1][0] < 920:
                         count += 1
                         self.B.LBtn(btnCoor)
                         sleep(4)
+
+                else:
+                    standingCount = 0
 
                 sleep(1)
 
@@ -139,6 +139,7 @@ class Baotu:
                     if self.smc("bt_wc", simi=0.999, count=0):
                         log(f"账号: { self.name } 宝图任务已完成")
                         self.complete = True
+                        self.B.RBtn()
                         break
 
                     else:
@@ -170,18 +171,21 @@ class Baotu:
                 else:
                     self.B.VBtn(-1)
 
-            self.B.RBtn()
 
             if not self.complete:
                 print(f"账号: { self.name } 宝图任务进行中")
 
                 xhList = ['bt_cbthdwc', 'bt_btrw']
+                count = 0
 
+                fighting = False
                 while self.processing:
                     for item in xhList:
                         self.cutScreen()
                         isHd = self.matchTem('hd')
                         compare = self.g.compare()
+                        if isHd:
+                            fighting = False
                         if item == 'bt_btrw':
                             btnCoor = self.matchTem(item, simi=0.95)
                         else:
@@ -197,8 +201,19 @@ class Baotu:
                             if item == 'bt_btrw' and compare:
                                 self.B.LBtn(btnCoor)
 
+                        elif not btnCoor and not isHd and not fighting:
+                            sleep(3)
+                            count += 1
+                            fighting = True
 
-                        sleep(1)
+                        elif not btnCoor and isHd and compare:
+                            if count >= 10:
+                                self.complete = True
+                                self.processing = False
+                                self.isDig = True
+                                sleep(1)
+                                break
+
 
             if self.isDig:
                 self.dig()

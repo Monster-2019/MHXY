@@ -46,6 +46,7 @@ class Yunbiao:
                     if self.smc('yb_wc', simi=0.999, count=0):
                         log(f"账号: { self.name } 运镖任务已完成")
                         self.complete = True
+                        self.B.RBtn()
                         break
                     
                     else:
@@ -67,20 +68,22 @@ class Yunbiao:
                 else:
                     self.B.VBtn(-1)
 
+
             if not self.complete:
                 count = 0
                 xhList = ['yb_ys', 'qd']
                 while self.processing:
                     isHd = self.smc('hd', count=0)
-                    if isHd:
-                        if count >= 3:
-                            self.complete = True
-                            self.processing = False
-                            break
-                        while self.smc('hd', count=0):
-                            self.smca(xhList)
+                    if count >= 3 and isHd:
+                        self.complete = True
+                        self.processing = False
+                        break
 
-                        count += 1
+                    for item in xhList:
+                        res = self.smc(item)
+                        if res and item == 'qd':
+                            count += 1
+                            sleep(20)
 
                     sleep(5)
 

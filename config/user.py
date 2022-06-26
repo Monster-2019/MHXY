@@ -5,7 +5,7 @@ DEFAULT_CONFIG = {
     'ZG_WC': None,
     'FB': False,
     'FB_WC': None,
-    'NEXT': True
+    'NEXT': False
 }
 
 ACCTZU = [
