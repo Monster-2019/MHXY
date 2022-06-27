@@ -13,11 +13,11 @@ ACCTZU = [
         "status": True,
         "config": DEFAULT_CONFIG,
         "acctList": [
-            { 'account': "h1", 'server': "h1_z1" },
-            { 'account': "h2", 'server': "h2_z1" },
-            { 'account': "h3", 'server': "h3_z1" },
-            { 'account': "h4", 'server': "h4_z1" },
-            { 'account': "h5", 'server': "h5_z1" },
+            { 'account': "h1", 'server': "h1-1" },
+            { 'account': "h2", 'server': "h2-1" },
+            # { 'account': "h3", 'server': "h3-1" },
+            # { 'account': "h4", 'server': "h4-1" },
+            # { 'account': "h5", 'server': "h5-1" },
         ]
     }
 ]

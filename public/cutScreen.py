@@ -73,6 +73,7 @@ class CScreen(object):
         saveDC.SelectObject(saveBitMap)
         saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
         saveBitMap.SaveBitmapFile(saveDC, self.saveUrl + self.screen + '.jpg')
+        # print(self.saveUrl + self.screen + '.jpg')
 
         # 释放内存
         win32gui.DeleteObject(saveBitMap.GetHandle())
@@ -81,6 +82,11 @@ class CScreen(object):
         win32gui.ReleaseDC(self.hwnd, hwndDC)
 
 if __name__ == '__main__':
-    hwnd = win32gui.FindWindow(None, "企业微信")
+    hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
+    # hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    win32gui.SetForegroundWindow(hwnd)
     print(hwnd)
-    CScreen(hwnd).cutScreen()
+    CScreen(hwnd, './images/mnq/').cutScreen()
+    # CScreen(hwnd, 'C:/Users/1/Documents/leidian/Pictures').cutScreen()
+    # C:\Users\1\Desktop\MHXY
+

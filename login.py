@@ -2,6 +2,7 @@ import win32gui, win32con, win32api, win32com.client
 from time import sleep
 from config import user
 import os
+import traceback
 
 from public.glo import Glo
 from public.cutScreen import CScreen
@@ -72,10 +73,10 @@ class Login(object):
 
         return
 
-    def login(self, arr=[0,1,2,3,4]):
+    def login(self):
         try:
             loginArr = []
-            for item in arr:
+            for item in range(len(self.hwndList)):
                 self.SetForegroundWindowMy(self.hwndList[item])
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
                 res = win32gui.IsWindowVisible(hwnd)
@@ -103,8 +104,9 @@ class Login(object):
 
                 # 截图游戏登陆窗口到共享文件夹进行扫描登陆
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-                cutScreen = CScreen(hwnd, 'C:/Users/86155/Documents/leidian/Pictures/').cutScreen
+                cutScreen = CScreen(hwnd, './images/mnq/').cutScreen
                 cutScreen()
+                print(1)
 
                 self.SetForegroundWindowMy(self.mnqHwnd)
 
@@ -126,7 +128,7 @@ class Login(object):
                                     if coor != 0:
                                         break
                                     else:
-                                        # self.mnqBtn.LBtn(((150, 280), (2, 2)))
+                                        self.mnqBtn.LBtn(((150, 280), (2, 2)))
                                         self.mnqBtn.LBtn(((650, 480), (2, 2)))
                                     sleep(0.5)
                                 
@@ -154,6 +156,8 @@ class Login(object):
                 # 游戏登陆
                 # self.g.set('windowClass', self.hwndList[i])
                 # self.g.set('screen', str(i))
+                win32api.SendMessage(gameHwnd, win32con.WM_KEYDOWN, 27, 0)
+                self.SetForegroundWindowMy(gameHwnd)
                 sleep(0.5)
                 # self.smc = SMC().smc
 
@@ -187,7 +191,8 @@ class Login(object):
             sleep(1)
 
         except Exception as e:
-            print('err', e)
+            print('err12313', e)
+            traceback.print_exc()
 
 if __name__ == '__main__':
     hwndList = []

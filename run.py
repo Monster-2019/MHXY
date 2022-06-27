@@ -112,7 +112,7 @@ class Run(object):
 
             Shimen().start()
 
-            # Baotu().start()
+            Baotu().start()
 
             Mijing().start()
 
@@ -133,10 +133,10 @@ class Run(object):
 
             Clean().start()
 
-            if currentWeek == 1:
-                if level >= 50 and level <= 69:
-                    Ring().start()
-                    Bangpai().start()
+            # if currentWeek == 1:
+                # if level >= 50 and level <= 69:
+                    # Ring().start()
+                    # Bangpai().start()
 
                 # if level >= 60:
                     # Gongfang().start()

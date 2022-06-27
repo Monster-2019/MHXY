@@ -74,7 +74,7 @@ class Baotu:
 
             while not empty:
                 self.cutScreen()
-                isHd = self.matchTem('hd', count=0)
+                isHd = self.matchTem('hd')
                 btnCoor = self.matchTem('sy')
                 compare = self.g.compare()
 
@@ -100,6 +100,7 @@ class Baotu:
                 sleep(1)
 
         log(f"账号：{ self.name } 挖了 {count} 张藏宝图")
+        return 1
 
     def timing(self):
         self.complete = True

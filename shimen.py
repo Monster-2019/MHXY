@@ -59,7 +59,7 @@ class Shimen:
 
                     else:
                         self.cutScreen()
-                        temCoor = self.matchTem("hd_smrw") or self.matchTem("hd_smrw1")
+                        temCoor = self.matchTem("hd_smrw", simi=0.999) or self.matchTem("hd_smrw1", simi=0.999)
                         if temCoor:
                             btnCoor = self.matchTem(
                                 "cj", "imgTem/hd_smrw"
