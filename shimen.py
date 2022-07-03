@@ -89,6 +89,7 @@ class Shimen:
                 else:
                     self.B.VBtn(-1)
 
+            self.B.RBtn()
 
             if not self.complete:
                 print(f"账号: { self.name } 师门任务未完成")

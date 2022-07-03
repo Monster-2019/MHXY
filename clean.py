@@ -80,7 +80,7 @@ class Clean(object):
 					self.B.VBtn(-1, 6)
 					sleep(0.5)
 					page+=1
-					if page == 8 or self.smc('bb_empty'):
+					if page == 8:
 						self.B.RBtn()
 						break
 

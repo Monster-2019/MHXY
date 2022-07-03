@@ -106,7 +106,6 @@ class Login(object):
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
                 cutScreen = CScreen(hwnd, './images/mnq/').cutScreen
                 cutScreen()
-                print(1)
 
                 self.SetForegroundWindowMy(self.mnqHwnd)
 
@@ -156,8 +155,6 @@ class Login(object):
                 # 游戏登陆
                 # self.g.set('windowClass', self.hwndList[i])
                 # self.g.set('screen', str(i))
-                win32api.SendMessage(gameHwnd, win32con.WM_KEYDOWN, 27, 0)
-                self.SetForegroundWindowMy(gameHwnd)
                 sleep(0.5)
                 # self.smc = SMC().smc
 

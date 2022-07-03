@@ -68,7 +68,6 @@ class Yunbiao:
                 else:
                     self.B.VBtn(-1)
 
-
             if not self.complete:
                 count = 0
                 xhList = ['yb_ys', 'qd']

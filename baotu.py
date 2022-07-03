@@ -49,8 +49,7 @@ class Baotu:
                 self.B.MBtn(700, 400)
                 self.B.VBtn(-1, 6)
                 page += 1
-                isEmpty = self.smc('bb_empty', count=0)
-                if page == 6 or isEmpty:
+                if page == 6:
                     log(f"账号: { self.name } 无藏宝图")
                     useComplete = True
                     self.B.RBtn()
@@ -172,14 +171,13 @@ class Baotu:
                 else:
                     self.B.VBtn(-1)
 
+            self.B.RBtn()
 
             if not self.complete:
                 print(f"账号: { self.name } 宝图任务进行中")
 
                 xhList = ['bt_cbthdwc', 'bt_btrw']
-                count = 0
 
-                fighting = False
                 while self.processing:
                     for item in xhList:
                         self.cutScreen()
@@ -202,22 +200,19 @@ class Baotu:
                             if item == 'bt_btrw' and compare:
                                 self.B.LBtn(btnCoor)
 
-                        elif not btnCoor and not isHd and not fighting:
-                            sleep(3)
-                            count += 1
-                            fighting = True
-
-                        elif not btnCoor and isHd and compare:
-                            if count >= 10:
+                        elif isHd and compare:
+                            sleep(5)
+                            self.cutScreen()
+                            isHd = self.matchTem('hd')
+                            compare = self.g.compare()
+                            if isHd and compare:
                                 self.complete = True
                                 self.processing = False
                                 self.isDig = True
-                                sleep(1)
                                 break
 
 
-            if self.isDig:
-                self.dig()
+            self.dig()
 
             if self.complete:
                 log(f"账号: { self.name } 宝图任务结束")

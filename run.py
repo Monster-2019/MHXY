@@ -112,7 +112,7 @@ class Run(object):
 
             Shimen().start()
 
-            Baotu().start()
+            # Baotu().start()
 
             Mijing().start()
 
