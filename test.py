@@ -1,10 +1,8 @@
-import numpy as np
+import argparse
 
-def do_something_unreliable():
-    a = np.array([[1,2,3], [1,2,3], [1,2,3], [1,2,3]])
-    b = np.array([[1,2,4], [4,5,6], [4,5,6], [4,5,6]])
-    return (a == b).sum()
-    return (np.array(a) == np.array(b)).sum()
-    
+parser = argparse.ArgumentParser()
+parser.add_argument('--shutdown', '-s', action='store_true', default=False)
+parser.add_argument('--time', '-t', type=str)
 
-print(do_something_unreliable())
+args = parser.parse_args()
+print(args)

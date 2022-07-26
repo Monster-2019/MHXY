@@ -9,7 +9,7 @@ from time import sleep
 import os
 import traceback
 import win32gui
-import multiprocessing
+import argparse
 
 from public.log import log
 from guajiang import Guajiang
@@ -25,7 +25,7 @@ from yunbiao import Yunbiao
 from sjqy import SJQY
 from kjxs import KJXS
 from lqhyd import LQHYD
-from gengzhong import GengZhong
+# from gengzhong import GengZhong
 from clean import Clean
 from logout import Logout
 from login import Login
@@ -34,9 +34,9 @@ from config import user
 
 from public.glo import Glo
 from public.btn import Btn
-from gongfang import Gongfang
-from ring import Ring
-from bangpai import Bangpai
+# from gongfang import Gongfang
+# from ring import Ring
+# from bangpai import Bangpai
 
 
 class Run(object):
@@ -158,10 +158,6 @@ class Run(object):
         except BaseException as e:
             print('日常错误:', e)
 
-    # def filtter(self, hwnd, lparam):
-    #     if win32gui.GetWindowText(hwnd) == '《梦幻西游》手游':
-    #         self.hwndList.append(hwnd)
-
     def getHwndList(self):
         self.hwndList = []
         isStart = False
@@ -237,13 +233,13 @@ class Run(object):
                 sleep(2)
 
             log('运行完成')
-            # self.pushMsg(0, True)
+            self.pushMsg(0, shutdown)
 
         except BaseException as e:
             print(e)
             # self.pushMsg(-1, True)
 
-    def timingStart(self, timingTime):
+    def timingStart(self, timingTime, shutdown):
         time = timingTime.split(':')
         self.hour = time[0]
         self.minute = time[1]
@@ -252,22 +248,23 @@ class Run(object):
         scheduler.add_job(self.start,
                           'cron',
                           hour=self.hour,
-                          minute=self.minute)
+                          minute=self.minute,
+                          args=shutdown)
         scheduler.start()
 
 
 if __name__ == "__main__":
     try:
-        if len(sys.argv) == 2:
-            if sys.argv[1] == '-t':
-                timing = input('请输入定时事件：')
-                Run().timingStart(timing)
-            elif sys.argv[1] == '-s':
-                Run().start(True)
-            else:
-                log('无该参数')
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--shutdown', '-s', action='store_true', default=False)
+        parser.add_argument('--time', '-t', type=str)
+        args = parser.parse_args()
+        
+        if args.time:
+            Run().timingStart(args.time, args.shutdown)
         else:
-            Run().start()
+            Run().start(args.shutdown)
+
     except Exception as e:
         traceback.print_exc()
         log(e, True)
