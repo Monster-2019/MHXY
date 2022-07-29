@@ -45,7 +45,6 @@ class Match:
         res = 0
         # print(tem, max_val)
         if max_val > self.simi:
-            # print('匹配成功', tem, max_val, self.simi, max_loc)
             w, h = newTem.shape[::-1]
             res = (max_loc, (w, h))
 
@@ -53,7 +52,7 @@ class Match:
 
         return res
 
-    def matchArrTem(self, tem, img=0, simi=simi, bina=False):
+    def matchArrTem(self, tem, img=0, simi=simi):
         if img == 0:
             img = self.screen
         if simi and simi != 0:
@@ -67,7 +66,6 @@ class Match:
             result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
             min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
             if max_val > self.simi:
-                # print('匹配成功', item, max_val, self.simi, max_loc)
                 break
 
         res = 0

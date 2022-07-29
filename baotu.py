@@ -198,8 +198,9 @@ class Baotu:
                                 sleep(1)
                                 break
 
-                            if item == 'bt_btrw' and isHd and compare:
+                            if item == 'bt_btrw' and isHd and compare and btnCoor[0][0] + btnCoor[1][0] > 780:
                                 self.B.LBtn(btnCoor)
+                                sleep(5)
 
                         elif item == 'bt_btrw' and not btnCoor and isHd and compare:
                             sleep(20)
