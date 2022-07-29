@@ -6,6 +6,7 @@ from public.btn import Btn
 from public.matchTem import Match
 from public.glo import Glo
 from public.smc import SMC
+from config import user
 
 class Zudui(object):
     def __init__(self):
@@ -38,7 +39,7 @@ class Zudui(object):
             self.smc('dw_sq')
 
             n = 0
-            while n < 4:
+            while n < len(user.ACCTZU[0]['acctList']) - 1:
                 res = self.smc('dw_js', sleepT=1)
                 if res != 0:
                     n+=1

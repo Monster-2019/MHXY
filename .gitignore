@@ -3,3 +3,6 @@
 images/*.jpg
 *.log
 logger.log
+cache/*
+**/cache/*
+images/mnq/mnq.jpg

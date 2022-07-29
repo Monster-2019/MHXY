@@ -3,7 +3,7 @@ DEFAULT_CONFIG = {
     'ZG': False,
     'ZG_COUNT': 2,
     'ZG_WC': None,
-    'FB': True,
+    'FB': False,
     'FB_WC': None,
     'NEXT': False
 }
