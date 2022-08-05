@@ -40,12 +40,14 @@ class Btn:
         self.lock = self.g.get('lock')
 
     def LBtn(self, btnCoor, sleepT=0.1, count=1, gtx=0, gty=0):
-        if btnCoor == 0 or int(btnCoor[0][0]) < gtx or int(btnCoor[0][1]) < gty:
+        if not btnCoor:
             return False
-        Coor = self.fixedCoor.get(btnCoor)
-        if Coor != None:
-            btnCoor = Coor
 
+        if isinstance(btnCoor, str):
+            btnCoor = self.fixedCoor.get(btnCoor)
+        elif btnCoor[0][0] < gtx or btnCoor[0][1] < gty:
+            return False
+        
         x = btnCoor[0][0] + random.randint(1, btnCoor[1][0])
         y = btnCoor[0][1] + random.randint(1, btnCoor[1][1])
         for i in range(count):
