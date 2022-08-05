@@ -39,8 +39,8 @@ class Btn:
             self.hwnd = self.g.get('windowClass')
         self.lock = self.g.get('lock')
 
-    def LBtn(self, btnCoor, sleepT=0.1, count=1):
-        if btnCoor == 0:
+    def LBtn(self, btnCoor, sleepT=0.1, count=1, gtx=0, gty=0):
+        if btnCoor == 0 or btnCoor[0][0] < gtx or btnCoor[0][1] < gty:
             return False
         Coor = self.fixedCoor.get(btnCoor)
         if Coor != None:

@@ -5,7 +5,6 @@ from public.matchTem import Match
 from public.smc import SMC
 from public.glo import Glo
 from public.log import log
-from sendMsg import SendMsg
 import threading
 
 
@@ -166,7 +165,7 @@ class Shimen:
                                 break
 
                             elif item == 'sm_sm' and isHd:
-                                self.B.LBtn(btnCoor)
+                                self.B.LBtn(btnCoor, gtx=900)
 
                             else:
                                 self.B.LBtn(btnCoor)

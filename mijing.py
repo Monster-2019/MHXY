@@ -100,7 +100,7 @@ class Mijing:
                     isFl = self.matchTem('fl')
                     compare = self.g.compare()
                     if item == 'mj_mjxyrw':
-                        btnCoor = self.matchTem(item, simi=0.9)
+                        btnCoor = self.matchTem(item, simi=0.8)
                     else:
                         btnCoor = self.matchTem(item)
                     if btnCoor:
@@ -112,7 +112,7 @@ class Mijing:
                             break
 
                         elif item == 'mj_mjxyrw' and isFl and compare:
-                            self.B.LBtn(btnCoor, sleepT=2)
+                            self.B.LBtn(btnCoor, sleepT=2, gtx=800)
                             continue
 
                         else:
