@@ -165,7 +165,7 @@ class Shimen:
                                 break
 
                             elif item == 'sm_sm' and isHd:
-                                self.B.LBtn(btnCoor, gtx=900)
+                                self.B.LBtn(btnCoor, gtx=800)
 
                             else:
                                 self.B.LBtn(btnCoor)
