@@ -39,6 +39,10 @@ class Shimen:
                 if res == 0:
                     break
 
+            self.B.Hotkey('zz', sleepT=1)
+            self.B.LBtn('zr1', sleepT=0.5)
+            self.B.RBtn()
+
             self.B.Hotkey("hd")
 
             self.smc("rchd", sleepT=0.5)
@@ -47,46 +51,49 @@ class Shimen:
             self.B.VBtn(1, 31)
             sleep(0.5)
 
-            for n in range(31):
-                if n % 10 == 0:
-                    sleep(0.5)
-                    if self.smc("sm_wc", simi=0.999, count=0) != 0:
-                        log(f"账号: { self.name } 师门任务已完成")
-                        self.complete = True
-                        self.B.RBtn()
-                        break
+            self.processing = self.smc('sm_sm', simi=0.94)
 
+            if not self.processing:
+                for n in range(31):
+                    if n % 10 == 0:
+                        sleep(0.5)
+                        if self.smc("sm_wc", simi=0.999, count=0) != 0:
+                            log(f"账号: { self.name } 师门任务已完成")
+                            self.complete = True
+                            self.B.RBtn()
+                            break
+
+                        else:
+                            self.cutScreen()
+                            temCoor = self.matchTem("hd_smrw", simi=0.999) or self.matchTem("hd_smrw1", simi=0.999)
+                            if temCoor:
+                                btnCoor = self.matchTem(
+                                    "cj", "imgTem/hd_smrw"
+                                ) or self.matchTem("cj", "imgTem/hd_smrw1")
+                                newCoor = (
+                                    (
+                                        temCoor[0][0] + btnCoor[0][0],
+                                        temCoor[0][1] + btnCoor[0][1],
+                                    ),
+                                    btnCoor[1],
+                                )
+                                if btnCoor:
+                                    self.B.LBtn(newCoor, sleepT=1)
+
+                                    # 去完成或继续任务
+                                    while True:
+                                        self.cutScreen()
+                                        btnCoor = self.matchTem("sm_qwc") or self.matchTem(
+                                            "sm_jxrw"
+                                        )
+                                        if btnCoor != 0:
+                                            self.B.LBtn(btnCoor, sleepT=1)
+                                            self.processing = True
+                                            break
+
+                                    break
                     else:
-                        self.cutScreen()
-                        temCoor = self.matchTem("hd_smrw", simi=0.999) or self.matchTem("hd_smrw1", simi=0.999)
-                        if temCoor:
-                            btnCoor = self.matchTem(
-                                "cj", "imgTem/hd_smrw"
-                            ) or self.matchTem("cj", "imgTem/hd_smrw1")
-                            newCoor = (
-                                (
-                                    temCoor[0][0] + btnCoor[0][0],
-                                    temCoor[0][1] + btnCoor[0][1],
-                                ),
-                                btnCoor[1],
-                            )
-                            if btnCoor:
-                                self.B.LBtn(newCoor, sleepT=1)
-
-                                # 去完成或继续任务
-                                while True:
-                                    self.cutScreen()
-                                    btnCoor = self.matchTem("sm_qwc") or self.matchTem(
-                                        "sm_jxrw"
-                                    )
-                                    if btnCoor != 0:
-                                        self.B.LBtn(btnCoor, sleepT=1)
-                                        self.processing = True
-                                        break
-
-                                break
-                else:
-                    self.B.VBtn(-1)
+                        self.B.VBtn(-1)
 
             self.B.RBtn()
 
@@ -165,7 +172,7 @@ class Shimen:
                                 break
 
                             elif item == 'sm_sm' and isHd:
-                                self.B.LBtn(btnCoor, gtx=800)
+                                self.B.LBtn(btnCoor, minx=800)
 
                             else:
                                 self.B.LBtn(btnCoor)

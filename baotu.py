@@ -136,43 +136,46 @@ class Baotu:
             self.B.VBtn(1, 31)
             sleep(0.5)
 
-            for n in range(31):
-                if n % 10 == 0:
-                    sleep(0.5)
-                    if self.smc("bt_wc", simi=0.999, count=0):
-                        log(f"账号: { self.name } 宝图任务已完成")
-                        self.complete = True
-                        self.B.RBtn()
-                        break
+            self.processing = self.smc('bt_btrw', simi=0.9)
 
+            if not self.processing:
+                for n in range(31):
+                    if n % 10 == 0:
+                        sleep(0.5)
+                        if self.smc("bt_wc", simi=0.999, count=0):
+                            log(f"账号: { self.name } 宝图任务已完成")
+                            self.complete = True
+                            self.B.RBtn()
+                            break
+
+                        else:
+                            self.cutScreen()
+                            temCoor = self.matchTem("hd_btrw") or self.matchTem("hd_btrw1")
+                            if temCoor:
+                                btnCoor = self.matchTem(
+                                    "cj", "imgTem/hd_btrw"
+                                ) or self.matchTem("cj", "imgTem/hd_btrw1")
+                                newCoor = (
+                                    (
+                                        temCoor[0][0] + btnCoor[0][0],
+                                        temCoor[0][1] + btnCoor[0][1],
+                                    ),
+                                    btnCoor[1],
+                                )
+                                if btnCoor:
+                                    self.B.LBtn(newCoor)
+                                    self.processing = True
+                                    sleep(5)
+
+                                    while True:
+                                        if self.smc('bt_ttwf'):
+                                            break
+
+                                        sleep(2)
+                                    
+                                    break
                     else:
-                        self.cutScreen()
-                        temCoor = self.matchTem("hd_btrw") or self.matchTem("hd_btrw1")
-                        if temCoor:
-                            btnCoor = self.matchTem(
-                                "cj", "imgTem/hd_btrw"
-                            ) or self.matchTem("cj", "imgTem/hd_btrw1")
-                            newCoor = (
-                                (
-                                    temCoor[0][0] + btnCoor[0][0],
-                                    temCoor[0][1] + btnCoor[0][1],
-                                ),
-                                btnCoor[1],
-                            )
-                            if btnCoor:
-                                self.B.LBtn(newCoor)
-                                self.processing = True
-                                sleep(5)
-
-                                while True:
-                                    if self.smc('bt_ttwf'):
-                                        break
-
-                                    sleep(2)
-                                
-                                break
-                else:
-                    self.B.VBtn(-1)
+                        self.B.VBtn(-1)
 
             self.B.RBtn()
 
@@ -199,7 +202,7 @@ class Baotu:
                                 break
 
                             if item == 'bt_btrw' and isHd and compare:
-                                self.B.LBtn(btnCoor, gtx=800)
+                                self.B.LBtn(btnCoor, minx=800)
                                 sleep(5)
 
                         elif item == 'bt_btrw' and not btnCoor and isHd and compare:

@@ -75,14 +75,21 @@ class Mijing:
             if self.processing:
                 while self.processing:
                     for item in xhList:
-                        res = self.smc(item, sleepT=1)
-                        if res != 0:
+                        self.cutScreen()
+                        btnCoor = self.matchTem(item)
+                        if btnCoor:
                             if item == 'mj_one':
-                                self.B.LBtn(((res[0][0] + 46, res[0][1] - 60), res[1]))
+                                self.B.LBtn(((btnCoor[0][0] + 46, btnCoor[0][1] - 60), btnCoor[1]))
 
-                            if item == 'mj_mjxyrw':
+                            elif item == 'mj_jr':
+                                self.B.LBtn(btnCoor, maxx=500)
+
+                            elif item == 'mj_mjxyrw':
                                 self.processing = False
                                 break
+
+                            else:
+                                self.B.LBtn(btnCoor)
 
                 self.processing = True
 
@@ -112,11 +119,11 @@ class Mijing:
                             break
 
                         elif item == 'mj_mjxyrw' and isFl and compare:
-                            self.B.LBtn(btnCoor, sleepT=2, gtx=800)
+                            self.B.LBtn(btnCoor, sleepT=2, minx=800)
                             continue
 
                         else:
-                            self.B.LBtn(btnCoor)
+                            self.B.LBtn(btnCoor, minx=350)
 
                     sleep(0.5)
 

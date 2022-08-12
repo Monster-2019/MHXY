@@ -39,13 +39,13 @@ class Btn:
             self.hwnd = self.g.get('windowClass')
         self.lock = self.g.get('lock')
 
-    def LBtn(self, btnCoor, sleepT=0.1, count=1, gtx=0, gty=0):
+    def LBtn(self, btnCoor, sleepT=0.1, count=1, minx=0, miny=0, maxx=2000, maxy=1000):
         if not btnCoor:
             return False
 
         if isinstance(btnCoor, str):
             btnCoor = self.fixedCoor.get(btnCoor)
-        elif btnCoor[0][0] < gtx or btnCoor[0][1] < gty:
+        elif btnCoor[0][0] < minx or btnCoor[0][1] < miny or btnCoor[0][0] > maxx or btnCoor[0][1] > maxy:
             return False
         
         x = btnCoor[0][0] + random.randint(1, btnCoor[1][0])
