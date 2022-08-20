@@ -69,7 +69,7 @@ class Mijing:
                 self.B.RBtn()
 
             xhList = [
-                'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz', 'mj_mjxyrw'
+                'mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz'
             ]
             # 'mj_mrh', 'mj_yjf', 'mj_esg', 
             if self.processing:
@@ -84,7 +84,8 @@ class Mijing:
                             elif item == 'mj_jr':
                                 self.B.LBtn(btnCoor, maxx=500)
 
-                            elif item == 'mj_mjxyrw':
+                            elif item == 'mj_tz':
+                                self.B.LBtn(btnCoor)
                                 self.processing = False
                                 break
 
@@ -95,6 +96,8 @@ class Mijing:
 
             xhList = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
             # , 'mj_lq', 'mj_gb'
+
+            sleep(3)
 
             while self.processing:
                 for item in xhList:
@@ -107,7 +110,7 @@ class Mijing:
                     isFl = self.matchTem('fl')
                     compare = self.g.compare()
                     if item == 'mj_mjxyrw':
-                        btnCoor = self.matchTem(item, simi=0.85)
+                        btnCoor = self.matchTem(item, simi=0.8)
                     else:
                         btnCoor = self.matchTem(item)
                     if btnCoor:
@@ -119,8 +122,7 @@ class Mijing:
                             break
 
                         elif item == 'mj_mjxyrw' and isFl and compare:
-                            self.B.LBtn(btnCoor, sleepT=2, minx=800)
-                            continue
+                            self.B.LBtn(btnCoor, sleepT=2, minx=700)
 
                         else:
                             self.B.LBtn(btnCoor, minx=350)
