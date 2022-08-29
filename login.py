@@ -101,6 +101,9 @@ class Login(object):
                 win32api.SendMessage(gameHwnd, win32con.WM_KEYDOWN, 27, 0)
                 self.SetForegroundWindowMy(gameHwnd)
                 sleep(0.5)
+                gameBtn = Btn(gameHwnd)
+                gameBtn.LBtn(((485, 483), (57, 15)))
+                sleep(0.5)
 
                 # 截图游戏登陆窗口到共享文件夹进行扫描登陆
                 hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
@@ -112,12 +115,12 @@ class Login(object):
                 # 'mnq_sm' 'mnq_tk' ((640, 370), (2, 2)) ((640, 370), (2, 2)) sleep(2) 'mnq_dl'
 
                 mnqLoginList = ['mnq_sm', 'mnq_tk', dlAccount, 'mnq_dl']
-                for item in mnqLoginList:
-                    status = False
-                    while not status:
+                status = False
+                while not status:
+                    for item in mnqLoginList:
                         self.mnqCutScreen()
                         coor = self.mnqMatchTem(item)
-                        if coor != 0:
+                        if coor:
                             if item == 'mnq_tk':
                                 self.mnqBtn.LBtn(coor, sleepT=1)
 
@@ -134,10 +137,13 @@ class Login(object):
                                 sleep(0.5)
                                 self.mnqBtn.LBtn(((630, 300), (2, 2)))
                                 sleep(0.5)
+
                             else:
                                 self.mnqBtn.LBtn(coor)
+                                if item == 'mnq_dl':
+                                    status = True
+                                    break
 
-                            status = True
                         else:
                             if item == dlAccount:
                                 for index in range(3):

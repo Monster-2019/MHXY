@@ -87,7 +87,7 @@ class Baotu:
                             empty = True
                             useComplete = True
                             break
-                        sleep(0.5)
+                        sleep(1)
                     else:
                         standingCount = 0
 
@@ -95,6 +95,7 @@ class Baotu:
                         count += 1
                         self.B.LBtn(btnCoor)
                         sleep(4)
+                        standingCount = 0
 
                 else:
                     standingCount = 0
