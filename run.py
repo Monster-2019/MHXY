@@ -45,6 +45,7 @@ class Run(object):
         self.g = Glo()
         self.totalTime = 0
         self.hwndList = []
+        self.single = False
 
     def runOver(self):
         self.endTime = datetime.now()
@@ -93,19 +94,20 @@ class Run(object):
             # if level >= 60:
                 # GengZhong().start()
 
-            if myDict['ZG']:
-                Zhuogui().start()
+            if not self.single:
+                if myDict['ZG']:
+                    Zhuogui().start()
 
-            if myDict['FB']:
-                if currentWeek <= 6:
-                    FuBen('ecy').start()
-                    sleep(1)
-                
-                if currentWeek % 2 == 0 or currentWeek == 7:
-                    FuBen('lls').start()
+                if myDict['FB']:
+                    if currentWeek <= 6:
+                        FuBen('ecy').start()
+                        sleep(1)
+                    
+                    if currentWeek % 2 == 0 or currentWeek == 7:
+                        FuBen('lls').start()
 
-                if currentWeek % 2 == 1:
-                    FuBen('lyrm').start()
+                    if currentWeek % 2 == 1:
+                        FuBen('lyrm').start()
 
 
             Lidui().start()
@@ -178,7 +180,7 @@ class Run(object):
     def openGame(self):
         if (len(self.hwndList)) == 5:
             return
-        os.system('start C:\\Users\\86155\\Desktop\\duokai\\mhxy.exe')
+        os.system('start C:\\Users\\DX\\Desktop\\duokai\\mhxy.exe')
         sleep(2)
 
         while True:
@@ -190,15 +192,16 @@ class Run(object):
         mnqBtn = Btn(hwnd)
         for i in range(5):
             mnqBtn.LBtn(((350, 150), (2, 2)))
-            sleep(1)
+            sleep(8)
 
         os.system('taskkill /F /IM mhxy.exe')
-        sleep(3)
+        sleep(1)
 
         return
 
-    def start(self, shutdown=False):
+    def start(self, shutdown=False, single=False):
         try:
+            self.single = single
             import pythoncom
             pythoncom.CoInitialize()
             log('-------------------------------------开始执行--------------------------------------')
@@ -208,7 +211,8 @@ class Run(object):
                 # 登陆/切换账号
                 self.getHwndList()
                 if user.ACCTZU[index]['status']:
-                    # self.openGame()
+                    if not single:
+                        self.openGame()
                     self.getHwndList()
                     log(f'开始第{GROUP_NO}组号')
                     Login(index, self.hwndList).login()
@@ -261,12 +265,13 @@ if __name__ == "__main__":
         parser = argparse.ArgumentParser()
         parser.add_argument('--shutdown', '-s', action='store_true', default=False)
         parser.add_argument('--time', '-t', type=str)
+        parser.add_argument('--self', action='store_true', default=False)
         args = parser.parse_args()
         
         if args.time:
-            Run().timingStart(args.time, args.shutdown)
+            Run().timingStart(args.time, args.shutdown, args.self)
         else:
-            Run().start(args.shutdown)
+            Run().start(args.shutdown, args.self)
 
     except Exception as e:
         traceback.print_exc()

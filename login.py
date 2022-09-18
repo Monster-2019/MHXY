@@ -57,8 +57,8 @@ class Login(object):
                 break
 
         # # 等待8秒跳过动画
-        sleep(10)
-        self.mnqBtn.LBtn(((520, 119), (53, 60)))
+        sleep(12)
+        self.mnqBtn.LBtn(((500, 250), (20, 20)))
 
         while True:
             self.mnqCutScreen()
@@ -130,12 +130,12 @@ class Login(object):
                                     if coor != 0:
                                         break
                                     else:
-                                        self.mnqBtn.LBtn(((150, 280), (2, 2)))
-                                        self.mnqBtn.LBtn(((650, 480), (2, 2)))
+                                        self.mnqBtn.LBtn(((100, 160), (2, 2)))
+                                        # self.mnqBtn.LBtn(((650, 480), (2, 2)))
                                     sleep(0.5)
                                 
                                 sleep(0.5)
-                                self.mnqBtn.LBtn(((630, 300), (2, 2)))
+                                self.mnqBtn.LBtn(((460, 190), (2, 2)))
                                 sleep(0.5)
 
                             else:
@@ -151,7 +151,7 @@ class Login(object):
                                     coor = self.mnqMatchTem(item)
                                     if coor != 0:
                                         break
-                                    self.mnqBtn.DBtn((630, 450), (630, 350))
+                                    self.mnqBtn.DBtn((460, 340), (460, 240))
                                     sleep(0.5)
                         sleep(1)
 

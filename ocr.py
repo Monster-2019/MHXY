@@ -30,7 +30,6 @@ class OCR:
             traceback.print_exc()
             # print('识别错误:', e)
 
-
 if __name__ == "__main__":
     r = OCR().ocr()
     print(r)

@@ -40,6 +40,14 @@ lls = {
     "rw": "fb_lls",
 }
 
+jcx = {
+    "name": "金禅心",
+    "wc": "jcx_wc",
+    "hd": "hd_jcx_pt",
+    "xz": "fb_jcx_xz",
+    "rw": "fb_jcx",
+}
+
 class FuBen:
     def __init__(self, fbName):
         super(FuBen, self).__init__()
