@@ -58,28 +58,31 @@ class CScreen(object):
         sleep(0.01)
 
     def saveImg (self):
-        # 返回句柄窗口的设备环境、覆盖整个窗口，包括非客户区，标题栏，菜单，边框
-        hwndDC = win32gui.GetDC(self.hwnd)
+        try:
+            # 返回句柄窗口的设备环境、覆盖整个窗口，包括非客户区，标题栏，菜单，边框
+            hwndDC = win32gui.GetDC(self.hwnd)
 
-        # 创建设备描述表
-        mfcDC = win32ui.CreateDCFromHandle(hwndDC)
+            # 创建设备描述表
+            mfcDC = win32ui.CreateDCFromHandle(hwndDC)
 
-        # 创建内存设备描述表
-        # 创建位图对象
-        # 截图至内存设备描述表
-        saveDC = mfcDC.CreateCompatibleDC()
-        saveBitMap = win32ui.CreateBitmap()
-        saveBitMap.CreateCompatibleBitmap(mfcDC, self.WH[0], self.WH[1])
-        saveDC.SelectObject(saveBitMap)
-        saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
-        saveBitMap.SaveBitmapFile(saveDC, self.saveUrl + self.screen + '.jpg')
-        # print(self.saveUrl + self.screen + '.jpg')
+            # 创建内存设备描述表
+            # 创建位图对象
+            # 截图至内存设备描述表
+            saveDC = mfcDC.CreateCompatibleDC()
+            saveBitMap = win32ui.CreateBitmap()
+            saveBitMap.CreateCompatibleBitmap(mfcDC, self.WH[0], self.WH[1])
+            saveDC.SelectObject(saveBitMap)
+            saveDC.BitBlt((0, 0), (self.WH[0], self.WH[1]), mfcDC, (self.Coor[0], self.Coor[1]), win32con.SRCCOPY)
+            saveBitMap.SaveBitmapFile(saveDC, self.saveUrl + self.screen + '.jpg')
+            # print(self.saveUrl + self.screen + '.jpg')
 
-        # 释放内存
-        win32gui.DeleteObject(saveBitMap.GetHandle())
-        saveDC.DeleteDC()
-        mfcDC.DeleteDC()
-        win32gui.ReleaseDC(self.hwnd, hwndDC)
+            # 释放内存
+            win32gui.DeleteObject(saveBitMap.GetHandle())
+            saveDC.DeleteDC()
+            mfcDC.DeleteDC()
+            win32gui.ReleaseDC(self.hwnd, hwndDC)
+        except BaseException as e:
+            print("error", e)
 
 if __name__ == '__main__':
     hwnd = win32gui.FindWindow('MPAY_LOGIN', None)

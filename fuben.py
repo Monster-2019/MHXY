@@ -42,7 +42,8 @@ lls = {
 
 jcx = {
     "name": "金禅心",
-    "wc": "jcx_wc",
+    "wc": "lls_wc",
+    # "wc": "jcx_wc",
     "hd": "hd_jcx_pt",
     "xz": "fb_jcx_xz",
     "rw": "fb_jcx",
@@ -59,12 +60,7 @@ class FuBen:
         self.cutScreen = CScreen().cutScreen
         self.index = self.g.get('screen')
         self.fbImg = empty
-        if fbName == "ecy":
-            self.fbImg = ecy
-        if fbName == "lyrm":
-            self.fbImg = lyrm
-        if fbName == "lls":
-            self.fbImg = lls
+        self.fbImg = eval(fbName)
 
     def isComplete(self):
         complete = False
@@ -268,4 +264,4 @@ class FuBen:
 
 
 if __name__ == "__main__":
-    FuBen('ecy').start()
+    FuBen('jcx').leader()

@@ -175,7 +175,7 @@ class Shimen:
                                 self.B.LBtn(btnCoor, minx=800)
 
                             else:
-                                self.B.LBtn(btnCoor)
+                                self.B.LBtn(btnCoor, minx=300)
 
                             count = 0
 
