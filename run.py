@@ -101,13 +101,15 @@ class Run(object):
                 if myDict['FB']:
                     if currentWeek <= 6:
                         FuBen('jcx').start()
-                        sleep(1)
                     
                     if currentWeek % 3 == 1:
                         FuBen('ecy').start()
 
-                    # if currentWeek % 2 == 1:
-                        # FuBen('lyrm').start()
+                    if currentWeek == 2 or currentWeek > 5:
+                        FuBen('lls').start()
+
+                    if currentWeek == 3 or currentWeek == 5:
+                        FuBen('lyrm').start()
 
 
             Lidui().start()
