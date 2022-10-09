@@ -24,12 +24,12 @@ ACCTZU = [
         "status": False,
         "config": {
             "TeamStatus": False,
-            "ZG": True,
+            "ZG": False,
             "ZG_COUNT": 2,
             "ZG_WC": None,
             "FB": False,
             "FB_WC": None,
-            "NEXT": True,
+            "NEXT": False,
         },
         "acctList": [
             {"account": "h1", "server": "h1-2"},

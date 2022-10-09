@@ -39,7 +39,8 @@ class Bangpai:
         sleep(0.5)
 
         self.B.Hotkey("hd")
-        sleep(1)
+
+        self.smc('rchd', sleepT=0.5)
 
         self.B.MBtn(590, 330)
         self.B.VBtn(1, 31)

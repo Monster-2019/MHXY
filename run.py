@@ -25,7 +25,7 @@ from yunbiao import Yunbiao
 from sjqy import SJQY
 from kjxs import KJXS
 from lqhyd import LQHYD
-# from gengzhong import GengZhong
+from gengzhong import GengZhong
 from clean import Clean
 from logout import Logout
 from login import Login
@@ -34,7 +34,7 @@ from config import user
 
 from public.glo import Glo
 from public.btn import Btn
-# from gongfang import Gongfang
+from gongfang import Gongfang
 # from ring import Ring
 # from bangpai import Bangpai
 
@@ -91,8 +91,8 @@ class Run(object):
 
             Guajiang().start()
 
-            # if level >= 60:
-                # GengZhong().start()
+            if level >= 60:
+                GengZhong().start()
 
             if not self.single:
                 if myDict['ZG']:
@@ -135,18 +135,20 @@ class Run(object):
 
             LQHYD().start()
 
-            # if level >= 60:
-                # GengZhong().start()
+            if level >= 60:
+                GengZhong().start()
 
             Clean().start()
 
             # if currentWeek == 1:
+            if level >= 60:
+                Gongfang().start()
+
                 # if level >= 50 and level <= 69:
                     # Ring().start()
                     # Bangpai().start()
 
-                # if level >= 60:
-                    # Gongfang().start()
+                
                     
             # currentHour = int(time.strftime('%H', time.localtime()))
             # currentHour = 8

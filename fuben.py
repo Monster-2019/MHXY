@@ -133,9 +133,11 @@ class FuBen:
                         while not processing:
                             for item in ['fb_xzfb', self.fbImg["xz"]]:
                                 r = self.smc(item, sleepT=1)
+                                print(item, r)
                                 if r != 0 and item == self.fbImg["xz"]:
                                     btnCoor = self.matchTem(
                                         'fb_jr', 'imgTem/' + self.fbImg["xz"])
+                                    print('jr', btnCoor)
                                     if btnCoor != 0:
                                         newCoor = (
                                             (

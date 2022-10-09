@@ -79,4 +79,4 @@ class Match:
 
 
 if __name__ == "__main__":
-    Match().matchTem("zh1")
+    Match().matchTem("fb_ecy_xz")

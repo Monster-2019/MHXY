@@ -78,7 +78,7 @@ class SJQY:
                 while True:
                     self.cutScreen()
                     isHd = self.matchTem('hd')
-                    btnCoor = self.matchTem('sy')
+                    btnCoor = self.matchTem('sygb')
                     if isHd and btnCoor:
                         self.B.LBtn(btnCoor, sleepT=0.5)
                     elif isHd and btnCoor == 0:
