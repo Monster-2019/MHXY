@@ -8,7 +8,7 @@ from datetime import datetime
 from time import sleep
 import os
 import traceback
-import win32gui
+import win32gui, win32com.client
 import argparse
 
 from public.log import log
@@ -31,13 +31,15 @@ from logout import Logout
 from login import Login
 from sendMsg import SendMsg
 from config import user
+from gongfang import Gongfang
+from hideLogin import hide
 
 from public.glo import Glo
 from public.btn import Btn
-from gongfang import Gongfang
 # from ring import Ring
 # from bangpai import Bangpai
 
+shell = win32com.client.Dispatch("WScript.Shell")
 
 class Run(object):
     def __init__(self):
@@ -83,6 +85,11 @@ class Run(object):
             g.set('windowClass', windowClass)
             g.set('lock', lock)
             g.set('config', myDict)
+
+            print(111, windowClass)
+            shell.SendKeys('%')
+            win32gui.SetForegroundWindow(windowClass)
+            hide()
 
             Info().getInfo()
 
@@ -232,7 +239,7 @@ class Run(object):
                     for i in range(len(self.hwndList)):
                         p.apply_async(self.richang,
                                       args=(str(i), self.hwndList[i], lock, d, q))
-                        sleep(1)
+                        sleep(2)
                     p.close()
                     p.join()
 
