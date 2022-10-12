@@ -141,7 +141,7 @@ class Run(object):
             Clean().start()
 
             # if currentWeek == 1:
-            if level >= 60:
+            if currentWeek == 1 and level >= 60:
                 Gongfang().start()
 
                 # if level >= 50 and level <= 69:
