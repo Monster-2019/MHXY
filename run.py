@@ -86,10 +86,13 @@ class Run(object):
             g.set('lock', lock)
             g.set('config', myDict)
 
-            print(111, windowClass)
-            shell.SendKeys('%')
-            win32gui.SetForegroundWindow(windowClass)
-            hide()
+            try:
+                print(111, windowClass)
+                shell.SendKeys('%')
+                win32gui.SetForegroundWindow(windowClass)
+                hide()
+            except Exception as e:
+                print(e)
 
             Info().getInfo()
 
@@ -105,18 +108,18 @@ class Run(object):
                 if myDict['ZG']:
                     Zhuogui().start()
 
-                if myDict['FB']:
-                    if currentWeek <= 6:
-                        FuBen('jcx').start()
+                # if myDict['FB']:
+                #     if currentWeek <= 6:
+                #         FuBen('jcx').start()
                     
-                    if currentWeek % 3 == 1:
-                        FuBen('ecy').start()
+                #     if currentWeek % 3 == 1:
+                #         FuBen('ecy').start()
 
-                    if currentWeek == 2 or currentWeek > 5:
-                        FuBen('lls').start()
+                #     if currentWeek == 2 or currentWeek > 5:
+                #         FuBen('lls').start()
 
-                    if currentWeek == 3 or currentWeek == 5:
-                        FuBen('lyrm').start()
+                #     if currentWeek == 3 or currentWeek == 5:
+                #         FuBen('lyrm').start()
 
 
             Lidui().start()

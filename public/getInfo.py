@@ -24,7 +24,7 @@ class Info():
     def handleOcr(self, ocrText, isNum=False):
         self.customCutScreen(ocrText)
         sleep(0.5)
-        txt = self.ocr(isNum)
+        txt = self.ocr()
         if not txt:
             raise IOError("ocr err")
         else:

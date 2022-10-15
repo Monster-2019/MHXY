@@ -1,35 +1,37 @@
 import sys
 sys.path.append(".")
 sys.path.append("..")
-import cv2 as cv
-import pytesseract
 from public.glo import Glo
 import traceback
 
+from paddleocr import PaddleOCR, draw_ocr
+from public.cutScreen import CScreen
 
 def not_empty(s):
     return s and s.strip()
-
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class OCR:
     def __init__(self):
         super(OCR, self).__init__()
         self.g = Glo()
+        self.padOcr = PaddleOCR(use_gpu=False, lang="ch")
 
-    def ocr(self, isNum=False):
+    def ocr(self):
         try:
-            image = cv.imread("./images/screen" + self.g.get("screen") + ".jpg", 0)
-            content = pytesseract.image_to_string(image, lang="chi_sim", config="--psm 6").splitlines()
-            content = list(filter(not_empty, content))
-            result = ''
-            for item in content:
-                result += item
-            return result or 0
+            # image = cv.imread("./images/screen" + self.g.get("screen") + ".jpg", 0)
+            # content = pytesseract.image_to_string(image, lang="chi_sim", config="--psm 6").splitlines()
+            # content = list(filter(not_empty, content))
+            # result = ''
+            # for item in content:
+            #     result += item
+            # return result or 0
+            result = self.padOcr.ocr("./images/screen" + self.g.get("screen") + ".jpg", det=False)
+            return result[0][0][0]
+
         except BaseException as e:
             traceback.print_exc()
-            # print('识别错误:', e)
 
 if __name__ == "__main__":
+    CScreen().customCutScreen('name')
     r = OCR().ocr()
     print(r)
