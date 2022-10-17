@@ -7,13 +7,15 @@ import requests
 
 
 def SendMsg(msg):
-    url = 'http://www.pushplus.plus/send'
+    url = 'https://push.dongxin.cool/v1/message/send'
     params = {
-        "token": "342994c7162c41dc98a894a0ae133bda",
+        "token": "546346f453d2cc1758ba45ee",
         "title": "梦幻西游脚本完成提醒",
-        "content": msg
+        "content": msg,
+        "template": "text"
     }
-    requests.post(url, params)
+    res = requests.post(url, json=params)
+    print(res.json())
 
 
 if __name__ == '__main__':

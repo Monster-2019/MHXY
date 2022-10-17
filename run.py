@@ -108,18 +108,18 @@ class Run(object):
                 if myDict['ZG']:
                     Zhuogui().start()
 
-                # if myDict['FB']:
-                #     if currentWeek <= 6:
-                #         FuBen('jcx').start()
+                if myDict['FB']:
+                    if currentWeek <= 6:
+                        FuBen('jcx').start()
                     
-                #     if currentWeek % 3 == 1:
-                #         FuBen('ecy').start()
+                    if currentWeek % 3 == 1:
+                        FuBen('ecy').start()
 
-                #     if currentWeek == 2 or currentWeek > 5:
-                #         FuBen('lls').start()
+                    if currentWeek == 2 or currentWeek > 5:
+                        FuBen('lls').start()
 
-                #     if currentWeek == 3 or currentWeek == 5:
-                #         FuBen('lyrm').start()
+                    if currentWeek == 3 or currentWeek == 5:
+                        FuBen('lyrm').start()
 
 
             Lidui().start()

@@ -14,7 +14,7 @@ class OCR:
     def __init__(self):
         super(OCR, self).__init__()
         self.g = Glo()
-        self.padOcr = PaddleOCR(use_gpu=False, lang="ch")
+        self.padOcr = PaddleOCR(enable_mkldnn=True, use_gpu=False, lang="ch")
 
     def ocr(self):
         try:

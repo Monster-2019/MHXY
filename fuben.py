@@ -104,9 +104,9 @@ class FuBen:
             if not self.g.getObj('config', 'TeamStatus'):
                 Zudui().start()
 
-        self.B.Hotkey('zz', sleepT=1)
-        self.B.LBtn('zr2', sleepT=0.5)
-        self.B.RBtn()
+        # self.B.Hotkey('zz', sleepT=1)
+        # self.B.LBtn('zr2', sleepT=0.5)
+        # self.B.RBtn()
 
         if not complete:
             log(f"副本 { self.fbImg['name'] } 进行中")

@@ -261,7 +261,7 @@ class Gongfang:
                             break
 
                         else:
-                            self.B.LBtn(btnCoor)
+                            self.B.LBtn(btnCoor, minx=300)
 
                         sleep(0.5)
 
