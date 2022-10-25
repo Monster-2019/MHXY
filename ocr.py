@@ -32,6 +32,6 @@ class OCR:
             traceback.print_exc()
 
 if __name__ == "__main__":
-    CScreen().customCutScreen('name')
+    CScreen().customCutScreen('hy')
     r = OCR().ocr()
     print(r)

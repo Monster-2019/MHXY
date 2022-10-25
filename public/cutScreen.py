@@ -17,14 +17,15 @@ class CScreen(object):
         "gold": ((106, 634), (130, 24)),
         "silver": ((300, 634), (160, 24)),
         "bb": ((513, 202), (407, 407)),
-        "gfbt": ((647, 207), (306, 461))
+        "gfbt": ((647, 207), (306, 461)),
+        "hy": ((895, 615), (80, 20))
     }
 
     def __init__(self, hwnd=False, saveUrl='./images/'):
         # 初始化窗口的句柄
         super(CScreen, self).__init__()
         self.g = Glo()
-        self.index = self.g.get('screen')
+        self.index = self.g.get('screen') or '0'
         self.saveUrl = saveUrl
         if hwnd:
             self.hwnd = hwnd
@@ -85,11 +86,11 @@ class CScreen(object):
             print("error", e)
 
 if __name__ == '__main__':
-    hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-    # hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    # hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
     win32gui.SetForegroundWindow(hwnd)
     print(hwnd)
-    CScreen(hwnd, './images/mnq/').cutScreen()
+    CScreen().customCutScreen('hy')
     # CScreen(hwnd, 'C:/Users/1/Documents/leidian/Pictures').cutScreen()
     # C:\Users\1\Desktop\MHXY
 
