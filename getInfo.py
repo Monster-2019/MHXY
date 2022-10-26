@@ -1,21 +1,23 @@
 import sys
+sys.path.append('.')
 sys.path.append('..')
-from public.glo import Glo
-from public.cutScreen import CScreen
-from public.btn import Btn
-from public.matchTem import Match
-from ocr import OCR
-from public.log import log
+from glo import Glo
+from btn import Btn
+from cutScreen import CScreen
+from matchTem import Match
+import log
 from retrying import retry
 
 from time import sleep
+from ocr import ocr
+
 import re
+import cv2
 
 class Info():
     def __init__(self):
         self.g = Glo()
         self.B = Btn()
-        self.ocr = OCR().ocr
         self.cutScreen = CScreen().cutScreen
         self.customCutScreen = CScreen().customCutScreen
         self.matchTem = Match().matchTem
@@ -24,7 +26,7 @@ class Info():
     def handleOcr(self, ocrText, isNum=False):
         self.customCutScreen(ocrText)
         sleep(0.5)
-        txt = self.ocr()
+        txt = ocr(cv2.imread('./images/screen' + self.g.get('screen') + '.jpg'))
         if not txt:
             raise IOError("ocr err")
         else:
@@ -33,6 +35,9 @@ class Info():
 
     def getInfo(self):
         try:
+            # txt = ocr(cv2.imread('./images/screen1.jpg'))
+            # print(txt)
+            # return
             while True:
                 self.cutScreen()
                 btnCoor = self.matchTem('hd')
@@ -74,3 +79,5 @@ class Info():
 
 if __name__ == '__main__':
     Info().getInfo()
+    # txt = ocr(cv2.imread('./images/screen1.jpg'))
+    # print(txt)

@@ -3,7 +3,7 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 import cv2 as cv
-from public.glo import Glo
+from glo import Glo
 from config import base
 
 

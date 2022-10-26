@@ -4,12 +4,12 @@ from config import user
 import os
 import traceback
 
-from public.glo import Glo
-from public.cutScreen import CScreen
-from public.btn import Btn
-from public.matchTem import Match
-from public.log import log
-from public.smc import SMC
+from glo import Glo
+from cutScreen import CScreen
+from btn import Btn
+from matchTem import Match
+from log import log
+from smc import SMC
 
 class Login(object):
     """docstring for Login"""

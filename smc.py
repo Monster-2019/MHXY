@@ -1,8 +1,8 @@
 import sys
 sys.path.append('..')
-from public.cutScreen import CScreen
-from public.matchTem import Match
-from public.btn import Btn
+from cutScreen import CScreen
+from matchTem import Match
+from btn import Btn
 from time import sleep
 
 class SMC(object):

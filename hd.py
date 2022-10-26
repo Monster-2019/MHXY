@@ -1,6 +1,6 @@
 from time import sleep
-from public.btn import Btn
-from public.smc import SMC
+from btn import Btn
+from smc import SMC
 
 class HD:
     def __init__(self):

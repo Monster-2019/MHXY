@@ -1,8 +1,8 @@
 from time import sleep
-from public.smc import SMC
-from public.btn import Btn
-from public.glo import Glo
-from public.log import log
+from smc import SMC
+from btn import Btn
+from glo import Glo
+from log import log
 import win32gui, win32con
 from win32 import win32process
 import os

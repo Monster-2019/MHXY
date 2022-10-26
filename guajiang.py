@@ -1,9 +1,9 @@
 from time import sleep
-from public.cutScreen import CScreen
-from public.btn import Btn
-from public.matchTem import Match
-from public.log import log
-from public.glo import Glo
+from cutScreen import CScreen
+from btn import Btn
+from matchTem import Match
+from log import log
+from glo import Glo
 
 class Guajiang:
     def __init__(self):

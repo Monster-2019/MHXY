@@ -5,7 +5,7 @@ sys.path.append('..')
 from time import sleep
 import win32api, win32con
 import random
-from public.glo import Glo
+from glo import Glo
 
 
 class Btn:

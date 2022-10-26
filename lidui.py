@@ -1,11 +1,11 @@
 import sys
 sys.path.append('..')
 
-from public.cutScreen import CScreen
-from public.btn import Btn
-from public.matchTem import Match
-from public.glo import Glo
-from public.smc import SMC
+from cutScreen import CScreen
+from btn import Btn
+from matchTem import Match
+from glo import Glo
+from smc import SMC
 
 class Lidui:
     def __init__(self):

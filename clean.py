@@ -1,10 +1,10 @@
 from time import sleep
-from public.smc import SMC
-from public.btn import Btn
-from public.glo import Glo
-from public.log import log
-from public.cutScreen import CScreen
-from public.matchTem import Match
+from smc import SMC
+from btn import Btn
+from glo import Glo
+from log import log
+from cutScreen import CScreen
+from matchTem import Match
 
 class Clean(object):
 	"""docstring for Clean"""

@@ -1,11 +1,11 @@
 from time import sleep
-from public.cutScreen import CScreen
-from public.matchTem import Match
-from public.zudui import Zudui
-from public.btn import Btn
-from public.glo import Glo
-from public.smc import SMC
-from public.log import log
+from cutScreen import CScreen
+from matchTem import Match
+from zudui import Zudui
+from btn import Btn
+from glo import Glo
+from smc import SMC
+from log import log
 import traceback
 
 empty = {

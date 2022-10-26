@@ -3,7 +3,7 @@ sys.path.append('.')
 sys.path.append('..')
 import win32gui, win32ui, win32con
 from time import sleep
-from public.glo import Glo
+from glo import Glo
 import cv2 as cv
 
 class CScreen(object):

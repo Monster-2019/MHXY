@@ -1,10 +1,10 @@
 from time import sleep
-from public.cutScreen import CScreen
-from public.matchTem import Match
-from public.btn import Btn
-from public.smc import SMC
-from public.glo import Glo
-from public.log import log
+from cutScreen import CScreen
+from matchTem import Match
+from btn import Btn
+from smc import SMC
+from glo import Glo
+from log import log
 
 class LQHYD:
     def __init__(self):

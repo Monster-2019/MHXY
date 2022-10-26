@@ -11,13 +11,13 @@ import traceback
 import win32gui, win32com.client
 import argparse
 
-from public.log import log
+from log import log
 from guajiang import Guajiang
-from public.getInfo import Info
+from getInfo import Info
 from zhuogui import Zhuogui
 from lls_pt import LLSPT
 from fuben import FuBen
-from public.lidui import Lidui
+from lidui import Lidui
 from shimen import Shimen
 from baotu import Baotu
 from mijing import Mijing
@@ -34,8 +34,8 @@ from config import user
 from gongfang import Gongfang
 from hideLogin import hide
 
-from public.glo import Glo
-from public.btn import Btn
+from glo import Glo
+from btn import Btn
 # from ring import Ring
 # from bangpai import Bangpai
 
