@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append('.')
-sys.path.append('..')
+
 from apscheduler.schedulers.blocking import BlockingScheduler
 from multiprocessing import Pool, Manager
 from datetime import datetime
@@ -87,17 +87,17 @@ class Run(object):
             g.set('config', myDict)
 
             try:
-                print(111, windowClass)
                 shell.SendKeys('%')
                 win32gui.SetForegroundWindow(windowClass)
                 hide()
             except Exception as e:
                 print(e)
 
-            Info().getInfo()
+            # Info().getInfo()
 
             name = self.g.get('name')
             level = self.g.get('level')
+            level = 69
 
             Guajiang().start()
 

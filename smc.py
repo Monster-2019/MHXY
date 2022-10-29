@@ -1,5 +1,5 @@
 import sys
-sys.path.append('..')
+
 from cutScreen import CScreen
 from matchTem import Match
 from btn import Btn

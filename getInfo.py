@@ -1,6 +1,5 @@
 import sys
-sys.path.append('.')
-sys.path.append('..')
+
 from glo import Glo
 from btn import Btn
 from cutScreen import CScreen
@@ -9,7 +8,7 @@ import log
 from retrying import retry
 
 from time import sleep
-from ocr import ocr
+import ocr
 
 import re
 import cv2
@@ -23,10 +22,10 @@ class Info():
         self.matchTem = Match().matchTem
 
     @retry
-    def handleOcr(self, ocrText, isNum=False):
-        self.customCutScreen(ocrText)
+    def handleOcr(self, ocrCoor, isNum=False):
+        self.customCutScreen(ocrCoor)
         sleep(0.5)
-        txt = ocr(cv2.imread('./images/screen' + self.g.get('screen') + '.jpg'))
+        txt = ocr.ocr(cv2.imread('./images/screen' + self.g.get('screen') + '.jpg'))
         if not txt:
             raise IOError("ocr err")
         else:

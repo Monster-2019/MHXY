@@ -1,5 +1,5 @@
 import sys
-sys.path.append('..')
+
 
 from cutScreen import CScreen
 from btn import Btn

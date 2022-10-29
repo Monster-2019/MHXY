@@ -191,7 +191,7 @@ class Baotu:
                         isHd = self.matchTem('hd')
                         compare = self.g.compare()
                         if item == 'bt_btrw':
-                            btnCoor = self.matchTem(item, simi=0.9)
+                            btnCoor = self.matchTem(item, simi=0.95)
                         else:
                             btnCoor = self.matchTem(item)
                         if btnCoor and isHd:

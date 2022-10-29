@@ -1,6 +1,6 @@
 from time import sleep
 import sys
-sys.path.append('..')
+
 from cutScreen import CScreen
 from btn import Btn
 from matchTem import Match
