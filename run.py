@@ -77,7 +77,7 @@ class Run(object):
 
     def richang(self, screen, windowClass, lock, myDict, q):
         try:
-            q.put(screen)
+            # q.put(screen)
             currentHour = datetime.today().hour
             currentWeek = datetime.today().isoweekday()
             g = Glo()
@@ -93,7 +93,7 @@ class Run(object):
             except Exception as e:
                 print(e)
 
-            # Info().getInfo()
+            Info().getInfo()
 
             name = self.g.get('name')
             level = self.g.get('level')
@@ -124,8 +124,8 @@ class Run(object):
 
             Lidui().start()
 
-            # if level >= 60:
-                # GengZhong().start()
+            if level >= 60:
+                GengZhong().start()
 
             Shimen().start()
 
@@ -150,23 +150,17 @@ class Run(object):
 
             Clean().start()
 
-            # if currentWeek == 1:
             if currentWeek == 1 and level >= 60:
                 Gongfang().start()
 
                 # if level >= 50 and level <= 69:
                     # Ring().start()
                     # Bangpai().start()
-
-                
                     
-            # currentHour = int(time.strftime('%H', time.localtime()))
-            # currentHour = 8
-            # if int(level) < 69 and currentHour >= 8:
-            # Upgrade().start()
+            myDict['hyd'][screen] = self.g.get('hyd')
 
             log(f'账号：{name}  完成!!!!!!!!!!!!!!')
-            q.get(screen)
+            # q.get(screen)
 
             # while q.qsize():
                 # pass
@@ -234,6 +228,7 @@ class Run(object):
                     # 进程共享数据
                     lock = Manager().Lock()
                     d = Manager().dict()
+                    d['hyd'] = {}
                     q = Manager().Queue()
                     for key in user.ACCTZU[index]['config']:
                         d[key] = user.ACCTZU[index]['config'][key]
@@ -246,6 +241,7 @@ class Run(object):
                     p.close()
                     p.join()
 
+                    print(d['hyd'])
                     log(f'完成第{GROUP_NO}组号')
                     self.pushMsg(GROUP_NO)
                 else:
@@ -254,7 +250,7 @@ class Run(object):
                 sleep(2)
 
             log('运行完成')
-            self.pushMsg(0, shutdown)
+            # self.pushMsg(0, shutdown)
 
         except BaseException as e:
             print(e)

@@ -137,7 +137,7 @@ class Baotu:
             self.B.VBtn(1, 31)
             sleep(0.5)
 
-            self.processing = self.smc('bt_btrw', simi=0.9)
+            self.processing = self.smc('bt_btrw', simi=0.95)
 
             if not self.processing:
                 for n in range(31):

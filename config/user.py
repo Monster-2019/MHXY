@@ -24,15 +24,7 @@ ACCTZU = [
     {
         # "status": True,
         "status": False,
-        "config": {
-            "TeamStatus": False,
-            "ZG": False,
-            "ZG_COUNT": 2,
-            "ZG_WC": None,
-            "FB": False,
-            "FB_WC": None,
-            "NEXT": False,
-        },
+        "config": DEFAULT_CONFIG,
         "acctList": [
             {"account": "h1", "server": "h1-2"},
             {"account": "h2", "server": "h2-2"},

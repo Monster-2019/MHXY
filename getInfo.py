@@ -4,14 +4,25 @@ from glo import Glo
 from btn import Btn
 from cutScreen import CScreen
 from matchTem import Match
-import log
+from log import log
 from retrying import retry
+from paddleocr import PaddleOCR
 
 from time import sleep
-import ocr
+from ocr import ocr
 
 import re
 import cv2
+
+# def ocr(img):
+#     try:
+#         ocr = PaddleOCR(lang="ch")
+#         result = ocr.ocr(img, det=False)
+#         return result[0][0][0]
+
+#     except BaseException as e:
+#         pass
+#         # traceback.print_exc()
 
 class Info():
     def __init__(self):
@@ -21,13 +32,15 @@ class Info():
         self.customCutScreen = CScreen().customCutScreen
         self.matchTem = Match().matchTem
 
-    @retry
+    # @retry
     def handleOcr(self, ocrCoor, isNum=False):
         self.customCutScreen(ocrCoor)
         sleep(0.5)
-        txt = ocr.ocr(cv2.imread('./images/screen' + self.g.get('screen') + '.jpg'))
+        txt = ocr(cv2.imread('./images/screen' + self.g.get('screen') + '.jpg'))
+        print('识别', txt)
         if not txt:
-            raise IOError("ocr err")
+            # raise IOError("ocr err")
+            return '未识别'
         else:
             return txt
 

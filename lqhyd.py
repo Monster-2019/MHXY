@@ -5,12 +5,17 @@ from btn import Btn
 from smc import SMC
 from glo import Glo
 from log import log
+from ocr import ocr
+import cv2
 
 class LQHYD:
     def __init__(self):
-        self.name = Glo().get('name')
+        self.g = Glo()
+        self.name = self.g.get('name')
         self.B = Btn()
-        self.cutScreen = CScreen().cutScreen
+        CScreen = CScreen()
+        self.cutScreen = CScreen.cutScreen
+        self.customCutScreen = CScreen.customCutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
 
@@ -31,6 +36,12 @@ class LQHYD:
                     if item == 'hy_100':
                         complete = True
                     break
+
+            self.customCutScreen('hy')
+            
+            txt = ocr(cv2.imread('./images/screen' + self.g.get('screen') + '.jpg'))
+            print('活跃:', txt)
+            self.g.set('hyd', txt)
 
             sleep(0.5)
             self.B.RBtn()

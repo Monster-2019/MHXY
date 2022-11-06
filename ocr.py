@@ -1,10 +1,10 @@
 import sys
 sys.path.append(".")
 import traceback
-import cv2
 
 from paddleocr import PaddleOCR
 from cutScreen import CScreen
+import cv2
 
 def ocr(img):
     try:
@@ -14,3 +14,8 @@ def ocr(img):
 
     except BaseException as e:
         traceback.print_exc()
+
+if __name__ == '__main__':
+    CScreen().customCutScreen('hy')
+    txt = ocr(cv2.imread('./images/screen0.jpg'))
+    print(txt)

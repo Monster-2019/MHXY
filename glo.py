@@ -19,6 +19,7 @@ class Glo:
         "config": None,
         "oldCoor": [],
         "newCoor": [],
+        "hyd": 0
     }
 
     def __init__(self):

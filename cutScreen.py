@@ -17,7 +17,7 @@ class CScreen(object):
         "silver": ((300, 634), (160, 24)),
         "bb": ((513, 202), (407, 407)),
         "gfbt": ((647, 207), (306, 461)),
-        "hy": ((895, 615), (80, 20))
+        "hy": ((862, 615), (110, 20))
     }
 
     def __init__(self, hwnd=False, saveUrl='./images/'):
