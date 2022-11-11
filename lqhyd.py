@@ -13,9 +13,8 @@ class LQHYD:
         self.g = Glo()
         self.name = self.g.get('name')
         self.B = Btn()
-        CScreen = CScreen()
-        self.cutScreen = CScreen.cutScreen
-        self.customCutScreen = CScreen.customCutScreen
+        self.cutScreen = CScreen().cutScreen
+        self.customCutScreen = CScreen().customCutScreen
         self.matchTem = Match().matchTem
         self.smc = SMC().smc
 

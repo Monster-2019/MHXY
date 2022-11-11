@@ -55,18 +55,18 @@ class Run(object):
         self.m = int(totalTime / 60)
         self.totalTime += self.m
 
-    def pushMsg(self, groupNo, shutdown=False):
+    def pushMsg(self, msg, shutdown=False):
         self.runOver()
-        msg = '完成第' + str(groupNo) + '组号, 用时' + str(self.m) + '分钟'
+        msg += f'用时{self.m}分钟'
         self.startTime = datetime.now()
 
-        if groupNo == len(user.ACCTZU):
-            currentHour = datetime.today().hour
-            currentWeek = datetime.today().isoweekday()
-            if currentHour <= 6 or (
-                (currentWeek == 1 or currentWeek == 4 or currentWeek == 5)
-                    and currentHour <= 17):
-                shutdown = True
+        # if groupNo == len(user.ACCTZU):
+        #     currentHour = datetime.today().hour
+        #     currentWeek = datetime.today().isoweekday()
+        #     if currentHour <= 6 or (
+        #         (currentWeek == 1 or currentWeek == 4 or currentWeek == 5)
+        #             and currentHour <= 17):
+        #         shutdown = True
 
         if shutdown:
             msg += '全部完成，关机'
@@ -75,7 +75,7 @@ class Run(object):
         else:
             SendMsg(msg)
 
-    def richang(self, screen, windowClass, lock, myDict, q):
+    def richang(self, screen, windowClass, lock, myDict, l):
         try:
             # q.put(screen)
             currentHour = datetime.today().hour
@@ -143,8 +143,6 @@ class Run(object):
 
             Yunbiao().start()
 
-            LQHYD().start()
-
             if level >= 60:
                 GengZhong().start()
 
@@ -153,11 +151,13 @@ class Run(object):
             if currentWeek == 1 and level >= 60:
                 Gongfang().start()
 
+            LQHYD().start()
+
                 # if level >= 50 and level <= 69:
                     # Ring().start()
                     # Bangpai().start()
-                    
-            myDict['hyd'][screen] = self.g.get('hyd')
+                
+            l.append(self.g.get('hyd'))
 
             log(f'账号：{name}  完成!!!!!!!!!!!!!!')
             # q.get(screen)
@@ -228,22 +228,22 @@ class Run(object):
                     # 进程共享数据
                     lock = Manager().Lock()
                     d = Manager().dict()
-                    d['hyd'] = {}
-                    q = Manager().Queue()
+                    l = Manager().list([])
                     for key in user.ACCTZU[index]['config']:
                         d[key] = user.ACCTZU[index]['config'][key]
 
                     p = Pool(len(self.hwndList))
                     for i in range(len(self.hwndList)):
                         p.apply_async(self.richang,
-                                      args=(str(i), self.hwndList[i], lock, d, q))
+                                      args=(str(i), self.hwndList[i], lock, d, l))
                         sleep(2)
                     p.close()
                     p.join()
 
-                    print(d['hyd'])
+                    print(l)
+                    msg = f'完成第{GROUP_NO}组号, 活跃：{",".join(l)}，'
                     log(f'完成第{GROUP_NO}组号')
-                    self.pushMsg(GROUP_NO)
+                    self.pushMsg(msg)
                 else:
                     log(f'第{GROUP_NO}组号不执行')
 
