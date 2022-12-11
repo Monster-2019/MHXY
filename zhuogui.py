@@ -49,7 +49,6 @@ class Zhuogui:
                 self.cutScreen()
                 res = self.matchTem('hd_zgrw')
                 com = self.matchTem('zg_wc', simi=0.999)
-                print('wc', com)
                 if com:
                     complete = True
                     break
@@ -105,27 +104,27 @@ class Zhuogui:
                 if item == 'zg_zg':
                     btnCoor = self.matchTem(item, simi=0.9)
                 else:
-                    btnCoor = self.matchTem(item)
+                    btnCoor = self.matchTem(item, simi=0.99)
+
+                if btnCoor and item == 'zg_zgwc':
+                    if count < loopCount:
+                        btnCoor = self.matchTem('qd')
+                        if btnCoor:
+                            self.B.LBtn(btnCoor)
+                    else:
+                        btnCoor = self.matchTem('qx')
+                        if btnCoor:
+                            self.B.LBtn(btnCoor)
+                            log(f"捉鬼任务完成")
+                            break
                 
-                if isHd and btnCoor:
+                elif isHd and btnCoor:
                     if item == 'zg_zgrw':
                         self.B.LBtn(btnCoor)
                         sleep(2)
                         self.B.RBtn()
                         count += 1
                         print(f'开始刷第{count}轮鬼')
-
-                    elif item == 'zg_zgwc':
-                        if count < loopCount:
-                            btnCoor = self.matchTem('qd')
-                            if btnCoor:
-                                self.B.LBtn(btnCoor)
-                        else:
-                            btnCoor = self.matchTem('qx')
-                            if btnCoor:
-                                self.B.LBtn(btnCoor)
-                                log(f"捉鬼任务完成")
-                                break
 
                     elif item == 'zg_zg':
                         self.B.LBtn(btnCoor, sleepT=20)
