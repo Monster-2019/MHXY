@@ -5,6 +5,7 @@ sys.path.append("..")
 import cv2 as cv
 from glo import Glo
 from config import base
+from cutScreen import CScreen
 
 
 class Match:
@@ -43,7 +44,6 @@ class Match:
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
         res = 0
-        # print(tem, max_val)
         if max_val > self.simi:
             w, h = newTem.shape[::-1]
             res = (max_loc, (w, h))
@@ -79,4 +79,5 @@ class Match:
 
 
 if __name__ == "__main__":
-    Match().matchTem("fb_ecy_xz")
+    CScreen().cutScreen()
+    Match().matchTem("zg_zgwc")

@@ -143,6 +143,8 @@ class Run(object):
 
             Yunbiao().start()
 
+            LQHYD().start()
+
             if level >= 60:
                 GengZhong().start()
 
@@ -150,8 +152,6 @@ class Run(object):
 
             if currentWeek == 1 and level >= 60:
                 Gongfang().start()
-
-            LQHYD().start()
 
                 # if level >= 50 and level <= 69:
                     # Ring().start()

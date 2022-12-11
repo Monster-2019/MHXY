@@ -18,9 +18,8 @@ class Lidui:
     def start(self):
         complete = False
 
-        self.smc('sb')
-
         while True:
+            self.smc('sb')
             res = self.smc('hd', count=0)
             if res == 0:
                 self.B.RBtn()

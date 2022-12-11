@@ -7,9 +7,9 @@ import requests
 
 
 def SendMsg(msg):
-    url = 'https://push.dongxin.cool/v1/message/send'
+    url = 'https://push.dongxin.co/v1/message/send'
     params = {
-        "token": "546346f453d2cc1758ba45ee",
+        "token": "54ae34e322deb80bb8d26e70",
         "title": "梦幻西游脚本完成提醒",
         "content": msg,
         "template": "text"

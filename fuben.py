@@ -42,8 +42,7 @@ lls = {
 
 jcx = {
     "name": "金禅心",
-    "wc": "lls_wc",
-    # "wc": "jcx_wc",
+    "wc": "jcx_wc",
     "hd": "hd_jcx_pt",
     "xz": "fb_jcx_xz",
     "rw": "fb_jcx",
@@ -133,11 +132,9 @@ class FuBen:
                         while not processing:
                             for item in ['fb_xzfb', self.fbImg["xz"]]:
                                 r = self.smc(item, sleepT=1)
-                                print(item, r)
                                 if r != 0 and item == self.fbImg["xz"]:
                                     btnCoor = self.matchTem(
                                         'fb_jr', 'imgTem/' + self.fbImg["xz"])
-                                    print('jr', btnCoor)
                                     if btnCoor != 0:
                                         newCoor = (
                                             (
@@ -211,10 +208,13 @@ class FuBen:
                             break
 
                         elif item == 'hd':
-                            complete = True
-                            processing = False
-                            log(f"副本 { self.fbImg['name'] } 完成")
-                            break
+                            sleep(2)
+                            res = self.smc('hd')
+                            if res:
+                                complete = True
+                                processing = False
+                                log(f"副本 { self.fbImg['name'] } 完成")
+                                break
 
 
         if complete:
@@ -230,6 +230,8 @@ class FuBen:
         while not self.g.getObj('config', 'FB_WC'):
             sleep(5)
 
+        sleep(3)
+
         self.smc('sb')
 
         complete = True
@@ -241,7 +243,6 @@ class FuBen:
 
     def start(self):
         try:
-            complete = False
             res = 0
             if int(self.index) == 0:
                 res = self.leader()

@@ -1,11 +1,11 @@
 DEFAULT_CONFIG = {
     "TeamStatus": False,
-    "ZG": False,
+    "ZG": True,
     "ZG_COUNT": 2,
     "ZG_WC": None,
     "FB": True,
     "FB_WC": None,
-    "NEXT": False,
+    "NEXT": True,
 }
 
 ACCTZU = [
@@ -22,8 +22,8 @@ ACCTZU = [
         ],
     },
     {
-        # "status": True,
-        "status": False,
+        "status": True,
+        # "status": False,
         "config": DEFAULT_CONFIG,
         "acctList": [
             {"account": "h1", "server": "h1-2"},

@@ -23,7 +23,6 @@ class Zhuogui:
     def leader(self):
         log(f"开始捉鬼任务")
         complete = True
-        processing = False
 
         while self.smc('hd', count=0) == 0:
             self.B.RBtn()
@@ -48,7 +47,12 @@ class Zhuogui:
             if n % 10 == 0:
                 sleep(0.5)
                 self.cutScreen()
-                res = self.matchTem('hd_zgrw', simi=0.999)
+                res = self.matchTem('hd_zgrw')
+                com = self.matchTem('zg_wc', simi=0.999)
+                print('wc', com)
+                if com:
+                    complete = True
+                    break
                 if res:
                     self.cutScreen()
                     temCoor = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
@@ -61,15 +65,16 @@ class Zhuogui:
                         if btnCoor:
                             self.B.LBtn(newCoor)
                             complete = False
-                            processing = True
                             break
 
             else:
                 self.B.VBtn(-1)
 
-        complete = self.loop(ZG_COUNT)
+        if not complete:
+            complete = self.loop(ZG_COUNT)
 
         if complete:
+            self.g.setObj('config', 'ZG_WC', True)
             log(f"捉鬼任务结束")
             return 1
         else:
@@ -79,8 +84,8 @@ class Zhuogui:
         complete = False
         Zudui().start()
         while not self.g.getObj('config', 'ZG_WC'):
-            self.smc('xszk_gb')
-            sleep(3)
+            # self.smc('xszk_gb')
+            sleep(5)
 
         complete = True
 
@@ -156,4 +161,5 @@ class Zhuogui:
 
 
 if __name__ == '__main__':
-    Zhuogui().loop()
+    # Zhuogui().loop()
+    Zhuogui().leader()
