@@ -3,33 +3,54 @@ import sys
 sys.path.append(".")
 sys.path.append("..")
 import cv2 as cv
+import numpy as np
 from glo import Glo
 from config import base
 from cutScreen import CScreen
+
+MIN_MATCH_COUNT = 10
+FLANN_INDEX_KDTREE = 1
+index_params = dict(algorithm=FLANN_INDEX_KDTREE, trees=5)
+search_params = dict(checks=50)
+flann = cv.FlannBasedMatcher(index_params, search_params)
 
 
 class Match:
     default_simi = base.GLOBAL_SIMI
     simi = default_simi
 
-    def __init__(self, img = 0):
+    def __init__(self, img=0):
         g = Glo()
-        if img == 0:
+        if not img:
             self.screen = "screen" + g.get("screen")
         else:
             self.screen = img
 
-    def imgProcess(self, img, type=0):
-        #     自适应阈值
-        # return cv.adaptiveThreshold(
-        #     img, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 2
-        # )
-        #   Otsu 二值化
-        # ret3, newImg = cv.threshold(img,0,255,cv.THRESH_BINARY+cv.THRESH_OTSU)
-        # ret3, newImg = cv.threshold(img,127,255,cv.THRESH_TRUNC)
-        # return newImg
-        return img
+    def siftMatch(self, tem, img):
+        sift = cv.xfeatures2d.SIFT_create()
+        kp1, des1 = sift.detectAndCompute(tem, None)
+        kp2, des2 = sift.detectAndCompute(img, None)
+        matches = flann.knnMatch(des1, des2, k=2)
+        good = []
+        for m, n in matches:
+            if m.distance < 0.7 * n.distance:
+                good.append(m)
 
+        if len(good) > MIN_MATCH_COUNT:
+            src_pts = np.float32([kp1[m.queryIdx].pt
+                                  for m in good]).reshape(-1, 1, 2)
+            dst_pts = np.float32([kp2[m.trainIdx].pt
+                                  for m in good]).reshape(-1, 1, 2)
+            M, mask = cv.findHomography(src_pts, dst_pts, cv.RANSAC, 5.0)
+            h, w = tem.shape
+            pts = np.float32([[0, 0], [0, h - 1], [w - 1, h - 1],
+                              [w - 1, 0]]).reshape(-1, 1, 2)
+            dst = cv.perspectiveTransform(pts, M)
+            coor = np.int32(np.around(dst)).flatten()
+            x1, x2, y1, y2 = set(coor)
+            return ((x1, y1), (w, h))
+
+        return 0
 
     def matchTem(self, tem, img=0, simi=simi):
         if img == 0:

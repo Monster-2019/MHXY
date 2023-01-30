@@ -1,6 +1,7 @@
 APScheduler==3.8.1
 numpy==1.21.4
-opencv_python==4.5.4.58
+opencv-python==4.7.0.68
+opencv-contrib-python==4.7.0.68
 Pillow==8.4.0
 pywin32==302
 requests==2.26.0
