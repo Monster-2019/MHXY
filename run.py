@@ -207,7 +207,7 @@ class Run(object):
 
         return
 
-    def start(self, shutdown=False, single=False):
+    def start(self, single=False):
         try:
             self.single = single
             import pythoncom
