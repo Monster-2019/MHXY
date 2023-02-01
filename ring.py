@@ -4,7 +4,7 @@ from time import sleep
 from cv2 import compare, fastAtan2
 from cutScreen import CScreen
 from btn import Btn
-from matchTem import Match
+from match import Match
 from smc import SMC
 from glo import Glo
 from log import log

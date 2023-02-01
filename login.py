@@ -7,7 +7,7 @@ import traceback
 from glo import Glo
 from cutScreen import CScreen
 from btn import Btn
-from matchTem import Match
+from match import Match
 from log import log
 from smc import SMC
 

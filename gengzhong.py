@@ -2,7 +2,7 @@ from time import sleep
 from time import time
 from datetime import datetime
 from cutScreen import CScreen
-from matchTem import Match
+from match import Match
 from smc import SMC
 from btn import Btn
 from glo import Glo

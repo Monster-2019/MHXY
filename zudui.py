@@ -3,7 +3,7 @@ import sys
 
 from cutScreen import CScreen
 from btn import Btn
-from matchTem import Match
+from match import Match
 from glo import Glo
 from smc import SMC
 from config import user

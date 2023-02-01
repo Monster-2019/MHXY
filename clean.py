@@ -4,7 +4,7 @@ from btn import Btn
 from glo import Glo
 from log import log
 from cutScreen import CScreen
-from matchTem import Match
+from match import Match
 
 class Clean(object):
 	"""docstring for Clean"""

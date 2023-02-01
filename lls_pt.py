@@ -1,6 +1,6 @@
 from time import sleep
 from cutScreen import CScreen
-from matchTem import Match
+from match import Match
 from zudui import Zudui
 from btn import Btn
 from glo import Glo

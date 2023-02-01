@@ -1,7 +1,7 @@
 import sys
 
 from cutScreen import CScreen
-from matchTem import Match
+from match import Match
 from btn import Btn
 from time import sleep
 

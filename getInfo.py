@@ -3,7 +3,7 @@ import sys
 from glo import Glo
 from btn import Btn
 from cutScreen import CScreen
-from matchTem import Match
+from match import Match
 from log import log
 from retrying import retry
 from paddleocr import PaddleOCR
