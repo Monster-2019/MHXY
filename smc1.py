@@ -17,6 +17,9 @@ class SMC(object):
             return coor
         return 0
 
+    def __call__(self, tem, simi, sleep_time):
+        return self.match_tem(tem, simi, sleep_time)
+
 
 if __name__ == '__main__':
     SMC().smc('bt_wc')

@@ -26,6 +26,7 @@ FIXED_COOR = {
 
 CENTER_COOR = (520, 403)
 
+
 class Btn(object):
 
     def __init__(self, hwnd, lock):

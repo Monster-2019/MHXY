@@ -78,3 +78,6 @@ class Match(object):
             return (x1, y1, w, h)
 
         return ()
+
+    def __call__(self, tem, screen, simi):
+        return self.match_tem(tem, screen, simi)

@@ -56,3 +56,6 @@ class CaptureScreen(object):
         saveDC.DeleteDC()
         mfcDC.DeleteDC()
         win32gui.ReleaseDC(self.hwnd, hwndDC)
+
+    def __call__(self):
+        self.capture()

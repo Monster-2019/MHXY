@@ -4,7 +4,7 @@ import os
 import requests
 
 
-def hideLogin():
+def hide_login():
     hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
     win32gui.ShowWindow(hwnd, 0)  # 0 隐藏  1 显示
 
@@ -18,7 +18,7 @@ def logout(hwnd):
     return True
 
 
-def send_msg(msg):
+def push_msg(msg):
     url = 'https://push.dongxin.co/v1/message/send'
     params = {
         "token": "54ae34e322deb80bb8d26e70",
@@ -30,3 +30,30 @@ def send_msg(msg):
     print(res.json())
 
     return res.json()
+
+
+class GlobalVariable(object):
+    _global_dict = {}
+
+    def __init__(self):
+        global _global_dict
+        self._global_dict = {}
+
+    def set_value(self, key, value):
+        self._global_dict[key] = value
+
+    def get_value(self, key):
+        try:
+            return self._global_dict[key]
+        except:
+            print(f"{key}不存在")
+
+    def remove_value(self, key):
+        try:
+            return self._global_dict.pop(key)
+        except:
+            print(f"{key}不存在")
+
+    def clear(self):
+        for key in self._global_dict.keys():
+            self._global_dict.pop(key)

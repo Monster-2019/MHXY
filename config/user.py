@@ -8,29 +8,25 @@ DEFAULT_CONFIG = {
     "NEXT": True,
 }
 
+ACCOUNT_CONFIG = {
+    "team_up": False,
+    "zg": False,
+    "fb": True,
+}
+
 ACCTZU = [
-    {
-        "status": True,
-        # "status": False,
-        "config": DEFAULT_CONFIG,
-        "acctList": [
-            {"account": "h1", "server": "h1-1"},
-            {"account": "h2", "server": "h2-1"},
-            {"account": "h3", "server": "h3-1"},
-            {"account": "h4", "server": "h4-1"},
-            {"account": "h5", "server": "h5-1"},
-        ],
-    },
-    {
-        "status": True,
-        # "status": False,
-        "config": DEFAULT_CONFIG,
-        "acctList": [
-            {"account": "h1", "server": "h1-2"},
-            {"account": "h2", "server": "h2-2"},
-            {"account": "h3", "server": "h3-2"},
-            {"account": "h4", "server": "h4-2"},
-            {"account": "h5", "server": "h5-2"},
-        ],
-    },
+    [
+        {"account": "h1", "server": "h1-1", "config": ACCOUNT_CONFIG},
+        {"account": "h2", "server": "h2-1", "config": ACCOUNT_CONFIG},
+        {"account": "h3", "server": "h3-1", "config": ACCOUNT_CONFIG},
+        {"account": "h4", "server": "h4-1", "config": ACCOUNT_CONFIG},
+        {"account": "h5", "server": "h5-1", "config": ACCOUNT_CONFIG},
+    ],
+    [
+        {"account": "h1", "server": "h1-2", "config": ACCOUNT_CONFIG},
+        {"account": "h2", "server": "h2-2", "config": ACCOUNT_CONFIG},
+        {"account": "h3", "server": "h3-2", "config": ACCOUNT_CONFIG},
+        {"account": "h4", "server": "h4-2", "config": ACCOUNT_CONFIG},
+        {"account": "h5", "server": "h5-2", "config": ACCOUNT_CONFIG},
+    ]
 ]
