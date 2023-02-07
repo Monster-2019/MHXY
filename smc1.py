@@ -1,24 +1,17 @@
-from time import sleep
-
-
 class SMC(object):
 
     def __init__(self, capture, match, btn):
-        self.capture = capture.capture
-        self.match = match.match_tem
+        self.capture = capture
+        self.match = match
         self.btn = btn
 
-    def smc(self, tem, simi=0, sleep_time=0):
+    def smc(self, tem, **kwargs):
         self.capture()
-        coor = self.matchTem(tem, simi=simi)
+        coor = self.matchTem(tem, **kwargs)
         if coor:
-            self.B.LBtn(coor)
-            sleep(sleep_time)
+            self.B.LBtn(coor, **kwargs)
             return coor
         return 0
-
-    def __call__(self, tem, simi, sleep_time):
-        return self.match_tem(tem, simi, sleep_time)
 
 
 if __name__ == '__main__':

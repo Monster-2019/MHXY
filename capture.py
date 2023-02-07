@@ -1,6 +1,9 @@
-import win32gui, win32ui, win32con
 from time import sleep
+
 import cv2 as cv
+import win32con
+import win32gui
+import win32ui
 
 COOR = {
     "btgm": ((412, 258), (135, 25)),

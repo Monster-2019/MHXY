@@ -6,3 +6,4 @@ logger.log
 cache/*
 **/cache/*
 images/mnq/mnq.jpg
+*.ini

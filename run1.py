@@ -83,7 +83,9 @@ def daily_tasks(screen, hwnd, lock, manager_list):
     except Exception as e:
         print(e)
 
+    # getInfo()
     
+
 
 
 def start(single=False):

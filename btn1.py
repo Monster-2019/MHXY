@@ -41,7 +41,7 @@ class Btn(object):
           min_y=0,
           max_x=2000,
           max_y=1000):
-        if not coor: return
+        if not coor or not is_click: return
 
         x, y, w, h = coor
 
