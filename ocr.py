@@ -37,6 +37,7 @@ def ocr(img):
         result.append(item.get('words'))
 
     print(result)
+    return result
 
 
 def get_file_content_as_base64(path, urlencoded=False):

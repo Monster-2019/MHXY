@@ -2,6 +2,10 @@ from time import sleep
 
 from loguru import logger
 
+from ocr import ocr
+
+import re
+
 
 class Complex(object):
 
@@ -11,14 +15,38 @@ class Complex(object):
         self.btn = btn
         self.smc = smc
 
-    def getInfo(self):
+    def get_info(self):
         while not self.smc('hd', isClick=False):
-            self.B.RBtn()
+            self.B.r()
 
         self.btn.hotkey('js')
+        self.capture.custom_captrue('name')
+        name_level = ocr(f'./images/{self.capture.screen}.jpg')
         self.btn.r()
 
-        pass
+        if name_level:
+            match = re.match(r"(.+)(\d{2})", name_level)
+            if match:
+                name = match.group(1)
+                level = int(match.group(2))
+
+        self.btn.hotkey('bb')
+        self.capture.custom_captrue('gold')
+        gold = ocr(f'./images/{self.capture.screen}.jpg')
+
+        self.capture.custom_captrue('silver')
+        silver = ocr(f'./images/{self.capture.screen}.jpg')
+
+        self.btn.r()
+
+        logger.info(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
+
+        return {
+            name: name,
+            level: level,
+            gold: gold,
+            silver: silver,
+        }
 
     def clean(self):
         while not self.smc('hd', isClick=False):
@@ -99,7 +127,7 @@ class Complex(object):
 
         logger.info(f"清理完成")
 
-    def guajiang(self):
+    def singin(self):
         self.btn.hotkey('fl')
 
         self.smc('fl_mrfl', sleep_time=0.5)
@@ -119,7 +147,7 @@ class Complex(object):
 
         logger.info(f"刮奖完成")
 
-    def lq_hyd(self):
+    def get_hyd(self):
         while not self.smc('hd', isClick=False):
             self.B.RBtn()
 
@@ -129,10 +157,63 @@ class Complex(object):
         for coor in hyd_list:
             self.smc(coor, sleep_time=0.2)
 
-        pass
-
         logger.info(f"账号: { self.name } 活跃度领取完成")
-        
+
+    def join_team_leader(self):
+        while not self.smc('hd', isClick=False):
+            self.B.RBtn()
+
+        self.btn.hotkey('dw')
+
+        self.smc('cjdw', sleep_time=0.5)
+
+        self.smc('dw_sq')
+
+        count = 0
+
+        while True:
+            accept = self.smc('dw_js')
+            if accept:
+                n += 1
+            elif count >= 4:
+                break
+
+        self.btn.r()
+
+    def join_team_player(self):
+        while not self.smc('hd', isClick=False):
+            self.B.RBtn()
+
+        self.btn.hotkey('hy')
+        self.smc('lxr')
+
+        while True:
+            self.capture()
+            dz_coor = self.match('dz')
+            if dz_coor:
+                coor = self.match('jt', 'imgTem/dz')
+                if coor:
+                    coor = (dz_coor[0][0] + coor[0][0],
+                            dz_coor[0][1] + coor[0][1], coor[1][0], coor[1][1])
+                    self.btn.l(coor, sleep_time=1)
+
+                    if self.smc('sqrd') or self.smc('sqrd1'):
+                        break
+
+        self.btn.r()
+
+    def leave_team(self):
+        while not self.smc('hd', isClick=False):
+            self.B.RBtn()
+
+        self.btn.hotkey('dw')
+
+        while True:
+            self.smc('tcdw', sleep_time=1)
+            if self.smc('cjdw', is_click=False):
+                break
+
+        self.btn.r()
 
 
 if __name__ == '__main__':

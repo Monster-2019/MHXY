@@ -1,35 +1,18 @@
-import sys
-
-from cutScreen import CScreen
-from match import Match
-from btn import Btn
-from time import sleep
-
 class SMC(object):
-    def __init__(self, hwnd=False):
-        super(SMC, self).__init__()
-        self.cutScreen = CScreen(hwnd).cutScreen
-        self.matchTem = Match().matchTem
-        self.matchArrTem = Match().matchArrTem
-        self.B = Btn(hwnd)
 
-    def smc(self, tem, simi=0, sleepT=0, count=1):
-        self.cutScreen()
-        Coor = self.matchTem(tem, simi=simi)
-        if Coor != 0:
-            self.B.LBtn(Coor, count=count)
-            sleep(sleepT)
-            return Coor
+    def __init__(self, capture, match, btn):
+        self.capture = capture
+        self.match = match
+        self.btn = btn
+
+    def smc(self, tem, **kwargs):
+        self.capture()
+        coor = self.matchTem(tem, **kwargs)
+        if coor:
+            self.B.LBtn(coor, **kwargs)
+            return coor
         return 0
 
-    def smca(self, tem, simi=0, sleepT=0, count=1):
-        self.cutScreen()
-        Coor = self.matchArrTem(tem, simi=simi)
-        if Coor != 0:
-            self.B.LBtn(Coor, count=count)
-            sleep(sleepT)
-            return Coor
-        return 0
 
 if __name__ == '__main__':
     SMC().smc('bt_wc')

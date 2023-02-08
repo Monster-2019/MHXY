@@ -1,12 +1,7 @@
-import sys
-
-sys.path.append(".")
-sys.path.append("..")
 import cv2 as cv
 import numpy as np
-from glo import Glo
+
 from config import base
-from cutScreen import CScreen
 
 MIN_MATCH_COUNT = 10
 FLANN_INDEX_KDTREE = 1
@@ -15,21 +10,53 @@ search_params = dict(checks=50)
 flann = cv.FlannBasedMatcher(index_params, search_params)
 
 
-class Match:
+class Match(object):
     default_simi = base.GLOBAL_SIMI
-    simi = default_simi
+    default_feature_count = MIN_MATCH_COUNT
 
-    def __init__(self, img=0):
-        g = Glo()
-        if not img:
-            self.screen = "screen" + g.get("screen")
-        else:
-            self.screen = img
+    def __init__(self, screen):
+        self.screen = screen
 
-    def siftMatch(self, tem, img):
+    def match_tem(self, tem, screen, simi=default_simi):
+        s = screen or self.screen
+        img1 = cv.imread("./images/" + s + ".jpg", 0)
+        img2 = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
+        result = cv.matchTemplate(img1, img2, cv.TM_CCORR_NORMED)
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+
+        if max_val > simi:
+            w, h = img2.shape[::-1]
+            x, y = max_loc
+            return (x, y, w, h)
+
+        return ()
+
+    def match_tem_list(self, tem_list, screen, simi=default_simi):
+        # s = screen or self.screen
+        # img1 = cv.imread("./images/" + s + ".jpg", 0)
+
+        for tem in tem_list:
+            result = self.match_tem(tem, screen, simi)
+            if result:
+                return result
+            # img2 = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
+            # result = cv.matchTemplate(img1, img2, cv.TM_CCORR_NORMED)
+            # min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+            # if max_val > simi:
+            # w, h = img2.shape[::-1]
+            # x, y = max_loc
+            # return (x, y, w, h)
+
+        return ()
+
+    def match_feature(self, tem, screen, count=default_feature_count):
+        s = screen or self.screen
+        img1 = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
+        img2 = cv.imread("./images/" + s + ".jpg", 0)
+
         sift = cv.xfeatures2d.SIFT_create()
-        kp1, des1 = sift.detectAndCompute(tem, None)
-        kp2, des2 = sift.detectAndCompute(img, None)
+        kp1, des1 = sift.detectAndCompute(img1, None)
+        kp2, des2 = sift.detectAndCompute(img2, None)
         matches = flann.knnMatch(des1, des2, k=2)
         good = []
         for m, n in matches:
@@ -48,57 +75,9 @@ class Match:
             dst = cv.perspectiveTransform(pts, M)
             coor = np.int32(np.around(dst)).flatten()
             x1, x2, y1, y2 = set(coor)
-            return ((x1, y1), (w, h))
+            return (x1, y1, w, h)
 
-        return 0
+        return ()
 
-    def matchTem(self, tem, img=0, simi=simi):
-        if img == 0:
-            img = self.screen
-        if simi and simi != 0:
-            self.simi = simi
-        s = cv.imread("./images/" + img + ".jpg", 0)
-        n = cv.imread("./images/imgTem/" + tem + ".JPG", 0)
-        screen = s
-        newTem = n
-        result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
-        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-
-        res = 0
-        if max_val > self.simi:
-            w, h = newTem.shape[::-1]
-            res = (max_loc, (w, h))
-
-        self.simi = self.default_simi
-
-        return res
-
-    def matchArrTem(self, tem, img=0, simi=simi):
-        if img == 0:
-            img = self.screen
-        if simi and simi != 0:
-            self.simi = simi
-
-        s = cv.imread("./images/" + img + ".jpg", 0)
-        screen = s
-        for item in tem:
-            n = cv.imread("./images/imgTem/" + item + ".jpg", 0)
-            newTem = n
-            result = cv.matchTemplate(screen, newTem, cv.TM_CCORR_NORMED)
-            min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
-            if max_val > self.simi:
-                break
-
-        res = 0
-        if max_val > self.simi:
-            w, h = newTem.shape[::-1]
-            res = (max_loc, (w, h))
-
-        self.simi = self.default_simi
-
-        return res
-
-
-if __name__ == "__main__":
-    CScreen().cutScreen()
-    Match().matchTem("zg_zgwc")
+    def __call__(self, tem, screen, simi):
+        return self.match_tem(tem, screen, simi)

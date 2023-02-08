@@ -1,288 +1,155 @@
-import sys
-
-sys.path.append('.')
-
-from apscheduler.schedulers.blocking import BlockingScheduler
-from multiprocessing import Pool, Manager
-from datetime import datetime
-from time import sleep
-import os
-import traceback
-import win32gui, win32com.client
 import argparse
+import os
+from datetime import datetime
+from multiprocessing import Manager, Pool
+from time import sleep
 
-from log import log
-from guajiang import Guajiang
-from getInfo import Info
-from zhuogui import Zhuogui
-from lls_pt import LLSPT
-from fuben import FuBen
-from lidui import Lidui
-from shimen import Shimen
-from baotu import Baotu
-from mijing import Mijing
-from yunbiao import Yunbiao
-from sjqy import SJQY
-from kjxs import KJXS
-from lqhyd import LQHYD
-from gengzhong import GengZhong
-from clean import Clean
-from logout import Logout
-from login import Login
-from sendMsg import SendMsg
-from config import user
-from gongfang import Gongfang
-from hideLogin import hide
+import win32com.client
+import win32gui
+from apscheduler.schedulers.blocking import BlockingScheduler
+from loguru import logger
 
-from glo import Glo
 from btn import Btn
-# from ring import Ring
-# from bangpai import Bangpai
+from capture import CaptureScreen
+from complex import Complex
+from config.user import ACCTZU
+from login import login
+from match import Match
+from smc import SMC
+from utils import hide_login, push_msg
 
-shell = win32com.client.Dispatch("WScript.Shell")
+logger.add('run.log',
+           rotation="1 week",
+           encoding="utf-8",
+           retention="7 days",
+           backtrace=True,
+           catch=True,
+           enqueue=True)
 
-class Run(object):
-    def __init__(self):
-        self.startTime = datetime.now()
-        self.g = Glo()
-        self.totalTime = 0
-        self.hwndList = []
-        self.single = False
 
-    def runOver(self):
-        self.endTime = datetime.now()
-        totalTime = (self.endTime - self.startTime).seconds
-        self.m = int(totalTime / 60)
-        self.totalTime += self.m
-
-    def pushMsg(self, msg, shutdown=False):
-        self.runOver()
-        msg += f'用时{self.m}分钟'
-        self.startTime = datetime.now()
-
-        # if groupNo == len(user.ACCTZU):
-        #     currentHour = datetime.today().hour
-        #     currentWeek = datetime.today().isoweekday()
-        #     if currentHour <= 6 or (
-        #         (currentWeek == 1 or currentWeek == 4 or currentWeek == 5)
-        #             and currentHour <= 17):
-        #         shutdown = True
-
-        if shutdown:
-            msg += '全部完成，关机'
-            SendMsg(msg)
-            os.system(f'shutdown -s -t 300')
+def getHwndList():
+    hwnd_list = []
+    is_finish = False
+    hwnd = 0
+    while not is_finish:
+        if not is_finish and hwnd == 0:
+            hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
         else:
-            SendMsg(msg)
+            hwnd = win32gui.FindWindowEx(None, hwnd, None, "《梦幻西游》手游")
+        if hwnd:
+            hwnd_list.append(hwnd)
+        else:
+            is_finish = True
 
-    def richang(self, screen, windowClass, lock, myDict, l):
-        try:
-            # q.put(screen)
-            currentHour = datetime.today().hour
-            currentWeek = datetime.today().isoweekday()
-            g = Glo()
-            g.set('screen', screen)
-            g.set('windowClass', windowClass)
-            g.set('lock', lock)
-            g.set('config', myDict)
-
-            try:
-                shell.SendKeys('%')
-                win32gui.SetForegroundWindow(windowClass)
-                hide()
-            except Exception as e:
-                print(e)
-
-            Info().getInfo()
-
-            name = self.g.get('name')
-            level = self.g.get('level')
-            level = 69
-
-            Guajiang().start()
-
-            if level >= 60:
-                GengZhong().start()
-
-            if not self.single:
-                if myDict['ZG']:
-                    Zhuogui().start()
-
-                if myDict['FB']:
-                    if currentWeek <= 6:
-                        FuBen('jcx').start()
-                    
-                    if currentWeek % 3 == 1:
-                        FuBen('ecy').start()
-
-                    if currentWeek == 2 or currentWeek > 5:
-                        FuBen('lls').start()
-
-                    if currentWeek == 3 or currentWeek == 5:
-                        FuBen('lyrm').start()
+    return hwnd_list
 
 
-            Lidui().start()
-
-            if level >= 60:
-                GengZhong().start()
-
-            Shimen().start()
-
-            Baotu().start()
-
-            Mijing().start()
-
-            currentHour = datetime.today().hour
-            if currentHour >= 11:
-                SJQY().start()
-
-            currentHour = datetime.today().hour
-            if currentWeek <= 5 and currentHour >= 17:
-                KJXS().start()
-
-            Yunbiao().start()
-
-            LQHYD().start()
-
-            if level >= 60:
-                GengZhong().start()
-
-            Clean().start()
-
-            if currentWeek == 1 and level >= 60:
-                Gongfang().start()
-
-                # if level >= 50 and level <= 69:
-                    # Ring().start()
-                    # Bangpai().start()
-                
-            l.append(self.g.get('hyd'))
-
-            log(f'账号：{name}  完成!!!!!!!!!!!!!!')
-            # q.get(screen)
-
-            # while q.qsize():
-                # pass
-
-            Logout().start(myDict['NEXT'])
-
-            return 1
-        except BaseException as e:
-            print('日常错误:', e)
-
-    def getHwndList(self):
-        self.hwndList = []
-        isStart = False
-        hwnd = 0
-        while not isStart:
-            if not isStart and hwnd == 0:
-                hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
-            else:
-                hwnd = win32gui.FindWindowEx(None, hwnd, None, "《梦幻西游》手游")
-            if hwnd:
-                self.hwndList.append(hwnd)
-            else:
-                isStart = True
-
-    def openGame(self):
-        if (len(self.hwndList)) == 5:
-            return
-        os.system('start C:\\Users\\DX\\Desktop\\duokai\\mhxy.exe')
-        sleep(2)
-
-        while True:
-            hwnd = win32gui.FindWindow(None, 'UnityWndClass')
-            if hwnd:
-                break
-            sleep(1)
-
-        mnqBtn = Btn(hwnd)
-        for i in range(5):
-            mnqBtn.LBtn(((350, 150), (2, 2)))
-            sleep(8)
-
-        os.system('taskkill /F /IM mhxy.exe')
-        sleep(1)
-
+def openGame(hwnd_list=[]):
+    if len(hwnd_list) == 5:
         return
 
-    def start(self, single=False):
-        try:
-            self.single = single
-            import pythoncom
-            pythoncom.CoInitialize()
-            log('-------------------------------------开始执行--------------------------------------')
+    os.system('start C:\\Users\\DX\\Desktop\\duokai\\mhxy.exe')
+    sleep(2)
 
-            for index in range(len(user.ACCTZU)):
-                GROUP_NO = index + 1
-                # 登陆/切换账号
-                self.getHwndList()
-                if user.ACCTZU[index]['status']:
-                    if not single:
-                        self.openGame()
-                    self.getHwndList()
-                    log(f'开始第{GROUP_NO}组号')
-                    Login(index, self.hwndList).login()
+    while True:
+        hwnd = win32gui.FindWindow(None, 'UnityWndClass')
+        if hwnd:
+            break
+        sleep(1)
 
-                    # 进程共享数据
-                    lock = Manager().Lock()
-                    d = Manager().dict()
-                    l = Manager().list([])
-                    for key in user.ACCTZU[index]['config']:
-                        d[key] = user.ACCTZU[index]['config'][key]
+    btn = btn(hwnd)
+    for i in range(5 - len(hwnd_list)):
+        btn.LBtn(((350, 150), (2, 2)))
+        sleep(3)
 
-                    p = Pool(len(self.hwndList))
-                    for i in range(len(self.hwndList)):
-                        p.apply_async(self.richang,
-                                      args=(str(i), self.hwndList[i], lock, d, l))
-                        sleep(2)
-                    p.close()
-                    p.join()
+    os.system('taskkill /F /IM mhxy.exe')
+    return
 
-                    print(l)
-                    msg = f'完成第{GROUP_NO}组号, 活跃：{",".join(l)}，'
-                    log(f'完成第{GROUP_NO}组号')
-                    self.pushMsg(msg)
-                else:
-                    log(f'第{GROUP_NO}组号不执行')
 
-                sleep(2)
+today = datetime.today()
+week = today.isoweekday()
+shell = win32com.client.Dispatch("WScript.Shell")
 
-            log('运行完成')
-            # self.pushMsg(0, shutdown)
 
-        except BaseException as e:
-            print(e)
-            # self.pushMsg(-1, True)
+def daily_tasks(screen, hwnd, lock, manager_dict, manager_list):
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd, lock)
+    smc = SMC(capture, match, btn).smc
 
-    def timingStart(self, timingTime, shutdown):
-        time = timingTime.split(':')
-        self.hour = time[0]
-        self.minute = time[1]
-        log(f'开始定时任务，时间为{self.hour}时{self.minute}分')
-        scheduler = BlockingScheduler()
-        scheduler.add_job(self.start,
-                          'cron',
-                          hour=self.hour,
-                          minute=self.minute,
-                          args=shutdown)
-        scheduler.start()
+    try:
+        shell.SendKeys('%')
+        win32gui.SetForegroundWindow(hwnd)
+        hide_login()
+    except Exception as e:
+        print(e)
+
+    complex_task = Complex(capture, match, btn, smc)
+
+    complex_task.get_info()
+
+    complex_task.singin()
+
+    if screen == '0':
+        complex_task.join_team_leader()
+    else:
+        complex_task.join_team_player()
+
+    # getInfo()
+
+
+def start(single=False):
+    import pythoncom
+    pythoncom.CoInitialize()
+
+    for index in range(len(ACCTZU)):
+        GROUP_NO = index + 1
+        hwnd_list = getHwndList()
+
+        if not single:
+            openGame(hwnd_list)
+
+        hwnd_list = getHwndList()
+        logger.info(f'开始第 {GROUP_NO} 组号')
+        login(index, hwnd_list)
+
+        lock = Manager().Lock()
+        manager_dict = Manager().dict()
+        manager_list = Manager().list([])
+
+        game_count = len(hwnd_list)
+        p = Pool(game_count)
+        for i in range(game_count):
+            p.apply_async(
+                daily_tasks,
+                (str(i), hwnd_list[i], lock, manager_dict, manager_list))
+        p.close()
+        p.join()
+
+        msg = f'完成第{GROUP_NO}组号, 活跃：{",".join(manager_list)}'
+        logger.info(f'完成第{GROUP_NO}组号')
+        push_msg(msg)
+
+    logger.info(f'已完成全部账号')
 
 
 if __name__ == "__main__":
-    try:
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--shutdown', '-s', action='store_true', default=False)
-        parser.add_argument('--time', '-t', type=str)
-        parser.add_argument('--self', action='store_true', default=False)
-        args = parser.parse_args()
-        
-        if args.time:
-            Run().timingStart(args.time, args.shutdown, args.self)
-        else:
-            Run().start(args.shutdown, args.self)
+    parser = argparse.ArgumentParser()
+    # parser.add_argument('--shutdown', '-s', action='store_true', default=False)
+    parser.add_argument('--time', '-t', type=str)
+    parser.add_argument('--self', action='store_true', default=False)
+    args = parser.parse_args()
 
-    except Exception as e:
-        traceback.print_exc()
-        log(e, True)
+    if args.time:
+        time = args.time.split(":")
+        hour, minute = time
+        logger.info(f'开始定时任务，时间为{hour}时{minute}分')
+        scheduler = BlockingScheduler()
+        scheduler.add_job(start,
+                          'cron',
+                          hour=hour,
+                          minute=minute,
+                          args=args.self)
+        scheduler.start()
+    else:
+        start(args.self)

@@ -13,7 +13,13 @@
 #         # self.number += x * 2
 #         self.add(*argu, **kwargu)
 
-def test(a, b,**kwargu):
-    print(a, b, kwargu)
+import json
 
-test(1, b=3)
+with open("./data.json", 'r') as f:
+    data = json.load(f)
+    print(data)
+    print(data == {})
+    data['test'] = '123'
+
+    with open('./data.json', 'w') as file:
+        file.write(json.dumps(data, indent='\t'))

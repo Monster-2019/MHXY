@@ -1,214 +1,170 @@
 import win32gui, win32con, win32api, win32com.client
+from loguru import logger
 from time import sleep
-from config import user
 import os
-import traceback
 
-from glo import Glo
 from cutScreen import CScreen
-from btn import Btn
 from match import Match
-from log import log
-from smc import SMC
+from btn import Btn
 
-class Login(object):
-    """docstring for Login"""
-    def __init__(self, groupNo, hwndList):
-        super(Login, self).__init__()
-        self.g = Glo()
-        self.smc = None
-        self.shell = win32com.client.Dispatch("WScript.Shell")
-        self.hwndList = hwndList
-        self.groupNo = groupNo
-        self.hwnd = 0
-        self.mnqHwnd = 0
-        self.mnqCutScreen = None
-        self.mnqMatchTem = None
-        self.mnqBtn = None
+from config import user
 
-    # 前置窗口
-    def SetForegroundWindowMy(self, hwnd):
-        self.shell.SendKeys('%')
-        win32gui.SetForegroundWindow(hwnd)
+SHELL = win32com.client.Dispatch("WScript.Shell")
 
-    def mnqInit(self):
-        os.system('start C:\\leidian\\LDPlayer4\\dnplayer.exe')
-        sleep(10)
 
-        while True:
-            sleep(1)
-            tem = win32gui.FindWindow(None, '雷电模拟器')
-            self.mnqHwnd = win32gui.FindWindowEx(tem, None, 'RenderWindow', None)
-            if self.mnqHwnd != 0:
-                break
-        
-        self.mnqCutScreen = CScreen(self.mnqHwnd).cutScreen
-        self.mnqMatchTem = Match('mnq').matchTem
-        self.mnqBtn = Btn(self.mnqHwnd)
+def SetForegroundWindowMy(hwnd):
+    SHELL.SendKeys('%')
+    win32gui.SetForegroundWindow(hwnd)
 
-        self.SetForegroundWindowMy(self.mnqHwnd)
 
-        while True:
-            sleep(1)
-            self.mnqCutScreen()
-            res = self.mnqMatchTem('mnq_mhxy')
-            if res != 0:
-                self.mnqBtn.LBtn(res)
-                break
+mnq_hwnd = None
+mnq_screen = None
+mnq_match = None
+mnq_btn = None
 
-        # # 等待8秒跳过动画
-        sleep(12)
-        self.mnqBtn.LBtn(((500, 250), (20, 20)))
 
-        while True:
-            self.mnqCutScreen()
-            res = self.mnqMatchTem('mnq_sm')
-            if res:
-                sleep(5)
-                break
-            sleep(1)
+def mnqInit():
+    os.system('start C:\\leidian\\LDPlayer4\\dnplayer.exe')
+    sleep(10)
 
-        # 等待三秒模拟器登陆账号
-        print('模拟器初始化完成')
+    while True:
+        sleep(0.5)
+        tem = win32gui.FindWindow(None, '雷电模拟器')
+        mnq_hwnd = win32gui.FindWindowEx(tem, None, 'RenderWindow', None)
+        if mnq_hwnd:
+            break
 
-        return
+    mnq_screen = CScreen(mnq_hwnd).cutScreen
+    mnq_match = Match('mnq').matchTem
+    mnq_btn = Btn(mnq_hwnd)
 
-    def login(self):
-        try:
-            loginArr = []
-            for item in range(len(self.hwndList)):
-                self.SetForegroundWindowMy(self.hwndList[item])
-                hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-                res = win32gui.IsWindowVisible(hwnd)
-                if hwnd != 0 and res != 0:
-                    loginArr.append(item)
-                    
-            # 如果需要登录打开模拟器
-            if len(loginArr) > 0:
-                self.mnqInit()
+    SetForegroundWindowMy(mnq_hwnd)
 
-            for i in loginArr:
-                # 登陆用户名和区
-                status = False
-                dlAccount = user.ACCTZU[self.groupNo]['acctList'][i]['account']
-                dlServer = user.ACCTZU[self.groupNo]['acctList'][i]['server']
+    while True:
+        sleep(1)
+        mnq_screen()
+        mhxy = mnq_match('mnq_mhxy')
+        if mhxy:
+            mnq_btn.LBtn(mhxy)
+            break
 
-                # 前置窗口用
-                gameHwnd = self.hwndList[i]
-                # self.SetForegroundWindowMy(gameHwnd)
+    sleep(8)
+    mnq_btn.LBtn(((500, 250), (20, 20)))
 
-                # 前置游戏窗口
-                win32api.SendMessage(gameHwnd, win32con.WM_KEYDOWN, 27, 0)
-                self.SetForegroundWindowMy(gameHwnd)
-                sleep(0.5)
-                gameBtn = Btn(gameHwnd)
-                gameBtn.LBtn(((485, 483), (57, 15)))
-                sleep(0.5)
+    while True:
+        mnq_screen()
+        sm = mnq_match('mnq_sm')
+        if sm:
+            sleep(3)
+            break
 
-                # 截图游戏登陆窗口到共享文件夹进行扫描登陆
-                hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-                cutScreen = CScreen(hwnd, './images/mnq/').cutScreen
-                cutScreen()
+    logger.info('模拟器初始化完成')
 
-                self.SetForegroundWindowMy(self.mnqHwnd)
 
-                # 'mnq_sm' 'mnq_tk' ((640, 370), (2, 2)) ((640, 370), (2, 2)) sleep(2) 'mnq_dl'
+def mnq_login(account):
+    login_step = ['mnq_sm', 'mnq_tk', account, 'mnq_dl']
 
-                mnqLoginList = ['mnq_sm', 'mnq_tk', dlAccount, 'mnq_dl']
-                status = False
-                while not status:
-                    for item in mnqLoginList:
-                        self.mnqCutScreen()
-                        coor = self.mnqMatchTem(item)
-                        if coor:
-                            if item == 'mnq_tk':
-                                self.mnqBtn.LBtn(coor, sleepT=1)
+    status = False
+    while not status:
+        for item in login_step:
+            mnq_screen()
+            coor = mnq_match(item)
+            if coor:
+                if item == 'mnq_tk':
+                    mnq_btn.LBtn(coor, sleepT=1)
 
-                                while True:
-                                    self.mnqCutScreen()
-                                    coor = self.mnqMatchTem('mnq_dl')
-                                    if coor != 0:
-                                        break
-                                    else:
-                                        self.mnqBtn.LBtn(((100, 160), (2, 2)))
-                                        # self.mnqBtn.LBtn(((650, 480), (2, 2)))
-                                    sleep(0.5)
-                                
-                                sleep(0.5)
-                                self.mnqBtn.LBtn(((460, 190), (2, 2)))
-                                sleep(0.5)
-
-                            else:
-                                self.mnqBtn.LBtn(coor)
-                                if item == 'mnq_dl':
-                                    status = True
-                                    break
-
+                    while True:
+                        mnq_screen()
+                        coor = mnq_match('mnq_dl')
+                        if coor != 0:
+                            break
                         else:
-                            if item == dlAccount:
-                                for index in range(3):
-                                    self.mnqCutScreen()
-                                    coor = self.mnqMatchTem(item)
-                                    if coor != 0:
-                                        break
-                                    self.mnqBtn.DBtn((460, 340), (460, 240))
-                                    sleep(0.5)
-                        sleep(1)
+                            mnq_btn.LBtn(((100, 160), (2, 2)))
+                            # self.mnqBtn.LBtn(((650, 480), (2, 2)))
+                        sleep(0.5)
 
-                print('模拟器登录完成')
-                # continue
+                    sleep(0.5)
+                    mnq_btn.LBtn(((460, 190), (2, 2)))
 
-                # 游戏登陆
-                # self.g.set('windowClass', self.hwndList[i])
-                # self.g.set('screen', str(i))
-                sleep(0.5)
-                # self.smc = SMC().smc
+                else:
+                    mnq_btn.LBtn(coor)
+                    if item == 'mnq_dl':
+                        status = True
+                        break
 
-                cutScreen = CScreen(self.hwndList[i]).cutScreen
-                matchTem = Match('mnq').matchTem
-                gameBtn = Btn(self.hwndList[i])
+            else:
+                if item == account:
+                    for index in range(3):
+                        mnq_screen()
+                        coor = mnq_match(item)
+                        if coor != 0:
+                            break
+                        mnq_btn.DBtn((460, 340), (460, 240))
+                        sleep(0.5)
 
-                sleep(0.5)
+    logger.info(f'模拟器{account}登录完成')
 
-                xhList = ['dl_qd', 'dl_js', 'dl_djxf', 'dl_yyjs', dlServer]
-                status = False
-                while not status:
-                    for item in xhList:
-                        # res = self.smc(item, sleepT=0.5)
-                        cutScreen()
-                        res = matchTem(item)
-                        if res:
-                            gameBtn.LBtn(res)
-                            if item == dlServer:
-                                status = True
-                                break
-                        # if res != 0 and item == dlServer:
-                        #     status = True
-                        #     break
 
-                log(f'账号 {dlAccount} 游戏登陆完成')
+def game_login(hwnd, server):
+    screen = CScreen(hwnd).cutScreen
+    match = Match('mnq').matchTem
+    btn = Btn(hwnd)
 
-            if len(loginArr) > 0:
-                os.system('taskkill /F /IM dnplayer.exe')
+    login_step = ['dl_qd', 'dl_js', 'dl_djxf', 'dl_yyjs', server]
+    status = False
+    while not status:
+        for item in login_step:
+            screen()
+            res = match(item)
+            if res:
+                btn.LBtn(res)
+                if item == server:
+                    status = True
+                    break
 
-            sleep(1)
+    logger.info(f'已登录{server}服务器')
 
-        except Exception as e:
-            print('err12313', e)
-            traceback.print_exc()
 
-if __name__ == '__main__':
-    hwndList = []
-    isStart = False
-    hwnd = 0
-    while not isStart:
-        if not isStart and hwnd == 0:
-            hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
-        else:
-            hwnd = win32gui.FindWindowEx(None, hwnd, None, "《梦幻西游》手游")
-        if hwnd:
-            hwndList.append(hwnd)
-        else:
-            isStart = True
+def login(group, hwnd_list):
+    login_list = []
+    for hwnd in hwnd_list:
+        SetForegroundWindowMy(hwnd)
+        login_hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
+        not_logged = win32gui.IsWindowVisible(login_hwnd)
+        if hwnd and not_logged:
+            login_list.append(hwnd)
 
-    Login(0, hwndList).login()
+    if len(login_list) == 5:
+        mnqInit()
+    else:
+        logger.info('存在不同登录态，请检查')
+        return os._exit()
+
+    for i in range(5):
+        login_account = user.ACCTZU[group]['acctList'][i]['account']
+        login_server = user.ACCTZU[group]['acctList'][i]['server']
+
+        game_hwnd = hwnd_list[i]
+
+        win32api.SendMessage(game_hwnd, win32con.WM_KEYDOWN, 27, 0)
+        SetForegroundWindowMy(game_hwnd)
+        game_btn = Btn(game_hwnd)
+        game_btn.LBtn(((485, 483), (57, 15)))
+        sleep(1)
+
+        login_window_hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
+        login_window_hwnd_screen = CScreen(login_window_hwnd,
+                                           './images/mnq/').cutScreen
+        login_window_hwnd_screen()
+
+        SetForegroundWindowMy(mnq_hwnd)
+
+        mnq_login(login_account)
+
+        sleep(1)
+
+        game_login(hwnd_list[i], login_server)
+
+        logger.info(f'账号 {login_account} 游戏登陆完成')
+
+        os.system('taskkill /F /IM dnplayer.exe')
