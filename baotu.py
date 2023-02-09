@@ -1,234 +1,164 @@
 from time import sleep
-from cutScreen import CScreen
-from btn import Btn
-from match import Match
-from smc import SMC
-from glo import Glo
-from log import log
-import threading
 
 
 class Baotu:
-    def __init__(self):
-        self.g = Glo()
-        self.name = self.g.get('name')
-        self.B = Btn()
-        self.cutScreen = CScreen().cutScreen
-        self.matchTem = Match().matchTem
-        self.smc = SMC().smc
-        self.smca = SMC().smca
-        self.complete = False
-        self.processing = False
-        self.isDig = False
+
+    def __init__(self, adb, task_finished):
+        for key, val in adb.items():
+            self[key] = val
+        self.task_finished = task_finished
 
     def empty(self):
-        while self.smc('hd', count=0) == 0:
-            self.B.RBtn()
-                
-        self.B.Hotkey("bb")
-        sleep(0.5)
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
+
+        self.btn.hotkey("bb")
 
         self.smc('bb_zl')
-
-        self.B.MBtn(720, 440)
-        self.B.VBtn(1, 50)
+        self.btn.m(720, 440)
+        self.btn.v(1, 50)
         sleep(1)
 
-        useComplete = False
         page = 1
         while True:
-            res = self.smc('bb_cbt', sleepT=1)
-            if res:
-                if self.smc('sy', sleepT=0.5):
-                    self.B.RBtn()
-                    break
-                self.smc('bb_sy', sleepT=0.5)
-                break
+            has_cbt = self.smc('bb_cbt', is_click=False)
+            if has_cbt:
+                return has_cbt
 
             else:
-                self.B.MBtn(700, 400)
-                self.B.VBtn(-1, 6)
+                self.btn.m(700, 400)
+                self.btn.v(-1, 6)
                 page += 1
                 if page == 6:
-                    log(f"账号: { self.name } 无藏宝图")
-                    useComplete = True
-                    self.B.RBtn()
+                    self.btn.r()
                     break
 
-            sleep(0.5)
+            sleep(0.2)
 
-        return useComplete
+        return ()
 
     def dig(self):
-        log(f"账号: { self.name } 开始挖藏宝图")
         # 打开背包
-        empty = self.empty()
-        useComplete = empty
+        cbt_coor = self.empty()
 
-        count = 0
-        if not useComplete:
-            log(f"账号: { self.name } 挖宝中")
-            
-            standingCount = 0
+        if cbt_coor:
+            self.btn.l(cbt_coor, sleep_time=5)
 
-            while not empty:
-                self.cutScreen()
-                isHd = self.matchTem('hd')
-                btnCoor = self.matchTem('sy')
-                compare = self.g.compare()
+            while cbt_coor:
+                self.capture()
+                is_hd = self.match('hd')
+                coor = self.match('sy')
 
-                # 1. 非战斗状态
-                # 2-1. 寻路中  站立次数归0  
-                # 2-2. 非寻路中  站立次数叠加
-                if isHd:
-                    if compare:
-                        standingCount += 1
-                        if standingCount > 10:
-                            empty = True
-                            useComplete = True
+                if is_hd:
+                    count = 0
+                    while True:
+                        coor = self.smc('sy')
+                        if coor:
                             break
-                        sleep(1)
-                    else:
-                        standingCount = 0
+                        else:
+                            count += 1
 
-                    if btnCoor and btnCoor[0][0] + btnCoor[1][0] < 920:
-                        count += 1
-                        self.B.LBtn(btnCoor)
+                        if count == 12:
+                            cbt_coor = self.empty()
+                            break
+
+                    if coor[0] + coor[2] < 920:
+                        self.btn.l(coor)
                         sleep(4)
-                        standingCount = 0
+                        count = 0
 
-                else:
-                    standingCount = 0
-
-                sleep(1)
-
-        log(f"账号：{ self.name } 挖了 {count} 张藏宝图")
         return 1
 
-    def timing(self):
-        self.complete = True
-        self.processing = False
-        self.isDig = False
-
     def start(self):
-        try:
-            t = threading.Timer(1200, self.timing)
-            t.start()
-            log(f"账号: { self.name } 开始宝图任务")
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
-            while self.smc('hd', count=0) == 0:
-                self.B.RBtn()
-            
-            # 已领取
-            # self.B.MBtn(900, 300)
-            # self.B.VBtn(1, 20)
-            # sleep(0.5)
+        # 已领取
+        # self.btn.MBtn(900, 300)
+        # self.btn.v(1, 20)
+        # sleep(0.5)
 
-            # if self.matchTem('bt_btrw', simi=0.95):
-            #     print(f"账号: { self.name } 已领取宝图任务")
-            #     self.processing = True
-            # sleep(0.5)
+        # if self.matchTem('bt_btrw', simi=0.95):
+        #     print(f"账号: { self.name } 已领取宝图任务")
+        #     processing = True
+        # sleep(0.5)
 
-            self.B.Hotkey("hd")
+        if self.task_finished('bt_wc'):
+            return
 
-            self.smc("rchd", sleepT=0.5)
+        self.btn.hotkey("hd")
+        self.smc("rchd", sleep_time=0.5)
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
+        sleep(0.5)
 
-            self.B.MBtn(590, 330)
-            self.B.VBtn(1, 31)
-            sleep(0.5)
+        processing = self.smc('bt_btrw', simi=0.95)
 
-            self.processing = self.smc('bt_btrw', simi=0.95)
+        if not processing:
+            for n in range(31):
+                if n % 10 == 0:
+                    self.capture()
+                    tem_coor = self.match("hd_btrw") or self.match("hd_btrw1")
+                    if tem_coor:
+                        btn_coor = self.match("cj",
+                                              "imgTem/hd_btrw") or self.match(
+                                                  "cj", "imgTem/hd_btrw1")
+                        new_coor = ((
+                            tem_coor[0] + btn_coor[0],
+                            tem_coor[1] + btn_coor[1],
+                            btn_coor[2],
+                            btn_coor[3],
+                        ))
+                        if btn_coor:
+                            self.btn.l(new_coor)
+                            processing = True
+                            sleep(5)
 
-            if not self.processing:
-                for n in range(31):
-                    if n % 10 == 0:
-                        sleep(0.5)
-                        if self.smc("bt_wc", simi=0.999, count=0):
-                            log(f"账号: { self.name } 宝图任务已完成")
-                            self.complete = True
-                            self.B.RBtn()
+                            while True:
+                                if self.smc('bt_ttwf'):
+                                    break
+
+                                sleep(2)
+
+                            break
+                else:
+                    self.btn.v(-1)
+
+        self.btn.r()
+
+        if processing:
+            step_list = ['bt_cbthdwc', 'bt_btrw']
+
+            while processing:
+                for item in step_list:
+                    self.capture()
+                    is_hd = self.match('hd')
+                    coor = self.smcs(item)
+                    if coor and is_hd:
+                        if item == 'bt_cbthdwc':
+                            processing = False
                             break
 
                         else:
-                            self.cutScreen()
-                            temCoor = self.matchTem("hd_btrw") or self.matchTem("hd_btrw1")
-                            if temCoor:
-                                btnCoor = self.matchTem(
-                                    "cj", "imgTem/hd_btrw"
-                                ) or self.matchTem("cj", "imgTem/hd_btrw1")
-                                newCoor = (
-                                    (
-                                        temCoor[0][0] + btnCoor[0][0],
-                                        temCoor[0][1] + btnCoor[0][1],
-                                    ),
-                                    btnCoor[1],
-                                )
-                                if btnCoor:
-                                    self.B.LBtn(newCoor)
-                                    self.processing = True
-                                    sleep(5)
+                            self.btn.l(coor, min_x=800)
+                            sleep(5)
 
-                                    while True:
-                                        if self.smc('bt_ttwf'):
-                                            break
+                    elif item == 'bt_btrw' and not coor and is_hd:
+                        count = 0
+                        while True:
+                            is_hd = self.smc('hd', is_click=False)
+                            if not is_hd:
+                                count = 0
+                            else:
+                                count += 1
 
-                                        sleep(2)
-                                    
-                                    break
-                    else:
-                        self.B.VBtn(-1)
-
-            self.B.RBtn()
-
-            if not self.complete:
-                print(f"账号: { self.name } 宝图任务进行中")
-
-                xhList = ['bt_cbthdwc', 'bt_btrw']
-
-                while self.processing:
-                    for item in xhList:
-                        self.cutScreen()
-                        isHd = self.matchTem('hd')
-                        compare = self.g.compare()
-                        if item == 'bt_btrw':
-                            btnCoor = self.matchTem(item, simi=0.98)
-                        else:
-                            btnCoor = self.matchTem(item)
-                        if btnCoor and isHd:
-                            if item == 'bt_cbthdwc':
-                                self.complete = True
-                                self.processing = False
-                                self.isDig = True
-                                sleep(1)
+                            if count == 12:
+                                processing = False
                                 break
 
-                            if item == 'bt_btrw' and isHd and compare:
-                                self.B.LBtn(btnCoor, minx=800)
-                                sleep(5)
+                            sleep(5)
 
-                        elif item == 'bt_btrw' and not btnCoor and isHd and compare:
-                            sleep(20)
-                            self.cutScreen()
-                            isHd = self.matchTem('hd')
-                            compare = self.g.compare()
-                            if isHd and compare:
-                                self.complete = True
-                                self.processing = False
-                                self.isDig = True
-                                break
-
-
-            self.dig()
-
-            if self.complete:
-                log(f"账号: { self.name } 宝图任务结束")
-                t.cancel()
-                return 1
-            else:
-                self.start()
-
-        except Exception as e:
-            log(e, True)
+        self.dig()
 
 
 if __name__ == '__main__':

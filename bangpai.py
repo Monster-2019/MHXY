@@ -8,6 +8,7 @@ from log import log
 
 
 class Bangpai:
+
     def __init__(self):
         super(Bangpai, self).__init__()
         self.g = Glo()
@@ -53,7 +54,8 @@ class Bangpai:
             if temCoor != 0:
                 btnCoor = self.matchTem("cj", "imgTem/hd_bprw")
                 newCoor = (
-                    (temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]),
+                    (temCoor[0][0] + btnCoor[0][0],
+                     temCoor[0][1] + btnCoor[0][1]),
                     btnCoor[1],
                 )
                 if btnCoor != 0:
@@ -99,7 +101,8 @@ class Bangpai:
             if temCoor != 0:
                 btnCoor = self.matchTem("cj", "imgTem/hd_my")
                 newCoor = (
-                    (temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]),
+                    (temCoor[0][0] + btnCoor[0][0],
+                     temCoor[0][1] + btnCoor[0][1]),
                     btnCoor[1],
                 )
                 if btnCoor != 0:
@@ -117,9 +120,10 @@ class Bangpai:
                                 if item == "my_xsl_dh":
                                     while True:
                                         self.B.LBtn(btnCoor)
-                                        res = self.smca(
-                                            ["my_xsl_no", "my_xsl_ten", "my_xsl_max"]
-                                        )
+                                        res = self.smca([
+                                            "my_xsl_no", "my_xsl_ten",
+                                            "my_xsl_max"
+                                        ])
                                         if res != 0:
                                             status = True
                                             self.B.RBtn()

@@ -1,19 +1,16 @@
+import re
 from time import sleep
 
 from loguru import logger
 
 from ocr import ocr
 
-import re
-
 
 class Complex(object):
 
-    def __init__(self, capture, match, btn, smc):
-        self.capture = capture
-        self.match = match
-        self.btn = btn
-        self.smc = smc
+    def __init__(self, adb):
+        for key, val in adb.items():
+            self[key] = val
 
     def get_info(self):
         while not self.smc('hd', isClick=False):
@@ -67,8 +64,8 @@ class Complex(object):
             self.capture.custom_capture()
             coor = self.match.match_tem_list(ck_list)
             if coor:
-                self.btn.l(coor[0] + 513, coor[1] + 202, coor[2], coor[3])
-                self.btn.l(coor[0] + 513, coor[1] + 202, coor[2], coor[3])
+                self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
+                self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
                 break
             else:
                 self.btn.MBtn(710, 410)
@@ -189,12 +186,11 @@ class Complex(object):
 
         while True:
             self.capture()
-            dz_coor = self.match('dz')
-            if dz_coor:
-                coor = self.match('jt', 'imgTem/dz')
+            dz_x, dz_y = self.match('dz')
+            if dz_x:
+                x, y, w, h = self.match('jt', 'imgTem/dz')
                 if coor:
-                    coor = (dz_coor[0][0] + coor[0][0],
-                            dz_coor[0][1] + coor[0][1], coor[1][0], coor[1][1])
+                    coor = (dz_x + x, dz_y + y, w, h)
                     self.btn.l(coor, sleep_time=1)
 
                     if self.smc('sqrd') or self.smc('sqrd1'):
@@ -214,6 +210,28 @@ class Complex(object):
                 break
 
         self.btn.r()
+
+    def task_finished(self, rw_list):
+        if isinstance(rw_list, str):
+            rw_list = [rw_list]
+        self.btn.hotkey('hd')
+
+        self.smc('rchd', sleep_time=0.5)
+
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
+        sleep(0.5)
+
+        for i in range(31):
+            if i % 10 == 0:
+                sleep(0.5)
+                for rw in rw_list:
+                    result = self.smc(rw, is_click=False)
+                    if result:
+                        self.btn.r()
+                        return result
+
+        return False
 
 
 if __name__ == '__main__':

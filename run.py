@@ -1,7 +1,7 @@
 import argparse
 import os
 from datetime import datetime
-from multiprocessing import Manager, Pool
+from multiprocessing import Manager, Pipe, Pool
 from time import sleep
 
 import win32com.client
@@ -17,6 +17,14 @@ from login import login
 from match import Match
 from smc import SMC
 from utils import hide_login, push_msg
+from zhuogui import Zhuogui
+from fuben import FuBen
+from shimen import Shimen
+from baotu import Baotu
+from mijing import Mijing
+from sjqy import SJ
+from kjxs import KJ
+from yunbiao import Yunbiao
 
 logger.add('run.log',
            rotation="1 week",
@@ -71,11 +79,20 @@ week = today.isoweekday()
 shell = win32com.client.Dispatch("WScript.Shell")
 
 
-def daily_tasks(screen, hwnd, lock, manager_dict, manager_list):
+def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
     capture = CaptureScreen(hwnd, screen)
     match = Match(screen)
     btn = Btn(hwnd, lock)
     smc = SMC(capture, match, btn).smc
+
+    adb = {
+        screen: screen,
+        hwnd: hwnd,
+        capture: capture,
+        match: match,
+        btn: btn,
+        smc: smc,
+    }
 
     try:
         shell.SendKeys('%')
@@ -84,7 +101,7 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list):
     except Exception as e:
         print(e)
 
-    complex_task = Complex(capture, match, btn, smc)
+    complex_task = Complex(adb)
 
     complex_task.get_info()
 
@@ -94,6 +111,29 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list):
         complex_task.join_team_leader()
     else:
         complex_task.join_team_player()
+
+    if week >= 6:
+        if screen == '0':
+            Zhuogui(adb, complex_task.task_finished, pipe).leader()
+        else:
+            Zhuogui(adb, complex_task.task_finished, pipe).player()
+
+    if screen == '0':
+        FuBen(adb, complex_task.task_finished, pipe).leader('ecy')
+    else:
+        FuBen(adb, complex_task.task_finished, pipe).leader()
+
+    Shimen(adb, complex_task.task_finished).start()
+
+    Baotu(adb, complex_task.task_finished).start()
+
+    Mijing(adb, complex_task.task_finished).start()
+
+    SJ(adb, complex_task.task_finished).start()
+
+    KJ(adb, complex_task.task_finished).start()
+
+    Yunbiao(adb, complex_task.task_finished).start()
 
     # getInfo()
 
@@ -116,13 +156,14 @@ def start(single=False):
         lock = Manager().Lock()
         manager_dict = Manager().dict()
         manager_list = Manager().list([])
+        pipe = Pipe()
 
         game_count = len(hwnd_list)
         p = Pool(game_count)
         for i in range(game_count):
             p.apply_async(
                 daily_tasks,
-                (str(i), hwnd_list[i], lock, manager_dict, manager_list))
+                (str(i), hwnd_list[i], lock, manager_dict, manager_list, pipe))
         p.close()
         p.join()
 

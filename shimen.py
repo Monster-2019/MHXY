@@ -1,224 +1,151 @@
 from time import sleep
-from cutScreen import CScreen
-from btn import Btn
-from match import Match
-from smc import SMC
-from glo import Glo
-from log import log
-import threading
 
 
-class Shimen:
-    def __init__(self):
-        super(Shimen, self).__init__()
-        self.g = Glo()
-        self.name = Glo().get("name")
-        self.B = Btn()
-        self.cutScreen = CScreen().cutScreen
-        self.matchTem = Match().matchTem
-        self.smc = SMC().smc
-        self.smca = SMC().smca
-        self.complete = False
-        self.processing = False
+class Shimen(object):
 
-    def timing(self):
-        self.complete = True
-        self.processing = False
+    def __init__(self, adb, task_finished):
+        for key, val in adb.items():
+            self[key] = val
+        self.task_finished = task_finished
 
     def start(self):
-        try:
-            t = threading.Timer(900, self.timing)
-            t.start()
-            log(f"账号: { self.name } 开始师门任务")
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
-            while self.smc("hd", count=0) == 0:
-                self.B.RBtn()
+        while True:
+            if not self.smc("sygb", sleep_time=0.5):
+                break
 
-            while True:
-                res = self.smc("sygb", sleepT=0.5)
-                if res == 0:
-                    break
+        if self.task_finished('sm_wc'):
+            return
 
-            self.B.Hotkey('zz', sleepT=1)
-            self.B.LBtn('zr1', sleepT=0.5)
-            self.B.RBtn()
+        self.btn.hotkey('zz', sleep_time=1)
+        self.btn.l('zr1', sleep_time=0.5)
+        self.btn.r()
 
-            self.B.Hotkey("hd")
+        self.btn.hotkey("hd")
+        self.smc("rchd", sleep_time=0.5)
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
+        sleep(0.5)
 
-            self.smc("rchd", sleepT=0.5)
+        processing = self.smcs('sm_sm')
 
-            self.B.MBtn(590, 330)
-            self.B.VBtn(1, 31)
-            sleep(0.5)
+        if not processing:
+            for n in range(31):
+                if n % 10 == 0:
+                    self.capture()
+                    tem_coor = self.match("hd_smrw", simi=0.999) or self.match(
+                        "hd_smrw1", simi=0.999)
+                    if tem_coor:
+                        btn_coor = self.match("cj",
+                                              "imgTem/hd_smrw") or self.match(
+                                                  "cj", "imgTem/hd_smrw1")
+                        new_coor = ((tem_coor[0] + btn_coor[0],
+                                    tem_coor[1] + btn_coor[1], btn_coor[2],
+                                    btn_coor[3]))
+                        if btn_coor:
+                            self.btn.l(new_coor, sleep_time=1)
 
-            self.processing = self.smc('sm_sm', simi=0.94)
+                            # 去完成或继续任务
+                            while True:
+                                self.capture()
+                                btn_coor = self.match("sm_qwc") or self.match(
+                                    "sm_jxrw")
+                                if btn_coor:
+                                    self.btn.l(btn_coor, sleep_time=1)
+                                    processing = True
+                                    break
 
-            if not self.processing:
-                for n in range(31):
-                    if n % 10 == 0:
-                        sleep(0.5)
-                        if self.smc("sm_wc", simi=0.999, count=0) != 0:
-                            log(f"账号: { self.name } 师门任务已完成")
-                            self.complete = True
-                            self.B.RBtn()
+                            break
+                else:
+                    self.btn.VBtn(-1)
+
+        self.btn.r()
+
+        if processing:
+            step_list = [
+                "sm_mpgx",
+                "sm_sm",
+                "djjx",
+                "dh",
+                "dhda",
+                "gm",
+                "btgm",
+                "gfgm",
+                "sj",
+                "sy",
+                "sm_hdwp",
+                "sm_rwdh",
+                # "jm_gb",
+            ]
+
+            while processing:
+                for item in step_list:
+                    self.capture()
+                    is_hd = self.match('hd')
+                    if item == "dh" or item == 'dhda' or item == "sm_sm":
+                        coor = self.match.match_feature(item)
+                    else:
+                        coor = self.match(item)
+                    if coor:
+                        if item == "dh" or item == "dhda":
+                            while True:
+                                coor = self.match.match_feature(item)
+                                if coor:
+                                    new_coor = (
+                                        (coor[0], coor[1] + 69),
+                                        (87, 22),
+                                    )
+                                    self.btn.l(new_coor)
+                                    sleep(0.3)
+                                else:
+                                    break
+
+                        elif item == "djjx":
+                            while True:
+                                res = self.smc("djjx", sleep_time=0.2)
+                                if res:
+                                    break
+
+                        elif item == "btgm" or item == "gfgm":
+                            sleep(2)
+                            item_coor = (308, 245, 294, 75)
+                            self.btn.l(item_coor, sleep_time=0.5)
+                            self.btn.l(coor, sleep_time=1)
+
+                            if self.smc(item):
+                                self.btn.r()
+
+                        elif item == "sy":
+                            self.btn.l(coor, max_x=920)
+
+                        elif item == "sm_mpgx":
+                            self.smc("sm_jl")
+                            self.btn.r()
+                            processing = False
                             break
 
+                        elif item == 'sm_sm' and is_hd:
+                            self.btn.l(coor, min_x=800)
+
                         else:
-                            self.cutScreen()
-                            temCoor = self.matchTem("hd_smrw", simi=0.999) or self.matchTem("hd_smrw1", simi=0.999)
-                            if temCoor:
-                                btnCoor = self.matchTem(
-                                    "cj", "imgTem/hd_smrw"
-                                ) or self.matchTem("cj", "imgTem/hd_smrw1")
-                                newCoor = (
-                                    (
-                                        temCoor[0][0] + btnCoor[0][0],
-                                        temCoor[0][1] + btnCoor[0][1],
-                                    ),
-                                    btnCoor[1],
-                                )
-                                if btnCoor:
-                                    self.B.LBtn(newCoor, sleepT=1)
+                            self.btn.l(coor, min_x=300)
 
-                                    # 去完成或继续任务
-                                    while True:
-                                        self.cutScreen()
-                                        btnCoor = self.matchTem("sm_qwc") or self.matchTem(
-                                            "sm_jxrw"
-                                        )
-                                        if btnCoor != 0:
-                                            self.B.LBtn(btnCoor, sleepT=1)
-                                            self.processing = True
-                                            break
+                    elif is_hd:
+                        if item == "sm_sm":
+                            if self.smc("hd", is_click=False):
+                                self.btn.r()
+                                self.btn.m(900, 300)
+                                self.btn.v(1, 10)
 
-                                    break
-                    else:
-                        self.B.VBtn(-1)
+            sleep(0.5)
+            while True:
+                coor = self.smc('sy')
+                if not coor:
+                    break
 
-            self.B.RBtn()
-
-            if not self.complete:
-                print(f"账号: { self.name } 师门任务未完成")
-
-                smList = [
-                    "sm_mpgx",
-                    "sm_sm",
-                    "djjx",
-                    "dh",
-                    "dhda",
-                    "gm",
-                    "btgm",
-                    "gfgm",
-                    "sj",
-                    "sy",
-                    "sm_hdwp",
-                    "sm_rwdh",
-                    # "jm_gb",
-                ]
-
-                count = 0
-                while self.processing:
-                    for item in smList:
-                        self.cutScreen()
-                        isHd = self.smc('hd', count=0)
-                        compare = self.g.compare()
-                        if item == "dh" or item == "sm_sm":
-                            btnCoor = self.matchTem(item, simi=0.94)
-                        else:
-                            btnCoor = self.matchTem(item)
-                        if btnCoor:
-                            if item == "dh" or item == "dhda":
-                                while True:
-                                    self.cutScreen()
-                                    btnCoor = self.matchTem(
-                                        "dh", simi=0.94
-                                    ) or self.matchTem("dhda", simi=0.94)
-                                    if btnCoor != 0:
-                                        newCoor = (
-                                            (btnCoor[0][0], btnCoor[0][1] + 69),
-                                            (87, 22),
-                                        )
-                                        self.B.LBtn(newCoor)
-                                        sleep(0.3)
-                                    else:
-                                        break
-
-                            elif item == "djjx":
-                                while True:
-                                    res = self.smc("djjx", simi=0.9, sleepT=0.1)
-                                    if res == 0:
-                                        break
-                                
-                                sleep(3)
-
-                            elif item == "btgm" or item == "gfgm":
-                                sleep(3)
-                                newCoor = ((308, 245), (294, 75))
-                                self.B.LBtn(newCoor, sleepT=0.5)
-                                self.B.LBtn(btnCoor, sleepT=1)
-                                if self.smca(['btgm', 'gfgm']):
-                                    self.B.RBtn()
-
-                            elif item == "sy":
-                                if (btnCoor[0][0] + btnCoor[1][0]) < 920:
-                                    self.B.LBtn(btnCoor)
-
-                            elif item == "sm_mpgx":
-                                self.smc("sm_jl")
-                                self.B.RBtn()
-                                print(f"账号: { self.name } 师门任务完成")
-                                self.processing = False
-                                self.complete = True
-                                break
-
-                            elif item == 'sm_sm' and isHd:
-                                self.B.LBtn(btnCoor, minx=800)
-
-                            else:
-                                self.B.LBtn(btnCoor, minx=300)
-
-                            count = 0
-
-                            sleep(0.5)
-
-                        elif isHd:
-                            if item == "sm_sm":
-                                if self.smc("hd", count=0) != 0:
-                                    self.B.RBtn()
-                                    self.B.MBtn(900, 300)
-                                    self.B.VBtn(1, 10)
-                                    count += 1
-
-                            if count == 5:
-                                print(f"账号: { self.name } 师门任务完成1")
-                                self.processing = False
-                                self.complete = True
-                                break
-
-                        sleep(0.1)
-
-                sleep(0.5)
-                while True:
-                    self.cutScreen()
-                    temCoor = self.matchTem("hd")
-                    btnCoor = self.matchTem("sy")
-                    if temCoor != 0 and btnCoor != 0:
-                        self.B.LBtn(btnCoor, sleepT=0.5)
-                    elif temCoor == 0 and btnCoor == 0:
-                        self.B.RBtn()
-                    else:
-                        break
-                    sleep(0.5)
-
-            if self.complete:
-                log(f"账号: { self.name } 师门任务结束")
-                t.cancel()
-                return 1
-            else:
-                self.start()
-
-        except Exception as e:
-            log(e, True)
+        return 1
 
 
 if __name__ == "__main__":

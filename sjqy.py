@@ -1,100 +1,59 @@
 from time import sleep
-from cutScreen import CScreen
-from btn import Btn
-from match import Match
-from smc import SMC
-from glo import Glo
-from log import log
-import threading
 
-class SJQY:
-    def __init__(self):
-        self.name = Glo().get('name')
-        self.B = Btn()
-        self.cutScreen = CScreen().cutScreen
-        self.matchTem = Match().matchTem
-        self.smc = SMC().smc
-        self.smca = SMC().smca
-        self.complete = False
-        self.processing = False
 
-    def timing(self):
-        self.complete = True
-        self.processing = False
+class SJ(object):
+
+    def __init__(self, adb, task_finished):
+        for key, val in adb.items():
+            self[key] = val
+        self.task_finished = task_finished
 
     def start(self):
-        try:
-            t = threading.Timer(300, self.timing)
-            t.start()
-            log(f"账号: { self.name } 开始三界奇缘任务")
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
-            while self.smc("hd", count=0) == 0:
-                self.B.RBtn()
+        if self.task_finished('sj_wc'):
+            return
 
-            self.B.Hotkey("hd")
+        self.btn.hotkey("hd")
+        self.smc("rchd", sleep_time=0.5)
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
+        sleep(0.5)
 
-            self.smc("rchd", sleepT=0.5)
+        processing = False
 
-            self.B.MBtn(590, 330)
-            self.B.VBtn(1, 31)
-            sleep(0.5)
+        for n in range(31):
+            if n % 10 == 0:
+                self.capture()
+                tem_coor = self.match('hd_sjqy') or self.match('hd_sjqy1')
+                if tem_coor:
+                    btn_coor = self.match('cj',
+                                          'imgTem/hd_sjqy') or self.match(
+                                              'cj', 'imgTem/hd_sjqy1')
+                    new_coor = ((tem_coor[0] + btn_coor[0],
+                                 tem_coor[1] + btn_coor[1], btn_coor[2],
+                                 btn_coor[3]))
+                    if btn_coor:
+                        self.btn.l(new_coor, sleep_time=1)
+                        while True:
+                            if self.smc('sj_start', is_click=False):
+                                processing = True
+                                break
 
-            for n in range(31):
-                if n % 10 == 0:
-                    sleep(0.5)
-                    if self.smc('sj_wc', simi=0.999, count=0):
-                        log(f"账号: { self.name } 三界奇缘任务已完成")
-                        self.complete = True
-                        self.B.RBtn()
-                        break
-
-                    else:
-                        self.cutScreen()
-                        temCoor = self.matchTem('hd_sjqy') or self.matchTem('hd_sjqy1')
-                        if temCoor:
-                            btnCoor = self.matchTem('cj', 'imgTem/hd_sjqy') or self.matchTem('cj', 'imgTem/hd_sjqy1')
-                            newCoor = ((temCoor[0][0] + btnCoor[0][0], temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                            if btnCoor:
-                                self.B.LBtn(newCoor, sleepT=1)
-                                if self.smc('sj_start', count=0):
-                                    self.processing = True
-                                    break
-
-                else:
-                    self.B.VBtn(-1)
-
-
-            if not self.complete:
-                while self.processing:
-                    res = self.smc('sj_dw', count=0)
-                    if res:
-                        self.B.RBtn()
-                        self.complete = True
-                        self.processing = False
-                        break
-                    else:
-                        self.B.LBtn(((380, 230), (170, 240)), sleepT=0.5)
-
-                while True:
-                    self.cutScreen()
-                    isHd = self.matchTem('hd')
-                    btnCoor = self.matchTem('sygb')
-                    if isHd and btnCoor:
-                        self.B.LBtn(btnCoor, sleepT=0.5)
-                    elif isHd and btnCoor == 0:
-                        break
-                    else:
-                        self.B.RBtn()
-                    sleep(0.5)
-
-            if self.complete:
-                log(f"账号: { self.name } 三界奇缘任务结束")
-                return 1
             else:
-                self.start()
+                self.btn.v(-1)
 
-        except Exception as e:
-            log(e, True)
+        if processing:
+            while processing:
+                res = self.smc('sj_dw', is_click=False)
+                if res:
+                    self.btn.RBtn()
+                    processing = False
+                    break
+                else:
+                    self.btn.l((380, 230, 170, 240), sleep_time=0.5)
+
 
 if __name__ == '__main__':
-    SJQY().start()
+    SJ().start()

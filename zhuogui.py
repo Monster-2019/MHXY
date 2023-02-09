@@ -1,162 +1,101 @@
 from time import sleep
-from datetime import datetime
-from cutScreen import CScreen
-from match import Match
-from zudui import Zudui
-from btn import Btn
-from glo import Glo
-from smc import SMC
-from log import log
+
+from loguru import logger
+
+COUNT = 2
 
 
-class Zhuogui:
-    def __init__(self):
-        self.g = Glo()
-        self.name = self.g.get('name')
-        self.B = Btn()
-        self.smc = SMC().smc
-        self.matchTem = Match().matchTem
-        self.cutScreen = CScreen().cutScreen
-        self.index = self.g.get('screen')
-        self.weekday = datetime.today().isoweekday()
+class Zhuogui(object):
+
+    def __init__(self, adb, task_finished, pipe):
+        for key, val in adb.items():
+            self[key] = val
+        self.task_finished = task_finished
+        self.pipe = pipe
 
     def leader(self):
-        log(f"开始捉鬼任务")
-        complete = True
+        while not self.smc('hd', isClick=False):
+            self.btn.r()
 
-        while self.smc('hd', count=0) == 0:
-            self.B.RBtn()
+        complete = self.task_finished('zg_wc')
 
-        ZG_COUNT = int(self.g.getObj('config', 'ZG_COUNT'))
-        if ZG_COUNT == 0:
-            self.g.setObj('config', 'ZG_WC', True)
-            return 1
+        if complete:
+            self.pipe.send('zg_wc')
+            return
 
-        if not self.g.getObj('config', 'TeamStatus'):
-            Zudui().start()
+        self.btn.hotkey('hd')
 
-        self.B.Hotkey('hd')
+        self.smc('rchd', sleep_time=0.5)
 
-        self.smc('rchd', sleepT=0.5)
-
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
         sleep(0.5)
 
         for n in range(31):
             if n % 10 == 0:
-                sleep(0.5)
-                self.cutScreen()
-                res = self.matchTem('hd_zgrw')
-                com = self.matchTem('zg_wc', simi=0.999)
-                if com:
-                    complete = True
-                    break
-                if res:
-                    self.cutScreen()
-                    temCoor = self.matchTem('hd_zgrw') or self.matchTem('hd_zgrw1')
-                    if temCoor:
-                        btnCoor = self.matchTem('cj',
-                                                'imgTem/hd_zgrw') or self.matchTem(
-                                                    'cj', 'imgTem/hd_zgrw1')
-                        newCoor = ((temCoor[0][0] + btnCoor[0][0],
-                                    temCoor[0][1] + btnCoor[0][1]), btnCoor[1])
-                        if btnCoor:
-                            self.B.LBtn(newCoor)
-                            complete = False
-                            break
+                self.capture()
+                tem_coor = self.match('hd_zgrw') or self.match('hd_zgrw1')
+                if tem_coor:
+                    btn_coor = self.match('cj',
+                                          'imgTem/hd_zgrw') or self.match(
+                                              'cj', 'imgTem/hd_zgrw1')
+                    new_coor = ((tem_coor[0] + btn_coor[0],
+                                tem_coor[1] + btn_coor[1], btn_coor[2],
+                                btn_coor[3]))
+                    if btn_coor:
+                        self.B.LBtn(new_coor)
+                        break
 
             else:
                 self.B.VBtn(-1)
 
-        if not complete:
-            complete = self.loop(ZG_COUNT)
+        self.loop(COUNT)
 
-        if complete:
-            self.g.setObj('config', 'ZG_WC', True)
-            log(f"捉鬼任务结束")
-            return 1
-        else:
-            self.leader()
+        self.pipe.send('zg_wc')
 
-    def palyer(self):
-        complete = False
-        Zudui().start()
-        while not self.g.getObj('config', 'ZG_WC'):
-            # self.smc('xszk_gb')
-            sleep(5)
+        logger.info(f"捉鬼任务结束")
 
-        complete = True
-
-        if complete:
-            return 1
-        else:
-            self.palyer()
+    def player(self):
+        while True:
+            recv = self.pipe.recv()
+            if recv == 'zg_wc':
+                break
 
     def loop(self, loopCount=99):
-        xlList = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
+        step_list = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
         count = 0
         while count <= loopCount:
-            for item in xlList:
-                self.cutScreen()
-                isHd = self.smc('hd', count=0)
-                compare = self.g.compare()
+            for item in step_list:
+                self.capture()
+                isHd = self.match('hd')
                 if item == 'zg_zg':
-                    btnCoor = self.matchTem(item, simi=0.9)
+                    coor = self.match.match_feature(item)
                 else:
-                    btnCoor = self.matchTem(item, simi=0.99)
+                    coor = self.match(item, simi=0.99)
 
-                if btnCoor and item == 'zg_zgwc':
+                if coor and item == 'zg_zgwc':
                     if count < loopCount:
-                        btnCoor = self.matchTem('qd')
-                        if btnCoor:
-                            self.B.LBtn(btnCoor)
+                        self.smc('qd')
                     else:
-                        btnCoor = self.matchTem('qx')
-                        if btnCoor:
-                            self.B.LBtn(btnCoor)
-                            log(f"捉鬼任务完成")
+                        result = self.smc('qx')
+                        if result:
+                            logger.info('完成')
                             break
-                
-                elif isHd and btnCoor:
-                    if item == 'zg_zgrw':
-                        self.B.LBtn(btnCoor)
-                        sleep(2)
-                        self.B.RBtn()
-                        count += 1
-                        print(f'开始刷第{count}轮鬼')
 
-                    elif item == 'zg_zg':
-                        self.B.LBtn(btnCoor, sleepT=20)
+                elif coor and item == 'zg_zgrw':
+                    self.btn.l(coor)
+                    sleep(2)
+                    self.btn.r()
+                    count += 1
+                    print(f'开始刷第{count}轮鬼')
 
-                elif isHd:
-                    if item == 'zg_zg':
-                        self.B.MBtn(900, 300)
-                        self.B.VBtn(1, 10)
-        
+                elif isHd and not coor and item == 'zg_zg':
+                    self.B.MBtn(900, 300)
+                    self.B.VBtn(1, 10)
+
+                self.btn.l(coor, sleep_time=0.1)
+
         return 1
-
-    def start(self):
-        try:
-            res = 0
-            if int(self.index) == 0:
-                res = self.leader()
-            else:
-                while self.g.getObj('config', 'ZG_WC') == None:
-                    sleep(3)
-
-                if not self.g.getObj('config', 'ZG_WC'):
-                    res = self.palyer()
-                else:
-                    res = 1
-
-            if res != 0:
-                return 1
-            else:
-                self.start()
-
-        except Exception as e:
-            log(e, True)
 
 
 if __name__ == '__main__':

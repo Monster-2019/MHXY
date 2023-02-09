@@ -1,12 +1,6 @@
 from time import sleep
-from cutScreen import CScreen
-from match import Match
-from zudui import Zudui
-from btn import Btn
-from glo import Glo
-from smc import SMC
-from log import log
-import traceback
+
+from loguru import logger
 
 empty = {
     "name": "",
@@ -48,222 +42,140 @@ jcx = {
     "rw": "fb_jcx",
 }
 
-class FuBen:
-    def __init__(self, fbName):
-        super(FuBen, self).__init__()
-        self.g = Glo()
-        self.name = Glo().get("name")
-        self.B = Btn()
-        self.smc = SMC().smc
-        self.matchTem = Match().matchTem
-        self.cutScreen = CScreen().cutScreen
-        self.index = self.g.get('screen')
-        self.fbImg = empty
-        self.fbImg = eval(fbName)
 
-    def isComplete(self):
-        complete = False
-        self.B.Hotkey("hd")
+class FuBen(object):
 
-        self.smc("rchd", sleepT=0.5)
+    def __init__(self, adb, task_finished, pipe):
+        for key, val in adb.items():
+            self[key] = val
+        self.task_finished = task_finished
+        self.pipe = pipe
+        self.fb_img = empty
 
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
+    def leader(self, fb):
+        while not self.smc('hd', isClick=False):
+            self.btn.r()
+
+        complete = self.task_finished(self.fbImg['wc'])
+
+        if complete:
+            self.pipe.send('fb_wc')
+            return
+
+        self.fb_img = eval(fb)
+
+        self.btn.hotkey('hd')
+        self.smc('rchd', sleep_time=0.5)
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
         sleep(0.5)
 
         for n in range(31):
             if n % 10 == 0:
-                sleep(0.5)
-                res = self.smc(self.fbImg['wc'], simi=0.999, count=0)
-                if res != 0:
-                    log(f"账号: { self.name } 副本 { self.fbImg['name'] } 已完成")
-                    complete = True
-                    break
-            else:
-                self.B.VBtn(-1)
-
-        self.B.VBtn(1, 31)
-
-        self.B.RBtn()
-
-        return complete
-
-    def leader(self):
-        self.g.setObj('config', 'FB_WC', None)
-        log(f"开始副本 { self.fbImg['name'] }")
-        complete = False
-        processing = False
-
-        while self.smc('hd', count=0) == 0:
-            self.B.RBtn()
-
-        complete = self.isComplete()
-
-        if not complete:
-            if not self.g.getObj('config', 'TeamStatus'):
-                Zudui().start()
-
-        # self.B.Hotkey('zz', sleepT=1)
-        # self.B.LBtn('zr2', sleepT=0.5)
-        # self.B.RBtn()
-
-        if not complete:
-            log(f"副本 { self.fbImg['name'] } 进行中")
-
-            self.B.Hotkey('hd')
-            self.smc('rchd', sleepT=0.5)
-            page = 1
-            while True:
-                self.cutScreen()
-                temCoor = self.matchTem(self.fbImg["hd"])
-                if temCoor != 0:
-                    btnCoor = self.matchTem("cj", "imgTem/" + self.fbImg["hd"])
-                    newCoor = (
-                        (
-                            temCoor[0][0] + btnCoor[0][0],
-                            temCoor[0][1] + btnCoor[0][1],
-                        ),
-                        btnCoor[1],
-                    )
-                    if btnCoor != 0:
-                        self.B.LBtn(newCoor, sleepT=1)
+                self.capture()
+                tem_x, tem_y = self.match(self.fb_img["hd"])
+                if tem_x:
+                    x, y, w, h = self.match("cj",
+                                            "imgTem/" + self.fb_img["hd"])
+                    new_coor = (tem_x + x, tem_y + y, w, h)
+                    if x:
+                        self.btn.l(new_coor, sleep_time=1)
 
                         # 去完成或继续任务
+                        processing = False
                         while not processing:
-                            for item in ['fb_xzfb', self.fbImg["xz"]]:
-                                r = self.smc(item, sleepT=1)
-                                if r != 0 and item == self.fbImg["xz"]:
-                                    btnCoor = self.matchTem(
-                                        'fb_jr', 'imgTem/' + self.fbImg["xz"])
-                                    if btnCoor != 0:
-                                        newCoor = (
-                                            (
-                                                r[0][0] + btnCoor[0][0],
-                                                r[0][1] + btnCoor[0][1],
-                                            ),
-                                            btnCoor[1],
-                                        )
-                                        self.B.LBtn(newCoor, sleepT=3)
+                            for item in ['fb_xzfb', self.fb_img["xz"]]:
+                                r = self.smc(item, sleep_time=1)
+                                if r and item == self.fb_img["xz"]:
+                                    btn_coor = self.match(
+                                        'fb_jr', 'imgTem/' + self.fb_img["xz"])
+                                    if btn_coor != 0:
+                                        new_coor = ((
+                                            r[0] + btn_coor[0],
+                                            r[1] + btn_coor[1],
+                                            btn_coor[2],
+                                            btn_coor[3],
+                                        ))
+                                        self.btn.l(new_coor, sleep_time=3)
 
-                                        r = self.smc(self.fbImg["rw"], simi=0.95, count=0)
-                                        if r != 0:
+                                        r = self.smc(self.fb_img["rw"],
+                                                     simi=0.95,
+                                                     is_click=False)
+                                        if r:
                                             processing = True
                                             break
 
                         break
+            else:
+                self.B.VBtn(-1)
+
+        step_list = [
+            'zd_qx', 'sb', 'hd', 'fb_tgjq', self.fb_img["rw"], 'dh', 'djjx'
+        ]
+
+        while processing:
+            for item in step_list:
+                if item == self.fb_img["rw"] or item == 'dh':
+                    coor = self.smc(item, simi=0.9, is_click=False)
                 else:
-                    page += 1
-                    self.B.VBtn(-1, 10)
-                    sleep(0.5)
-                    if page == 4:
+                    coor = self.smc(item, is_click=False)
+                if coor:
+                    if item == 'zd_qx':
+                        sleep(3)
                         break
 
-            fbList = ['zd_qx', 'sb', 'hd', 'fb_tgjq', self.fbImg["rw"], 'dh', 'djjx']
+                    elif item == self.fb_img["rw"]:
+                        if coor[0] > 800 and coor[1] < 240:
+                            self.btn.l(coor, sleep_time=3)
 
-            while processing:
-                for item in fbList:
-                    self.cutScreen()
-                    if item == self.fbImg["rw"] or item == 'dh':
-                        btnCoor = self.matchTem(item, simi=0.9)
-                    else:
-                        btnCoor = self.matchTem(item)
-                    if btnCoor != 0:
-                        if item == 'zd_qx':
-                            sleep(10)
-                            break
+                    elif item == 'fb_tgjq':
+                        self.btn.l(coor)
+                        self.btn.l(coor)
 
-                        elif item == self.fbImg["rw"]:
-                            if btnCoor[0][0] > 800 and btnCoor[0][1] < 240:
-                                self.B.LBtn(btnCoor, sleepT=3)
-
-                        elif item == 'fb_tgjq':
-                            self.B.LBtn(btnCoor, count=2)
-
-                        elif item == 'djjx':
-                            while True:
-                                res = self.smc('djjx', sleepT=0.3)
-                                if res == 0:
-                                    break
-
-                        elif item == 'dh':
-                            while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem('dh', simi=0.9)
-                                if btnCoor != 0:
-                                    newCoor = ((btnCoor[0][0] + 14,
-                                                btnCoor[0][1] + 64), (247, 41))
-                                    self.B.LBtn(newCoor)
-                                    sleep(0.3)
-                                else:
-                                    break
-
-                        elif item == 'sb':
-                            while True:
-                                self.smc('sb', sleepT=0.5)
-                                self.B.Hotkey('dt', sleepT=1)
-                                self.smc('dt_cac', sleepT=2)
-                                res = self.smc('hd', count=0)
-                                if res != 0:
-                                    break
-                            break
-
-                        elif item == 'hd':
-                            sleep(2)
-                            res = self.smc('hd')
-                            if res:
-                                complete = True
-                                processing = False
-                                log(f"副本 { self.fbImg['name'] } 完成")
+                    elif item == 'djjx':
+                        while True:
+                            res = self.smc('djjx', sleep_time=0.3)
+                            if not res:
                                 break
 
+                    elif item == 'dh':
+                        while True:
+                            self.capture()
+                            coor = self.match('dh', simi=0.9)
+                            if coor != 0:
+                                new_coor = (coor[0] + 14, coor[1] + 64,
+                                            247, 41)
+                                self.btn.l(new_coor)
+                                sleep(0.3)
+                            else:
+                                break
 
-        if complete:
-            self.g.setObj('config', 'FB_WC', True)
-            log(f"副本 { self.fbImg['name'] } 结束")
-            return 1
-        else:
-            self.leader()
+                    elif item == 'sb':
+                        while True:
+                            self.smc('sb', sleep_time=0.5)
+                            self.btn.hotkey('dt', sleep_time=1)
+                            self.smc('dt_cac', sleep_time=2)
+                            res = self.smc('hd', is_click=False)
+                            if res:
+                                break
+                        break
+
+                    elif item == 'hd':
+                        sleep(2)
+                        res = self.smc('hd')
+                        if res:
+                            processing = False
+                            self.pipe.send('fb_wc')
+                            logger.info('完成')
+                            break
+
+        return 1
 
     def palyer(self):
-        complete = False
-        Zudui().start()
-        while not self.g.getObj('config', 'FB_WC'):
-            sleep(5)
-
-        sleep(3)
-
-        self.smc('sb')
-
-        complete = True
-
-        if complete:
-            return 1
-        else:
-            self.palyer()
-
-    def start(self):
-        try:
-            res = 0
-            if int(self.index) == 0:
-                res = self.leader()
-            else:
-                while self.g.getObj('config', 'FB_WC') == None:
-                    sleep(3)
-
-                if not self.g.getObj('config', 'FB_WC'):
-                    res = self.palyer()
-                else:
-                    res = 1
-
-            if res != 0:
-                return 1
-            else:
-                self.start()
-
-        except Exception as e:
-            # log(e, True)
-            # print(e)
-            traceback.print_exc()
+        while True:
+            recv = self.pipe.recv()
+            if recv == 'fb_wc':
+                break
 
 
 if __name__ == "__main__":
