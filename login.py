@@ -1,13 +1,21 @@
-import win32gui, win32con, win32api, win32com.client
-from loguru import logger
-from time import sleep
+import configparser
 import os
+from time import sleep
 
-from cutScreen import CScreen
-from match import Match
+import win32api
+import win32com.client
+import win32con
+import win32gui
+from loguru import logger
+
 from btn import Btn
+from capture import Capture
+from config.user import ACCTZU
+from match import Match
 
-from config import user
+conf = configparser.ConfigParser()
+
+conf.read('config.ini', encoding='utf-8')
 
 SHELL = win32com.client.Dispatch("WScript.Shell")
 
@@ -24,7 +32,7 @@ mnq_btn = None
 
 
 def mnqInit():
-    os.system('start C:\\leidian\\LDPlayer4\\dnplayer.exe')
+    os.system(f"start {conf.get('software_path', 'leidian')}")
     sleep(10)
 
     while True:
@@ -34,7 +42,7 @@ def mnqInit():
         if mnq_hwnd:
             break
 
-    mnq_screen = CScreen(mnq_hwnd).cutScreen
+    mnq_screen = Capture(mnq_hwnd).cutScreen
     mnq_match = Match('mnq').matchTem
     mnq_btn = Btn(mnq_hwnd)
 
@@ -106,7 +114,7 @@ def mnq_login(account):
 
 
 def game_login(hwnd, server):
-    screen = CScreen(hwnd).cutScreen
+    screen = Capture(hwnd).cutScreen
     match = Match('mnq').matchTem
     btn = Btn(hwnd)
 
@@ -141,8 +149,8 @@ def login(group, hwnd_list):
         return os._exit()
 
     for i in range(5):
-        login_account = user.ACCTZU[group]['acctList'][i]['account']
-        login_server = user.ACCTZU[group]['acctList'][i]['server']
+        login_account = ACCTZU[group]['acctList'][i]['account']
+        login_server = ACCTZU[group]['acctList'][i]['server']
 
         game_hwnd = hwnd_list[i]
 
@@ -153,7 +161,7 @@ def login(group, hwnd_list):
         sleep(1)
 
         login_window_hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-        login_window_hwnd_screen = CScreen(login_window_hwnd,
+        login_window_hwnd_screen = Capture(login_window_hwnd,
                                            './images/mnq/').cutScreen
         login_window_hwnd_screen()
 

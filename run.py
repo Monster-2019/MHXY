@@ -1,4 +1,5 @@
 import argparse
+import configparser
 import os
 from datetime import datetime
 from multiprocessing import Manager, Pipe, Pool
@@ -9,22 +10,26 @@ import win32gui
 from apscheduler.schedulers.blocking import BlockingScheduler
 from loguru import logger
 
+from baotu import Baotu
 from btn import Btn
 from capture import CaptureScreen
 from complex import Complex
 from config.user import ACCTZU
+from fuben import FuBen
+from kjxs import KJ
 from login import login
 from match import Match
+from mijing import Mijing
+from shimen import Shimen
+from sjqy import SJ
 from smc import SMC
 from utils import hide_login, push_msg
-from zhuogui import Zhuogui
-from fuben import FuBen
-from shimen import Shimen
-from baotu import Baotu
-from mijing import Mijing
-from sjqy import SJ
-from kjxs import KJ
 from yunbiao import Yunbiao
+from zhuogui import Zhuogui
+
+conf = configparser.ConfigParser()
+
+conf.read('config.ini', encoding='utf-8')
 
 logger.add('run.log',
            rotation="1 week",
@@ -56,7 +61,7 @@ def openGame(hwnd_list=[]):
     if len(hwnd_list) == 5:
         return
 
-    os.system('start C:\\Users\\DX\\Desktop\\duokai\\mhxy.exe')
+    os.system(f"start {conf.get('software_path', 'ssk')}")
     sleep(2)
 
     while True:
