@@ -1,306 +1,217 @@
-from cutScreen import CScreen
-from btn import Btn
-from match import Match
-from smc import SMC
-from glo import Glo
-from log import log
 from time import sleep
 
 
-class Gongfang:
-    def __init__(self):
-        super(Gongfang, self).__init__()
-        self.g = Glo()
-        self.name = self.g.get("name")
-        self.B = Btn()
-        self.cutScreen = CScreen().cutScreen
-        self.matchTem = Match().matchTem
-        self.smc = SMC().smc
-        self.complete = False
-        self.processing = False
+class Gongfang(object):
+
+    def __init__(self, adb, task_finished):
+        for key, val in adb.items():
+            self[key] = val
+        self.task_finished = task_finished
 
     def kaogu(self):
-        isStart = False
-        self.B.Hotkey("bb", sleepT=1)
-
-        self.B.MBtn(707, 406)
-        self.B.VBtn(1, 30)
+        self.btn.hotkey("bb", sleep_time=1)
+        self.btn.m(707, 406)
+        self.btn.v(1, 30)
 
         page = 0
         # cz = 'bb_fjc'
         cz = "bb_lyc"
         while True:
-            r = self.smc(cz)
-            if r != 0:
-                self.B.LBtn(r)
-                self.B.LBtn(r)
-                isStart = True
+            has_cz = self.smc(cz)
+            if has_cz:
+                self.btn.l(has_cz)
+                self.btn.l(has_cz)
                 sleep(1)
                 break
 
             else:
                 page += 1
-                self.B.MBtn(707, 406)
-                self.B.VBtn(-1, 13)
-                sleep(0.5)
+                self.btn.MBtn(707, 406)
+                self.btn.VBtn(-1, 13)
+                sleep(0.3)
                 if page == 6:
-                    self.B.RBtn()
-                    return isStart
+                    self.btn.r()
+                    return False
 
         while True:
-            r = self.smc("kg_ks", sleepT=1)
-            if r != 0:
-                self.B.RBtn()
-                self.B.RBtn()
+            r = self.smc("kg_ks", sleep_time=1)
+            if r:
+                self.btn.r()
+                self.btn.r()
                 break
 
         for i in range(10):
             while True:
-                self.cutScreen()
-                btnCoor = self.matchTem("wj")
-                if btnCoor != 0:
-                    if btnCoor[0][0] + btnCoor[1][0] < 920:
-                        self.B.LBtn(btnCoor, sleepT=3)
+                coor = self.smc('wj', is_click=False)
+                if coor:
+                    if coor[0] + coor[1] < 920:
+                        self.btn.l(coor, sleep_time=3)
                         break
 
-        return isStart
+        return True
 
     def sell(self):
-        self.B.Hotkey("dt", sleepT=2)
+        self.btn.hotkey('bb')
 
-        xhList = ["dt_lyc", "zb_lyc", "lyc_zhsr", "kg_gdsm"]
+        page = 0
+        while True:
+            has_gd = self.smc('bb_gd')
+            if has_gd:
+                self.btn.l(has_gd)
+                self.btn.l(has_gd)
+                sleep(1)
+                break
 
-        isSell = False
-        while not isSell:
-            for item in xhList:
-                r = 0
-                while True:
-                    if item == 'zb_lyc':
-                        simi = 0.99
-                        r = self.smc(item, simi=0.99)
-                    else:
-                        r = self.smc(item)
-                    if r != 0:
-                        if item == "lyc_zhsr":
-                            sleep(15)
-                        break
+            else:
+                page += 1
+                self.btn.MBtn(707, 406)
+                self.btn.VBtn(-1, 13)
+                sleep(0.3)
+                if page == 6:
+                    self.btn.r()
+                    return False
 
-                if r != 0 and item == "kg_gdsm":
-                    isSell = True
-                    break
+        while True:
+            r = self.smc('kg_gdsm')
+            if r:
+                break
 
-        xhList = ["kg_zp", "kg_sm", "kg_smwc"]
+        step_list = ["kg_zp", "kg_sm", "kg_smwc"]
 
         sell_status = False
         while not sell_status:
-            for item in xhList:
+            for item in step_list:
                 r = self.smc(item)
                 if r != 0 and (item == "kg_zp" or item == "kg_smwc"):
                     sell_status = True
-                    self.B.RBtn()
-                    self.B.RBtn()
+                    self.btn.r()
+                    self.btn.r()
                     break
 
-        return 1
+    def start(self):
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
-    def isComplete(self):
-        while True:
-            res = self.smc("hd", count=0)
-            if res == 0:
-                self.B.RBtn()
-            else:
-                self.B.MBtn(900, 300)
-                self.B.VBtn(-1, 20)
-                sleep(0.5)
+        if self.task_finished('gf_wc', 'jjxx'):
+            return
 
-                r = self.smc('gf_kg', simi=0.92, count=0) or self.smc('gf_gf', simi=0.92, count=0)
-                if r != 0:
-                    if r[0][0] + r[1][0] > 780:
-                        log(f"账号: { self.name } 已领取工坊任务")
-                        self.processing = True
-                sleep(0.5)
-                break
-
-        if self.processing:
-            return False
-
-        self.B.Hotkey("hd")
-
-        self.smc("jjxx", sleepT=0.5)
-
-        self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
+        self.btn.hotkey("hd")
+        self.smc("jjxx", sleep_time=0.5)
+        self.btn.MBtn(590, 330)
+        self.btn.VBtn(1, 31)
         sleep(0.5)
+
+        processing = False
 
         for n in range(31):
             if n % 10 == 0:
-                sleep(0.5)
-                res = self.smc("gf_wc", simi=0.999, count=0)
-                if res != 0:
-                    log(f"账号: { self.name } 工坊任务已完成")
-                    self.complete = True
-                    break
-            else:
-                self.B.VBtn(-1)
+                self.captrue()
+                tem_coor = self.match("hd_gfrw", simi=0.998)
+                if tem_coor:
+                    btn_coor = self.match("cj", "imgTem/hd_gfrw")
+                    new_coor = ((tem_coor[0] + btn_coor[0],
+                                 tem_coor[1] + btn_coor[1], btn_coor[2],
+                                 btn_coor[3]))
+                    if btn_coor:
+                        self.btn.l(new_coor)
+                        processing = True
 
-        self.B.VBtn(1, 31)
+                        while True:
+                            r = self.smc("gf_lqrw")
+                            sleep(1)
+                            if r:
+                                break
 
-        self.B.RBtn()
+                        break
 
-    def start(self):
-        log(f"账号: { self.name } 开始工坊任务")
+        step_list = [
+            "gf_kg",
+            "gf_xz",
+            "dh",
+            "dhda",
+            "gfnot",
+            "gfgm",
+            "djjx",
+            "sy",
+            "sj",
+        ]
 
-        self.isComplete()
-
-        if self.processing or not self.complete:
-            print(f"账号: { self.name } 工坊任务进行中")
-
-            if not self.processing:
-                self.B.Hotkey("hd")
-                self.smc("jjxx", sleepT=0.5)
-                page = 1
-                while not self.processing:
-                    self.cutScreen()
-                    temCoor = self.matchTem("hd_gfrw", simi=0.998)
-                    if temCoor != 0:
-                        btnCoor = self.matchTem("cj", "imgTem/hd_gfrw")
-                        newCoor = (
-                            (
-                                temCoor[0][0] + btnCoor[0][0],
-                                temCoor[0][1] + btnCoor[0][1],
-                            ),
-                            btnCoor[1],
-                        )
-                        if btnCoor != 0:
-                            self.B.LBtn(newCoor)
-                            self.processing = True
-
-                            while True:
-                                r = self.smc("gf_lqrw")
-                                sleep(1)
-                                if r != 0:
-                                    break
-
-                            break
-
-                    else:
-                        page += 1
-                        self.B.MBtn(590, 330)
-                        self.B.VBtn(-1, 10)
-                        sleep(0.5)
-                        if page == 4:
-                            break
-
-            xhList = [
-                "gf_kg",
-                "gf_xz",
-                "dh",
-                "dhda",
-                "gfnot",
-                "gfgm",
-                "djjx",
-                "sy",
-                "sj",
-            ]
-
-            count = 0
-            while not self.complete or self.processing:
-                for item in xhList:
-                    self.cutScreen()
-                    btnCoor = self.matchTem(item)
-                    isHd = self.matchTem('hd')
-                    if item == 'gf_kg' or item == 'dh':
-                        btnCoor = self.matchTem(item, simi=0.9)
-                    if btnCoor != 0:
-                        if item == 'gf_kg':
-                            if btnCoor[0][0] > 780:
-                                self.B.LBtn(btnCoor)
-                            else:
-                                self.B.RBtn()
-                                self.B.MBtn(157, 686)
-                                self.B.VBtn(-1, 10)
-
-                        elif item == "dh" or item == "dhda":
-                            while True:
-                                self.cutScreen()
-                                btnCoor = self.matchTem("dh", simi=0.9) or self.matchTem("dhda", simi=0.9)
-                                if btnCoor != 0:
-                                    newCoor = (
-                                        (btnCoor[0][0] + 14, btnCoor[0][1] + 64),
-                                        (247, 41),
-                                    )
-                                    self.B.LBtn(newCoor)
-                                    sleep(0.3)
-                                else:
-                                    break
-
-                        elif item == "djjx":
-                            while True:
-                                res = self.smc("djjx", sleepT=0.3)
-                                if res == 0:
-                                    break
-
-                        elif item == "gfgm":
-                            sleep(0.5)
-                            self.B.LBtn(btnCoor)
-                            res = self.smc("gm_sb", count=0)
-                            if res == 0:
-                                newCoor = ((308, 245), (294, 75))
-                                self.B.LBtn(newCoor)
-                                self.B.RBtn()
-                                self.B.RBtn()
-
-                        elif item == "sy":
-                            if (btnCoor[0][0] + btnCoor[1][0]) < 920:
-                                self.B.LBtn(btnCoor)
-
-                        elif item == "gfnot":
-                            self.B.RBtn()
-                            self.complete = True
-                            self.processing = False
-                            break
-
+        while processing:
+            for item in step_list:
+                self.capture()
+                is_hd = self.match('hd')
+                if item == 'gf_kg' or item == 'dh':
+                    coor = self.match.match_feature(item)
+                else:
+                    coor = self.match(item)
+                if coor:
+                    if item == 'gf_kg':
+                        if coor[0] > 780:
+                            self.btn.l(coor)
                         else:
-                            self.B.LBtn(btnCoor, minx=300)
+                            self.btn.r()
+                            self.btn.MBtn(157, 686)
+                            self.btn.VBtn(-1, 10)
 
+                    elif item == "dh" or item == "dhda":
+                        while True:
+                            self.capture()
+                            coor = self.match.match_feature(item)
+                            if coor != 0:
+                                new_coor = ((coor[0] + 14, coor[1] + 64, 247,
+                                             41))
+                                self.btn.l(new_coor)
+                                sleep(0.3)
+                            else:
+                                break
+
+                    elif item == "djjx":
+                        while True:
+                            res = self.smc("djjx", sleep_time=0.3)
+                            if res == 0:
+                                break
+
+                    elif item == "gfgm":
                         sleep(0.5)
+                        self.btn.l(coor)
+                        res = self.smc("gm_sb", is_click=False)
+                        if res:
+                            new_coor = ((308, 245), (294, 75))
+                            self.btn.l(new_coor)
+                            self.btn.r()
+                            self.btn.r()
+
+                    elif item == "sy":
+                        if (coor[0] + coor[2]) < 920:
+                            self.btn.l(coor)
+
+                    elif item == "gfnot":
+                        self.btn.r()
+                        processing = False
+                        break
 
                     else:
-                        if item == "gf_kg" and isHd:
-                            if count == 3:
-                                self.complete = True
-                                self.processing = False
+                        self.btn.l(coor, min_x=300)
 
-                            compare = False
-                            for i in range(2):
-                                self.cutScreen()
-                                compare = self.g.compare()
-                                if compare:
-                                    break
-                                sleep(0.5)
+                else:
+                    if item == "gf_kg" and is_hd:
+                        count = 0
+                        while True:
+                            is_hd = self.smc('hd', is_click=False)
+                            if not is_hd:
+                                count = 0
+                            else:
+                                count += 1
 
-                            if compare:
-                                self.B.RBtn()
-                                self.B.RBtn()
-                                sleep(0.5)
-                                self.B.MBtn(900, 300)
-                                self.B.VBtn(-1, 20)
-                                res = self.smc('gf_kg', simi=0.9) or self.smc('gf_gf', simi=0.9)
-                                if res == 0:
-                                    count += 1
-                                else:
-                                    count = 0
+                            if count == 12:
+                                processing = False
+                                break
 
-        sleep(3)
+                            sleep(5)
+
         res = self.kaogu()
         if res:
             self.sell()
-
-        if self.complete:
-            print(f"账号: { self.name } 工坊任务结束")
-            return 1
-        else:
-            self.start()
 
 
 if __name__ == "__main__":

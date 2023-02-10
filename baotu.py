@@ -133,7 +133,7 @@ class Baotu:
                 for item in step_list:
                     self.capture()
                     is_hd = self.match('hd')
-                    coor = self.smcs(item)
+                    coor = self.smc.smcs(item)
                     if coor and is_hd:
                         if item == 'bt_cbthdwc':
                             processing = False

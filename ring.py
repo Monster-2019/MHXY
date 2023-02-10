@@ -22,9 +22,9 @@ class Ring:
 
     def isComplete(self):
         complete = False
-        self.B.Hotkey("hd")
+        self.btn.hotkey("hd")
 
-        self.smc("rchd", sleepT=0.5)
+        self.smc("rchd", sleep_time=0.5)
 
         self.B.MBtn(590, 330)
         self.B.VBtn(1, 31)
@@ -43,7 +43,7 @@ class Ring:
 
         self.B.VBtn(1, 31)
 
-        self.B.RBtn()
+        self.btn.r()
 
         return complete
 
@@ -56,7 +56,7 @@ class Ring:
             while True:
                 res = self.smc("hd", count=0)
                 if res == 0:
-                    self.B.RBtn()
+                    self.btn.r()
                 else:
                     self.B.MBtn(900, 300)
                     self.B.VBtn(-1, 20)
@@ -75,14 +75,14 @@ class Ring:
             if not complete:
                 print(f"账号: { self.name } 经验链进行中")
 
-                self.B.Hotkey('zz', sleepT=1)
-                self.B.LBtn('zr1', sleepT=0.5)
-                self.B.LBtn('zr1', sleepT=0.5)
-                self.B.RBtn()
+                self.btn.hotkey('zz', sleep_time=1)
+                self.btn.l('zr1', sleep_time=0.5)
+                self.btn.l('zr1', sleep_time=0.5)
+                self.btn.r()
 
                 if not processing:
-                    self.B.Hotkey("hd")
-                    self.smc("rchd", sleepT=0.5)
+                    self.btn.hotkey("hd")
+                    self.smc("rchd", sleep_time=0.5)
                     page = 1
                     while True:
                         self.cutScreen()
@@ -97,14 +97,14 @@ class Ring:
                                 btnCoor[1],
                             )
                             if btnCoor != 0:
-                                self.B.LBtn(newCoor)
+                                self.btn.l(newCoor)
                                 sleep(5)
 
                                 getList = ["dh_jyl", "dh_lqjyl", "qd_1"]
 
                                 for item in getList:
                                     while True:
-                                        r = self.smc(item, sleepT=0.5)
+                                        r = self.smc(item, sleep_time=0.5)
                                         if r != 0:
                                             break
 
@@ -151,7 +151,7 @@ class Ring:
                                              btnCoor[0][1] + 64),
                                             (87, 22),
                                         )
-                                        self.B.LBtn(newCoor)
+                                        self.btn.l(newCoor)
                                         sleep(0.3)
                                     else:
                                         break
@@ -161,10 +161,10 @@ class Ring:
                                 res = self.smc('bt_sj') or self.smc('bt_jlh') or self.smc('bt_mgh')
                                 if res and not CS:
                                     CS = True
-                                    self.B.RBtn()
-                                    self.B.RBtn()
+                                    self.btn.r()
+                                    self.btn.r()
 
-                                    self.B.Hotkey('gj')
+                                    self.btn.hotkey('gj')
 
                                     while True:
                                         self.B.DBtn((900, 350), (130, 350))
@@ -183,33 +183,33 @@ class Ring:
                                             break
                                         sleep(1)
 
-                                    self.B.LBtn(((500, 450), (2, 2)))
+                                    self.btn.l(((500, 450), (2, 2)))
                                     
                                 else:
-                                    self.B.LBtn(btnCoor)
+                                    self.btn.l(btnCoor)
                                     CS = False
                                     res = self.smc("gm_sb", count=0)
                                     if res:
                                         newCoor = ((308, 245), (294, 75))
                                         CS = True
-                                        self.B.LBtn(newCoor)
+                                        self.btn.l(newCoor)
                                         continue
                                     sleep(0.5)
-                                    self.B.RBtn()
+                                    self.btn.r()
 
                             elif item == "gm_1":
                                 sleep(2)
-                                self.B.LBtn(btnCoor)
+                                self.btn.l(btnCoor)
                                 res = self.smc("gm_sb", count=0)
                                 if res:
                                     newCoor = ((308, 245), (294, 75))
-                                    self.B.LBtn(newCoor)
+                                    self.btn.l(newCoor)
                                     continue
                                 sleep(0.5)
-                                self.B.RBtn()
+                                self.btn.r()
 
                             else:
-                                self.B.LBtn(btnCoor)
+                                self.btn.l(btnCoor)
 
                         else:
                             if item == 'rw_jyl' and isHd:
@@ -227,8 +227,8 @@ class Ring:
 
                                 if compare:
                                     print('站立不动')
-                                    self.B.RBtn()
-                                    self.B.RBtn()
+                                    self.btn.r()
+                                    self.btn.r()
                                     sleep(0.5)
                                     self.B.MBtn(900, 300)
                                     self.B.VBtn(-1, 20)
@@ -240,7 +240,7 @@ class Ring:
 
                     loopCount += 1
                     if loopCount == 3:
-                        self.B.RBtn()
+                        self.btn.r()
                         loopCount = 0
 
             if complete:

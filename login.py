@@ -53,11 +53,11 @@ def mnqInit():
         mnq_screen()
         mhxy = mnq_match('mnq_mhxy')
         if mhxy:
-            mnq_btn.LBtn(mhxy)
+            mnq_btn.l(mhxy)
             break
 
     sleep(8)
-    mnq_btn.LBtn(((500, 250), (20, 20)))
+    mnq_btn.l(((500, 250), (20, 20)))
 
     while True:
         mnq_screen()
@@ -79,7 +79,7 @@ def mnq_login(account):
             coor = mnq_match(item)
             if coor:
                 if item == 'mnq_tk':
-                    mnq_btn.LBtn(coor, sleepT=1)
+                    mnq_btn.l(coor, sleep_time=1)
 
                     while True:
                         mnq_screen()
@@ -87,15 +87,15 @@ def mnq_login(account):
                         if coor != 0:
                             break
                         else:
-                            mnq_btn.LBtn(((100, 160), (2, 2)))
-                            # self.mnqBtn.LBtn(((650, 480), (2, 2)))
+                            mnq_btn.l(((100, 160), (2, 2)))
+                            # self.mnqBtn.l(((650, 480), (2, 2)))
                         sleep(0.5)
 
                     sleep(0.5)
-                    mnq_btn.LBtn(((460, 190), (2, 2)))
+                    mnq_btn.l(((460, 190), (2, 2)))
 
                 else:
-                    mnq_btn.LBtn(coor)
+                    mnq_btn.l(coor)
                     if item == 'mnq_dl':
                         status = True
                         break
@@ -125,7 +125,7 @@ def game_login(hwnd, server):
             screen()
             res = match(item)
             if res:
-                btn.LBtn(res)
+                btn.l(res)
                 if item == server:
                     status = True
                     break
@@ -157,7 +157,7 @@ def login(group, hwnd_list):
         win32api.SendMessage(game_hwnd, win32con.WM_KEYDOWN, 27, 0)
         SetForegroundWindowMy(game_hwnd)
         game_btn = Btn(game_hwnd)
-        game_btn.LBtn(((485, 483), (57, 15)))
+        game_btn.l(((485, 483), (57, 15)))
         sleep(1)
 
         login_window_hwnd = win32gui.FindWindow('MPAY_LOGIN', None)

@@ -47,7 +47,7 @@ class Complex(object):
 
     def clean(self):
         while not self.smc('hd', isClick=False):
-            self.B.RBtn()
+            self.btn.r()
 
         self.btn.hotkey('bb')
         self.btn.m(710, 410)
@@ -146,7 +146,7 @@ class Complex(object):
 
     def get_hyd(self):
         while not self.smc('hd', isClick=False):
-            self.B.RBtn()
+            self.btn.r()
 
         self.btn.hotkey('hd')
 
@@ -158,7 +158,7 @@ class Complex(object):
 
     def join_team_leader(self):
         while not self.smc('hd', isClick=False):
-            self.B.RBtn()
+            self.btn.r()
 
         self.btn.hotkey('dw')
 
@@ -179,7 +179,7 @@ class Complex(object):
 
     def join_team_player(self):
         while not self.smc('hd', isClick=False):
-            self.B.RBtn()
+            self.btn.r()
 
         self.btn.hotkey('hy')
         self.smc('lxr')
@@ -200,7 +200,7 @@ class Complex(object):
 
     def leave_team(self):
         while not self.smc('hd', isClick=False):
-            self.B.RBtn()
+            self.btn.r()
 
         self.btn.hotkey('dw')
 
@@ -211,12 +211,12 @@ class Complex(object):
 
         self.btn.r()
 
-    def task_finished(self, rw_list):
+    def task_finished(self, rw_list, type='rchd'):
         if isinstance(rw_list, str):
             rw_list = [rw_list]
         self.btn.hotkey('hd')
 
-        self.smc('rchd', sleep_time=0.5)
+        self.smc(type, sleep_time=0.5)
 
         self.btn.m(590, 330)
         self.btn.v(1, 31)

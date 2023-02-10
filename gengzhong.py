@@ -26,23 +26,23 @@ class GengZhong:
         while True:
             res = self.smc('hd', count=0)
             if res == 0:
-                self.B.RBtn()
+                self.btn.r()
             else:
                 break
 
-        self.B.Hotkey('bb')
-        self.smc('bb_zl', sleepT=0.5)
+        self.btn.hotkey('bb')
+        self.smc('bb_zl', sleep_time=0.5)
         self.B.MBtn(720, 440)
         self.B.VBtn(1, 30)
         sleep(0.5)
 
         page = 1
         while True:
-            res = self.smc('bb_jyh', sleepT=0.5)
+            res = self.smc('bb_jyh', sleep_time=0.5)
             if res != 0:
-                self.smc('bb_gd', sleepT=0.5)
-                self.smc('bb_gfbt', sleepT=1)
-                self.B.RBtn()
+                self.smc('bb_gd', sleep_time=0.5)
+                self.smc('bb_gfbt', sleep_time=1)
+                self.btn.r()
                 break
 
             else:
@@ -51,17 +51,17 @@ class GengZhong:
                 page += 1
                 if page == 6:
                     log(f"账号: { self.name } 无金银花")
-                    self.B.RBtn()
+                    self.btn.r()
                     break
 
         complete = False
         count = 0
         while not complete:
-            res = self.smc('gfbt_gq', sleepT=0.5)
+            res = self.smc('gfbt_gq', sleep_time=0.5)
             if res != 0:
-                self.smc('gfbt_cxsj', sleepT=0.5)
-                self.smc('bzts', sleepT=0.5)
-                self.smc('qd', sleepT=0.5)
+                self.smc('gfbt_cxsj', sleep_time=0.5)
+                self.smc('bzts', sleep_time=0.5)
+                self.smc('qd', sleep_time=0.5)
                 count += 1
             else:
                 complete = True
@@ -75,23 +75,23 @@ class GengZhong:
             res = self.matchTem('gfbt_jyh')
             if res:
                 Coor = ((647 + res[0][0], 207 + res[0][1]), res[1])
-                self.B.LBtn(Coor, sleepT=0.5)
-            # res = self.smc('gfbt_jyh', infoKey='gfbt', sleepT=0.5)
+                self.btn.l(Coor, sleep_time=0.5)
+            # res = self.smc('gfbt_jyh', infoKey='gfbt', sleep_time=0.5)
             # if res != 0:
-                self.smc('gfbt_sj', sleepT=0.5)
-                res = self.smc('gfbt_max', sleepT=0.5)
+                self.smc('gfbt_sj', sleep_time=0.5)
+                res = self.smc('gfbt_max', sleep_time=0.5)
                 if res != 0:
                     complete = True
                     break
-                self.smc('bzts', sleepT=0.5)
-                self.smc('qd', sleepT=0.5)
+                self.smc('bzts', sleep_time=0.5)
+                self.smc('qd', sleep_time=0.5)
                 count += 1
             else:
                 complete = True
                 break
 
-        self.B.RBtn()
-        self.B.RBtn()
+        self.btn.r()
+        self.btn.r()
 
         log(f"账号：{self.name} 上架{count}组金银花")
 
@@ -106,13 +106,13 @@ class GengZhong:
             while True:
                 res = self.smc('hd', count=0)
                 if res == 0:
-                    self.B.RBtn()
+                    self.btn.r()
                 else:
                     break
 
-            self.B.Hotkey('jy', sleepT=1)
+            self.btn.hotkey('jy', sleep_time=1)
 
-            self.smc('jy_hj', sleepT=3)
+            self.smc('jy_hj', sleep_time=3)
 
             while not self.smc('hd', count=0):
                 sleep(1)
@@ -140,20 +140,20 @@ class GengZhong:
                                         btnCoor[0][1] + temCoor[0][1]),
                                        temCoor[1])
                             for n in range(10):
-                                self.B.LBtn(newCoor)
+                                self.btn.l(newCoor)
                                 sleep(0.1)
 
                         elif item == 'gz_zz':
-                            self.B.LBtn(btnCoor, sleepT=0.5)
+                            self.btn.l(btnCoor, sleep_time=0.5)
                             self.cutScreen()
                             temCoor = self.matchTem('gf_nothl')
                             if temCoor != 0:
-                                self.B.RBtn()
+                                self.btn.r()
                             isTill = False
                             complete = True
 
                         else:
-                            self.B.LBtn(btnCoor)
+                            self.btn.l(btnCoor)
 
                     else:
                         if item == 'gz_td' or item == 'gz_td_l' or item == 'gz_td_r':

@@ -72,7 +72,7 @@ def openGame(hwnd_list=[]):
 
     btn = btn(hwnd)
     for i in range(5 - len(hwnd_list)):
-        btn.LBtn(((350, 150), (2, 2)))
+        btn.l(((350, 150), (2, 2)))
         sleep(3)
 
     os.system('taskkill /F /IM mhxy.exe')

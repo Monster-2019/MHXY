@@ -43,7 +43,7 @@ class Zhuogui(object):
                                 tem_coor[1] + btn_coor[1], btn_coor[2],
                                 btn_coor[3]))
                     if btn_coor:
-                        self.B.LBtn(new_coor)
+                        self.btn.l(new_coor)
                         break
 
             else:

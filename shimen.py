@@ -29,7 +29,7 @@ class Shimen(object):
         self.btn.v(1, 31)
         sleep(0.5)
 
-        processing = self.smcs('sm_sm')
+        processing = self.smc.smcs('sm_sm')
 
         if not processing:
             for n in range(31):
@@ -42,8 +42,8 @@ class Shimen(object):
                                               "imgTem/hd_smrw") or self.match(
                                                   "cj", "imgTem/hd_smrw1")
                         new_coor = ((tem_coor[0] + btn_coor[0],
-                                    tem_coor[1] + btn_coor[1], btn_coor[2],
-                                    btn_coor[3]))
+                                     tem_coor[1] + btn_coor[1], btn_coor[2],
+                                     btn_coor[3]))
                         if btn_coor:
                             self.btn.l(new_coor, sleep_time=1)
 
@@ -93,10 +93,8 @@ class Shimen(object):
                             while True:
                                 coor = self.match.match_feature(item)
                                 if coor:
-                                    new_coor = (
-                                        (coor[0], coor[1] + 69),
-                                        (87, 22),
-                                    )
+                                    new_coor = ((coor[0], coor[1] + 69, 87,
+                                                 22))
                                     self.btn.l(new_coor)
                                     sleep(0.3)
                                 else:
