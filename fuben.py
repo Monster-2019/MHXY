@@ -107,7 +107,7 @@ class FuBen(object):
 
                         break
             else:
-                self.B.VBtn(-1)
+                self.B.v(-1)
 
         step_list = [
             'zd_qx', 'sb', 'hd', 'fb_tgjq', self.fb_img["rw"], 'dh', 'djjx'

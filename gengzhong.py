@@ -33,7 +33,7 @@ class GengZhong:
         self.btn.hotkey('bb')
         self.smc('bb_zl', sleep_time=0.5)
         self.B.MBtn(720, 440)
-        self.B.VBtn(1, 30)
+        self.B.v(1, 30)
         sleep(0.5)
 
         page = 1
@@ -47,7 +47,7 @@ class GengZhong:
 
             else:
                 self.B.MBtn(720, 440)
-                self.B.VBtn(-1, 6)
+                self.B.v(-1, 6)
                 page += 1
                 if page == 6:
                     log(f"账号: { self.name } 无金银花")

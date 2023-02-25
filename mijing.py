@@ -5,7 +5,7 @@ class Mijing:
 
     def __init__(self, adb, task_finished):
         for key, val in adb.items():
-            self[key] = val
+            self.__dict__[key] = val
         self.task_finished = task_finished
 
     def start(self):
@@ -25,16 +25,15 @@ class Mijing:
             if n % 10 == 0:
                 self.capture()
                 tem_coor = self.match('hd_mjxy') or self.match('hd_mjxy1')
-                if tem_coor:
-                    btn_coor = self.match('cj',
-                                          'imgTem/hd_mjxy') or self.match(
-                                              'cj', 'imgTem/hd_mjxy1')
+                btn_coor = self.match('cj',
+                                      screen='imgTem/hd_mjxy') or self.match(
+                                          'cj', screen='imgTem/hd_mjxy1')
+                if tem_coor and btn_coor:
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))
-                    if btn_coor:
-                        self.btn.l(new_coor, sleep_time=3)
-                        break
+                    self.btn.l(new_coor, sleep_time=3)
+                    break
 
             else:
                 self.btn.v(-1)
@@ -62,23 +61,22 @@ class Mijing:
                     else:
                         self.btn.l(coor)
 
-        step_list = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
-        # , 'mj_lq', 'mj_gb'
+                    sleep(0.5)
 
-        processing = False
+        step_list = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
+        # # , 'mj_lq', 'mj_gb'
+
+        sleep(3)
+        processing = True
 
         while processing:
             for item in step_list:
-                is_hd = self.smc('hd')
+                is_hd = self.smc('hd', is_click=False)
                 if is_hd:
                     processing = False
                     break
 
-                self.capture()
-                if item == 'mj_mjxyrw':
-                    coor = self.match_feature(item)
-                else:
-                    coor = self.match(item)
+                coor = self.match(item)
 
                 if coor:
                     if item == 'sb' or item == 'mj_tg':
@@ -93,11 +91,37 @@ class Mijing:
                     else:
                         self.btn.l(coor, min_x=350)
 
-                sleep(0.5)
+                    sleep(0.1)
+                else:
+                    sleep(0.2)
 
-        while not self.smc('hd'):
+        while not self.smc('hd', is_click=False):
             self.smc('mj_lk')
 
 
 if __name__ == '__main__':
-    Mijing().start()
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+
+    Mijing(adb, complex_task.task_finished).start()

@@ -98,7 +98,7 @@ class Bangpai(object):
                     if item == "bp_ql":
                         if self.smc("hd", is_click=False):
                             self.btn.MBtn(900, 300)
-                            self.btn.VBtn(1, 10)
+                            self.btn.v(1, 10)
 
                             if self.smc("bp_ql", is_click=False):
                                 if self.changeTas():

@@ -57,3 +57,17 @@ class GlobalVariable(object):
     def clear(self):
         for key in self._global_dict.keys():
             self._global_dict.pop(key)
+
+class HsvFilter:
+    def __init__(self, hMin=None, sMin=None, vMin=None, hMax=None, sMax=None, vMax=None, 
+                    sAdd=None, sSub=None, vAdd=None, vSub=None):
+        self.hMin = hMin
+        self.sMin = sMin
+        self.vMin = vMin
+        self.hMax = hMax
+        self.sMax = sMax
+        self.vMax = vMax
+        self.sAdd = sAdd
+        self.sSub = sSub
+        self.vAdd = vAdd
+        self.vSub = vSub

@@ -1,14 +1,14 @@
 from time import sleep
 
 
-class Baotu:
+class Baotu(object):
 
     def __init__(self, adb, task_finished):
         for key, val in adb.items():
-            self[key] = val
+            self.__dict__[key] = val
         self.task_finished = task_finished
 
-    def empty(self):
+    def has_cbt(self):
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -39,10 +39,13 @@ class Baotu:
 
     def dig(self):
         # 打开背包
-        cbt_coor = self.empty()
+        cbt_coor = self.has_cbt()
 
         if cbt_coor:
-            self.btn.l(cbt_coor, sleep_time=5)
+            self.btn.l(cbt_coor)
+            self.btn.l(cbt_coor)
+
+            sleep(5)
 
             while cbt_coor:
                 self.capture()
@@ -52,17 +55,19 @@ class Baotu:
                 if is_hd:
                     count = 0
                     while True:
-                        coor = self.smc('sy')
+                        coor = self.smc('sy', is_click=False)
                         if coor:
                             break
                         else:
                             count += 1
 
                         if count == 12:
-                            cbt_coor = self.empty()
+                            cbt_coor = self.has_cbt()
                             break
 
-                    if coor[0] + coor[2] < 920:
+                        sleep(5)
+
+                    if coor and coor[0] + coor[2] < 920:
                         self.btn.l(coor)
                         sleep(4)
                         count = 0
@@ -78,7 +83,7 @@ class Baotu:
         # self.btn.v(1, 20)
         # sleep(0.5)
 
-        # if self.matchTem('bt_btrw', simi=0.95):
+        # if self.matchTem('rw_bt', simi=0.95):
         #     print(f"账号: { self.name } 已领取宝图任务")
         #     processing = True
         # sleep(0.5)
@@ -92,7 +97,7 @@ class Baotu:
         self.btn.v(1, 31)
         sleep(0.5)
 
-        processing = self.smc('bt_btrw', simi=0.95)
+        processing = self.smc('rw_bt', simi=0.95)
 
         if not processing:
             for n in range(31):
@@ -100,9 +105,9 @@ class Baotu:
                     self.capture()
                     tem_coor = self.match("hd_btrw") or self.match("hd_btrw1")
                     if tem_coor:
-                        btn_coor = self.match("cj",
-                                              "imgTem/hd_btrw") or self.match(
-                                                  "cj", "imgTem/hd_btrw1")
+                        btn_coor = self.match(
+                            "cj", screen="imgTem/hd_btrw") or self.match(
+                                "cj", screen="imgTem/hd_btrw1")
                         new_coor = ((
                             tem_coor[0] + btn_coor[0],
                             tem_coor[1] + btn_coor[1],
@@ -127,13 +132,13 @@ class Baotu:
         self.btn.r()
 
         if processing:
-            step_list = ['bt_cbthdwc', 'bt_btrw']
+            step_list = ['bt_cbthdwc', 'rw_bt']
 
             while processing:
                 for item in step_list:
                     self.capture()
                     is_hd = self.match('hd')
-                    coor = self.smc.smcs(item)
+                    coor = self.smc(item)
                     if coor and is_hd:
                         if item == 'bt_cbthdwc':
                             processing = False
@@ -143,7 +148,7 @@ class Baotu:
                             self.btn.l(coor, min_x=800)
                             sleep(5)
 
-                    elif item == 'bt_btrw' and not coor and is_hd:
+                    elif item == 'rw_bt' and not coor and is_hd:
                         count = 0
                         while True:
                             is_hd = self.smc('hd', is_click=False)
@@ -162,4 +167,28 @@ class Baotu:
 
 
 if __name__ == '__main__':
-    Baotu().start()
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+
+    Baotu(adb, complex_task.task_finished).start()

@@ -27,7 +27,7 @@ class Ring:
         self.smc("rchd", sleep_time=0.5)
 
         self.B.MBtn(590, 330)
-        self.B.VBtn(1, 31)
+        self.B.v(1, 31)
         sleep(0.5)
 
         for n in range(31):
@@ -39,9 +39,9 @@ class Ring:
                     complete = True
                     break
             else:
-                self.B.VBtn(-1)
+                self.B.v(-1)
 
-        self.B.VBtn(1, 31)
+        self.B.v(1, 31)
 
         self.btn.r()
 
@@ -59,7 +59,7 @@ class Ring:
                     self.btn.r()
                 else:
                     self.B.MBtn(900, 300)
-                    self.B.VBtn(-1, 20)
+                    self.B.v(-1, 20)
                     sleep(0.5)
 
                     r = self.smc("rw_jyl", simi=0.94, count=0)
@@ -114,7 +114,7 @@ class Ring:
                         else:
                             page += 1
                             self.B.MBtn(590, 330)
-                            self.B.VBtn(-1, 10)
+                            self.B.v(-1, 10)
                             sleep(0.5)
                             if page == 4:
                                 break
@@ -231,7 +231,7 @@ class Ring:
                                     self.btn.r()
                                     sleep(0.5)
                                     self.B.MBtn(900, 300)
-                                    self.B.VBtn(-1, 20)
+                                    self.B.v(-1, 20)
                                     res = self.smc('rw_jyl', simi=0.9)
                                     if res == 0:
                                         count += 1

@@ -5,24 +5,16 @@ class SMC(object):
         self.match = match
         self.btn = btn
 
-    def smc(self, tem, **kwargs):
+    def smc(self, tem, **kwds):
         self.capture()
-        coor = self.match(tem, **kwargs)
+        coor = self.match(tem, **kwds)
         if coor:
-            self.btn.l(coor, **kwargs)
+            self.btn.l(coor, **kwds)
             return coor
         return 0
 
-    def smcs(self, tem, **kwargs):
-        self.capture()
-        coor = self.match.match_feature(tem, **kwargs)
-        if coor:
-            self.btn.l(coor, **kwargs)
-            return coor
-        return 0
-
-    def __call__(self, tem, **kwargs):
-        return self.smc(tem, **kwargs)
+    def __call__(self, tem, **kwds):
+        return self.smc(tem, **kwds)
 
 
 if __name__ == '__main__':

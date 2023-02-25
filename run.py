@@ -88,7 +88,7 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
     capture = CaptureScreen(hwnd, screen)
     match = Match(screen)
     btn = Btn(hwnd, lock)
-    smc = SMC(capture, match, btn).smc
+    smc = SMC(capture, match, btn)
 
     adb = {
         screen: screen,

@@ -10,7 +10,7 @@ class Complex(object):
 
     def __init__(self, adb):
         for key, val in adb.items():
-            self[key] = val
+            self.__dict__[key] = val
 
     def get_info(self):
         while not self.smc('hd', isClick=False):
@@ -69,7 +69,7 @@ class Complex(object):
                 break
             else:
                 self.btn.MBtn(710, 410)
-                self.btn.VBtn(-1, 6)
+                self.btn.v(-1, 6)
                 sleep(0.5)
                 page += 1
                 if page == 8:
@@ -226,10 +226,15 @@ class Complex(object):
             if i % 10 == 0:
                 sleep(0.5)
                 for rw in rw_list:
-                    result = self.smc(rw, is_click=False)
+                    result = self.smc(rw, is_click=False, simi=0.999)
                     if result:
-                        self.btn.r()
                         return result
+
+            self.btn.v(-1)
+
+        self.btn.r()
+
+        sleep(1)
 
         return False
 

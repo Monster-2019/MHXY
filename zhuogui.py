@@ -47,7 +47,7 @@ class Zhuogui(object):
                         break
 
             else:
-                self.B.VBtn(-1)
+                self.B.v(-1)
 
         self.loop(COUNT)
 
@@ -91,7 +91,7 @@ class Zhuogui(object):
 
                 elif isHd and not coor and item == 'zg_zg':
                     self.B.MBtn(900, 300)
-                    self.B.VBtn(1, 10)
+                    self.B.v(1, 10)
 
                 self.btn.l(coor, sleep_time=0.1)
 

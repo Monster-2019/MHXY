@@ -24,10 +24,19 @@
 #     with open('./data.json', 'w') as file:
 #         file.write(json.dumps(data, indent='\t'))
 
-a = {
-    "b": 1,
-    "c": 2,
-}
 
-for key, val in a.items():
-    print(key, val)
+class Test:
+
+    def __init__(self) -> None:
+        pass
+
+    def print_info(self, name, msg="test"):
+        print(f"{name}: {msg}")
+
+    def __call__(self,name, **kwds):
+        self.print_info(name, **kwds)
+
+
+test = Test()
+test.print_info('dongxin')
+test('dongxin', msg="345")

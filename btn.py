@@ -29,7 +29,7 @@ CENTER_COOR = (520, 403)
 
 class Btn(object):
 
-    def __init__(self, hwnd, lock):
+    def __init__(self, hwnd, lock=None):
         self.hwnd = hwnd
         self.lock = lock
 
@@ -109,7 +109,8 @@ class Btn(object):
         key = JWM[char]
         if not key: return
 
-        self.lock.acquire()
+        if self.lock:
+            self.lock.acquire()
 
         win32api.keybd_event(18, 0, 0, 0)
         win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, key, 0)
@@ -119,6 +120,7 @@ class Btn(object):
         win32api.keybd_event(18, 0, 0, 0)
         win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
 
-        self.lock.release()
+        if self.lock:
+            self.lock.release()
 
         sleep(sleep_time)

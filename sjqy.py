@@ -5,7 +5,7 @@ class SJ(object):
 
     def __init__(self, adb, task_finished):
         for key, val in adb.items():
-            self[key] = val
+            self.__dict__[key] = val
         self.task_finished = task_finished
 
     def start(self):
@@ -28,9 +28,9 @@ class SJ(object):
                 self.capture()
                 tem_coor = self.match('hd_sjqy') or self.match('hd_sjqy1')
                 if tem_coor:
-                    btn_coor = self.match('cj',
-                                          'imgTem/hd_sjqy') or self.match(
-                                              'cj', 'imgTem/hd_sjqy1')
+                    btn_coor = self.match(
+                        'cj', screen='imgTem/hd_sjqy') or self.match(
+                            'cj', screen='imgTem/hd_sjqy1')
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))
@@ -48,7 +48,7 @@ class SJ(object):
             while processing:
                 res = self.smc('sj_dw', is_click=False)
                 if res:
-                    self.btn.RBtn()
+                    self.btn.r()
                     processing = False
                     break
                 else:
@@ -56,4 +56,28 @@ class SJ(object):
 
 
 if __name__ == '__main__':
-    SJ().start()
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+
+    SJ(adb, complex_task.task_finished).start()

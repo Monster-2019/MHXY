@@ -27,7 +27,7 @@ class Gongfang(object):
             else:
                 page += 1
                 self.btn.MBtn(707, 406)
-                self.btn.VBtn(-1, 13)
+                self.btn.v(-1, 13)
                 sleep(0.3)
                 if page == 6:
                     self.btn.r()
@@ -65,7 +65,7 @@ class Gongfang(object):
             else:
                 page += 1
                 self.btn.MBtn(707, 406)
-                self.btn.VBtn(-1, 13)
+                self.btn.v(-1, 13)
                 sleep(0.3)
                 if page == 6:
                     self.btn.r()
@@ -98,7 +98,7 @@ class Gongfang(object):
         self.btn.hotkey("hd")
         self.smc("jjxx", sleep_time=0.5)
         self.btn.MBtn(590, 330)
-        self.btn.VBtn(1, 31)
+        self.btn.v(1, 31)
         sleep(0.5)
 
         processing = False
@@ -151,7 +151,7 @@ class Gongfang(object):
                         else:
                             self.btn.r()
                             self.btn.MBtn(157, 686)
-                            self.btn.VBtn(-1, 10)
+                            self.btn.v(-1, 10)
 
                     elif item == "dh" or item == "dhda":
                         while True:

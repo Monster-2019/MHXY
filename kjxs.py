@@ -5,7 +5,7 @@ class KJ(object):
 
     def __init__(self, adb, task_finished):
         for key, val in adb.items():
-            self[key] = val
+            self.__dict__[key] = val
         self.task_finished = task_finished
 
     def start(self):
@@ -28,9 +28,9 @@ class KJ(object):
                 self.capture()
                 tem_coor = self.match('hd_kjxs') or self.match('hd_kjxs2')
                 if tem_coor:
-                    btn_coor = self.match('cj',
-                                          'imgTem/hd_kjxs') or self.match(
-                                              'cj', 'imgTem/hd_kjxs2')
+                    btn_coor = self.match(
+                        'cj', screen='imgTem/hd_kjxs') or self.match(
+                            'cj', screen='imgTem/hd_kjxs2')
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))
@@ -42,13 +42,13 @@ class KJ(object):
                                 break
 
             else:
-                self.btn.VBtn(-1)
+                self.btn.v(-1)
 
         if processing:
             while processing:
                 res = self.smc('kj_dw', is_click=False)
                 if res:
-                    self.btn.RBtn()
+                    self.btn.r()
                     processing = False
                     break
                 else:
@@ -56,4 +56,27 @@ class KJ(object):
 
 
 if __name__ == '__main__':
-    KJ().start()
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+    KJ(adb, complex_task.task_finished).start()

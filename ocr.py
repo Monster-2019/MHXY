@@ -24,6 +24,7 @@ ocr_api = "https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=
 def get_token():
     response = requests.get(token_api)
     if response:
+        print(response.json().get('access_token'))
         return response.json().get('access_token')
 
 
@@ -49,4 +50,5 @@ def get_file_content_as_base64(path, urlencoded=False):
 
 
 if __name__ == '__main__':
-    ocr('./images/imgTem/ck_max.jpg')
+    # ocr('./images/imgTem/ck_max.jpg')
+    get_token()
