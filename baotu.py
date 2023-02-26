@@ -138,7 +138,11 @@ class Baotu(object):
                 for item in step_list:
                     self.capture()
                     is_hd = self.match('hd')
-                    coor = self.smc(item)
+                    if item == 'rw_bt':
+                        coor = self.match(item, simi=0.95)
+                    else:
+                        coor = self.match(item)
+                    print(coor, is_hd)
                     if coor and is_hd:
                         if item == 'bt_cbthdwc':
                             processing = False

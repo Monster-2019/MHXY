@@ -17,7 +17,7 @@ class Shimen(object):
                 break
 
         # if self.task_finished('sm_wc'):
-            # return
+        # return
 
         # self.btn.hotkey('zz', sleep_time=1)
         # self.btn.l('zr1', sleep_time=0.5)
@@ -29,7 +29,7 @@ class Shimen(object):
         self.btn.m(590, 330)
         self.btn.v(1, 31)
 
-        processing = self.smc.smcs('sm_sm')
+        processing = self.smc('sm_sm')
 
         if not processing:
             for n in range(31):
@@ -82,16 +82,14 @@ class Shimen(object):
                 for item in step_list:
                     self.capture()
                     is_hd = self.match('hd')
-                    if item == "sm_sm": # item == "dh" or item == 'dhda' or 
-                        coor = self.match(item, filter=True)
-                        # coor = self.match.match_feature(item, count=5)
+                    if item == "dh" or item == 'dhda' or item == "sm_sm":  #
+                        coor = self.match(item, simi=0.95)
                     else:
                         coor = self.match(item)
-                    print(item, coor)
                     if coor:
                         if item == "dh" or item == "dhda":
                             while True:
-                                coor = self.match.match_feature(item)
+                                coor = self.smc(item, is_click=False)
                                 if coor:
                                     new_coor = ((coor[0], coor[1] + 69, 87,
                                                  22))
@@ -99,6 +97,8 @@ class Shimen(object):
                                     sleep(0.3)
                                 else:
                                     break
+
+                            sleep(0.5)
 
                         elif item == "djjx":
                             while True:
@@ -129,6 +129,8 @@ class Shimen(object):
 
                         else:
                             self.btn.l(coor, min_x=300)
+
+                        sleep(0.1)
 
                     elif is_hd:
                         if item == "sm_sm":

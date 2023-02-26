@@ -17,7 +17,7 @@ class Match(object):
     def __init__(self, screen):
         self.screen = screen
 
-    def match_tem(self, tem, screen=None, simi=default_simi, **kwds):
+    def match_tem(self, tem, screen=None, simi=default_simi, debug=False, **kwds):
         s = screen or self.screen
         img1 = cv.imread("./images/" + s + ".jpg", 0)
         img2 = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
@@ -28,8 +28,8 @@ class Match(object):
         # cv.imshow('img2', img2)
         # cv.waitKey(0)
         # cv.destroyAllWindows()
-        # if tem == 'sm_sm':
-        print(tem, max_val, max_loc)
+        if debug:
+            print(tem, max_val, max_loc)
         if max_val > simi:
             w, h = img2.shape[::-1]
             x, y = max_loc
@@ -66,5 +66,5 @@ if __name__ == "__main__":
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     capture()
-    Match('0').match_tem('btrw')
+    Match('0').match_tem('rw_kg', debug=True)
     # Match('0').match_tem('dhda')

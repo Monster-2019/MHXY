@@ -27,11 +27,8 @@ class Yunbiao(object):
             if n % 10 == 0:
                 self.capture()
                 tem_coor = self.match('hd_yb1') or self.match('hd_yb')
-                btn_coor = self.match('cj',
-                                      screen='imgTem/hd_yb1') or self.match(
-                                          'cj', screen='imgTem/hd_yb')
+                btn_coor = self.match('cj', screen='imgTem/hd_yb')
                 if tem_coor and btn_coor:
-                    print(tem_coor, btn_coor)
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))

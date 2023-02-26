@@ -40,7 +40,8 @@ class Btn(object):
           min_x=0,
           min_y=0,
           max_x=2000,
-          max_y=1000):
+          max_y=1000,
+          **kwds):
         if not coor or not is_click: return
 
         x, y, w, h = coor

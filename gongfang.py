@@ -5,7 +5,7 @@ class Gongfang(object):
 
     def __init__(self, adb, task_finished):
         for key, val in adb.items():
-            self[key] = val
+            self.__dict__[key] = val
         self.task_finished = task_finished
 
     def kaogu(self):
@@ -26,7 +26,7 @@ class Gongfang(object):
 
             else:
                 page += 1
-                self.btn.MBtn(707, 406)
+                self.btn.m(707, 406)
                 self.btn.v(-1, 13)
                 sleep(0.3)
                 if page == 6:
@@ -64,7 +64,7 @@ class Gongfang(object):
 
             else:
                 page += 1
-                self.btn.MBtn(707, 406)
+                self.btn.m(707, 406)
                 self.btn.v(-1, 13)
                 sleep(0.3)
                 if page == 6:
@@ -92,40 +92,49 @@ class Gongfang(object):
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
-        if self.task_finished('gf_wc', 'jjxx'):
-            return
+        processing = self.smc('rw_kg', is_click=False, simi=0.95)
 
-        self.btn.hotkey("hd")
-        self.smc("jjxx", sleep_time=0.5)
-        self.btn.MBtn(590, 330)
-        self.btn.v(1, 31)
-        sleep(0.5)
+        if not processing:
+            if self.task_finished('gf_wc', 'jjxx'):
+                return
 
-        processing = False
+            self.btn.hotkey("hd")
+            self.smc("jjxx", sleep_time=0.5)
+            self.btn.m(590, 330)
+            self.btn.v(1, 31)
+            sleep(0.5)
 
-        for n in range(31):
-            if n % 10 == 0:
-                self.captrue()
-                tem_coor = self.match("hd_gfrw", simi=0.998)
-                if tem_coor:
-                    btn_coor = self.match("cj", "imgTem/hd_gfrw")
-                    new_coor = ((tem_coor[0] + btn_coor[0],
-                                 tem_coor[1] + btn_coor[1], btn_coor[2],
-                                 btn_coor[3]))
-                    if btn_coor:
-                        self.btn.l(new_coor)
-                        processing = True
+            processing = self.smc('rw_kg', simi=0.95)
 
-                        while True:
-                            r = self.smc("gf_lqrw")
-                            sleep(1)
-                            if r:
-                                break
+            for n in range(31):
+                if n % 10 == 0:
+                    print(123)
+                    sleep(1)
+                    self.capture()
+                    tem_coor = self.match("hd_gfrw")
+                    btn_coor = self.match("cj", screen="imgTem/hd_gfrw")
+                    print(tem_coor, btn_coor)
+                    if tem_coor and btn_coor:
+                        new_coor = ((tem_coor[0] + btn_coor[0],
+                                     tem_coor[1] + btn_coor[1], btn_coor[2],
+                                     btn_coor[3]))
+                        if btn_coor:
+                            self.btn.l(new_coor)
+                            processing = True
 
-                        break
+                            while True:
+                                r = self.smc("gf_lqrw")
+                                sleep(1)
+                                if r:
+                                    break
+
+                            break
+
+                else:
+                    self.btn.v(-1)
 
         step_list = [
-            "gf_kg",
+            "rw_kg",
             "gf_xz",
             "dh",
             "dhda",
@@ -140,26 +149,25 @@ class Gongfang(object):
             for item in step_list:
                 self.capture()
                 is_hd = self.match('hd')
-                if item == 'gf_kg' or item == 'dh':
-                    coor = self.match.match_feature(item)
+                if item == 'rw_kg' or item == 'dh':
+                    coor = self.match(item, simi=0.95)
                 else:
                     coor = self.match(item)
                 if coor:
-                    if item == 'gf_kg':
+                    if item == 'rw_kg':
                         if coor[0] > 780:
                             self.btn.l(coor)
                         else:
                             self.btn.r()
-                            self.btn.MBtn(157, 686)
+                            self.btn.m(157, 686)
                             self.btn.v(-1, 10)
 
                     elif item == "dh" or item == "dhda":
                         while True:
                             self.capture()
-                            coor = self.match.match_feature(item)
-                            if coor != 0:
-                                new_coor = ((coor[0] + 14, coor[1] + 64, 247,
-                                             41))
+                            coor = self.match(item, simi=0.95)
+                            if coor:
+                                new_coor = ((coor[0], coor[1] + 69, 87, 22))
                                 self.btn.l(new_coor)
                                 sleep(0.3)
                             else:
@@ -176,7 +184,7 @@ class Gongfang(object):
                         self.btn.l(coor)
                         res = self.smc("gm_sb", is_click=False)
                         if res:
-                            new_coor = ((308, 245), (294, 75))
+                            new_coor = ((308, 245, 294, 75))
                             self.btn.l(new_coor)
                             self.btn.r()
                             self.btn.r()
@@ -193,12 +201,16 @@ class Gongfang(object):
                     else:
                         self.btn.l(coor, min_x=300)
 
+                    sleep(0.1)
+
                 else:
-                    if item == "gf_kg" and is_hd:
+                    if item == "rw_kg" and is_hd:
                         count = 0
                         while True:
-                            is_hd = self.smc('hd', is_click=False)
-                            if not is_hd:
+                            complete = self.smc('rw_kg',
+                                                simi=0.95,
+                                                is_click=False)
+                            if complete:
                                 count = 0
                             else:
                                 count += 1
@@ -215,4 +227,28 @@ class Gongfang(object):
 
 
 if __name__ == "__main__":
-    Gongfang().start()
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+
+    Gongfang(adb, complex_task.task_finished).start()
