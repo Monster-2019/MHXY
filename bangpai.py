@@ -86,9 +86,10 @@ class Bangpai(object):
                     coor = self.match(item)
                 print(item, coor)
                 if coor:
-                    if item == "gm_shanghui":
-                        sleep(1)
-                        self.btn.l(coor, sleep_time=0.5)
+                    count = 0
+                    if item == 'gm' or item == "gm_shanghui":
+                        sleep(0.5)
+                        self.btn.l(coor)
                         res = self.smc(item, is_click=False)
                         if res:
                             self.btn.r()

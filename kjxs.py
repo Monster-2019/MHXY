@@ -26,11 +26,9 @@ class KJ(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_coor = self.match('hd_kjxs') or self.match('hd_kjxs2')
+                tem_coor = self.match('hd_kjxs')
                 if tem_coor:
-                    btn_coor = self.match(
-                        'cj', screen='imgTem/hd_kjxs') or self.match(
-                            'cj', screen='imgTem/hd_kjxs2')
+                    btn_coor = self.match('cj', screen='imgTem/hd_kjxs')
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))

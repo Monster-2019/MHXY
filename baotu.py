@@ -90,6 +90,8 @@ class Baotu(object):
 
         if self.task_finished('bt_wc'):
             return
+        
+        print(1)
 
         self.btn.hotkey("hd")
         self.smc("rchd", sleep_time=0.5)
