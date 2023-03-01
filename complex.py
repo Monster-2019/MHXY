@@ -13,12 +13,12 @@ class Complex(object):
             self.__dict__[key] = val
 
     def get_info(self):
-        while not self.smc('hd', isClick=False):
-            self.B.r()
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
         self.btn.hotkey('js')
-        self.capture.custom_captrue('name')
-        name_level = ocr(f'./images/{self.capture.screen}.jpg')
+        self.capture.custom_capture('name')
+        name_level = ocr(f'./images/{self.capture.screen}.jpg')[0]
         self.btn.r()
 
         if name_level:
@@ -27,12 +27,16 @@ class Complex(object):
                 name = match.group(1)
                 level = int(match.group(2))
 
-        self.btn.hotkey('bb')
-        self.capture.custom_captrue('gold')
-        gold = ocr(f'./images/{self.capture.screen}.jpg')
+        sleep(0.5)
 
-        self.capture.custom_captrue('silver')
-        silver = ocr(f'./images/{self.capture.screen}.jpg')
+        self.btn.hotkey('bb')
+        self.capture.custom_capture('gold')
+        gold = ocr(f'./images/{self.capture.screen}.jpg')[0]
+
+        sleep(0.5)
+
+        self.capture.custom_capture('silver')
+        silver = ocr(f'./images/{self.capture.screen}.jpg')[0]
 
         self.btn.r()
 
@@ -68,7 +72,7 @@ class Complex(object):
                 self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
                 break
             else:
-                self.btn.MBtn(710, 410)
+                self.btn.m(710, 410)
                 self.btn.v(-1, 6)
                 sleep(0.5)
                 page += 1
@@ -240,4 +244,26 @@ class Complex(object):
 
 
 if __name__ == '__main__':
-    Complex().smc('bt_wc')
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    
+    Complex(adb).singin()

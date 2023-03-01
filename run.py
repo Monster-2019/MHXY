@@ -84,19 +84,21 @@ week = today.isoweekday()
 shell = win32com.client.Dispatch("WScript.Shell")
 
 
+@logger.catch()
 def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
+    print(2)
     capture = CaptureScreen(hwnd, screen)
     match = Match(screen)
     btn = Btn(hwnd, lock)
     smc = SMC(capture, match, btn)
 
     adb = {
-        screen: screen,
-        hwnd: hwnd,
-        capture: capture,
-        match: match,
-        btn: btn,
-        smc: smc,
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
     }
 
     try:
@@ -108,25 +110,25 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     complex_task = Complex(adb)
 
-    complex_task.get_info()
+    # complex_task.get_info()
 
     complex_task.singin()
 
-    if screen == '0':
-        complex_task.join_team_leader()
-    else:
-        complex_task.join_team_player()
+    # if screen == '0':
+    #     complex_task.join_team_leader()
+    # else:
+    #     complex_task.join_team_player()
 
-    if week >= 6:
-        if screen == '0':
-            Zhuogui(adb, complex_task.task_finished, pipe).leader()
-        else:
-            Zhuogui(adb, complex_task.task_finished, pipe).player()
+    # if week >= 6:
+    #     if screen == '0':
+    #         Zhuogui(adb, complex_task.task_finished, pipe).leader()
+    #     else:
+    #         Zhuogui(adb, complex_task.task_finished, pipe).player()
 
-    if screen == '0':
-        FuBen(adb, complex_task.task_finished, pipe).leader('ecy')
-    else:
-        FuBen(adb, complex_task.task_finished, pipe).leader()
+    # if screen == '0':
+    #     FuBen(adb, complex_task.task_finished, pipe).leader('ecy')
+    # else:
+    #     FuBen(adb, complex_task.task_finished, pipe).player()
 
     Shimen(adb, complex_task.task_finished).start()
 
@@ -142,48 +144,53 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     # getInfo()
 
-
 def start(single=False):
-    import pythoncom
-    pythoncom.CoInitialize()
+    try:
+        import pythoncom
+        pythoncom.CoInitialize()
 
-    for index in range(len(ACCTZU)):
-        GROUP_NO = index + 1
-        hwnd_list = getHwndList()
+        for index in range(len(ACCTZU)):
+            GROUP_NO = index + 1
+            hwnd_list = getHwndList()
 
-        if not single:
-            openGame(hwnd_list)
+            if not single:
+                openGame(hwnd_list)
 
-        hwnd_list = getHwndList()
-        logger.info(f'开始第 {GROUP_NO} 组号')
-        login(index, hwnd_list)
+            hwnd_list = getHwndList()
+            logger.info(f'开始第 {GROUP_NO} 组号')
 
-        lock = Manager().Lock()
-        manager_dict = Manager().dict()
-        manager_list = Manager().list([])
-        pipe = Pipe()
+            if not single:
+                login(index, hwnd_list)
 
-        game_count = len(hwnd_list)
-        p = Pool(game_count)
-        for i in range(game_count):
-            p.apply_async(
-                daily_tasks,
-                (str(i), hwnd_list[i], lock, manager_dict, manager_list, pipe))
-        p.close()
-        p.join()
+            lock = Manager().Lock()
+            manager_dict = Manager().dict()
+            manager_list = Manager().list([])
+            pipe = Pipe()
 
-        msg = f'完成第{GROUP_NO}组号, 活跃：{",".join(manager_list)}'
-        logger.info(f'完成第{GROUP_NO}组号')
-        push_msg(msg)
+            game_count = len(hwnd_list)
+            p = Pool(game_count)
+            for i in range(game_count):
+                p.apply_async(
+                    daily_tasks,
+                    (str(i), hwnd_list[i], lock, manager_dict, manager_list, pipe))
+                sleep(1)
+            p.close()
+            p.join()
 
-    logger.info(f'已完成全部账号')
+            msg = f'完成第{GROUP_NO}组号, 活跃：{",".join(manager_list)}'
+            logger.info(f'完成第{GROUP_NO}组号')
+            push_msg(msg)
+
+        logger.info(f'已完成全部账号')
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # parser.add_argument('--shutdown', '-s', action='store_true', default=False)
     parser.add_argument('--time', '-t', type=str)
-    parser.add_argument('--self', action='store_true', default=False)
+    parser.add_argument('--self', '-s', action='store_true', default=False)
     args = parser.parse_args()
 
     if args.time:

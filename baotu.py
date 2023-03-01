@@ -89,9 +89,8 @@ class Baotu(object):
         # sleep(0.5)
 
         if self.task_finished('bt_wc'):
+            self.dig()
             return
-        
-        print(1)
 
         self.btn.hotkey("hd")
         self.smc("rchd", sleep_time=0.5)
@@ -121,11 +120,17 @@ class Baotu(object):
                             processing = True
                             sleep(5)
 
+                            count = 0
                             while True:
                                 if self.smc('bt_ttwf'):
                                     break
+                                else:
+                                    count += 1
 
                                 sleep(2)
+
+                                if count == 15:
+                                    break
 
                             break
                 else:
@@ -144,7 +149,6 @@ class Baotu(object):
                         coor = self.match(item, simi=0.95)
                     else:
                         coor = self.match(item)
-                    print(coor, is_hd)
                     if coor and is_hd:
                         if item == 'bt_cbthdwc':
                             processing = False

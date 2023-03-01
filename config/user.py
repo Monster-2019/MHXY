@@ -15,18 +15,23 @@ ACCOUNT_CONFIG = {
 }
 
 ACCTZU = [
+    # [
+    #     {"account": "h1", "server": "h1-1", "config": ACCOUNT_CONFIG},
+    #     {"account": "h2", "server": "h2-1", "config": ACCOUNT_CONFIG},
+    #     {"account": "h3", "server": "h3-1", "config": ACCOUNT_CONFIG},
+    #     {"account": "h4", "server": "h4-1", "config": ACCOUNT_CONFIG},
+    #     {"account": "h5", "server": "h5-1", "config": ACCOUNT_CONFIG},
+    # ],
+    # [
+    #     {"account": "h1", "server": "h1-2", "config": ACCOUNT_CONFIG},
+    #     {"account": "h2", "server": "h2-2", "config": ACCOUNT_CONFIG},
+    #     {"account": "h3", "server": "h3-2", "config": ACCOUNT_CONFIG},
+    #     {"account": "h4", "server": "h4-2", "config": ACCOUNT_CONFIG},
+    #     {"account": "h5", "server": "h5-2", "config": ACCOUNT_CONFIG},
+    # ]
+    # 心意
     [
-        {"account": "h1", "server": "h1-1", "config": ACCOUNT_CONFIG},
         {"account": "h2", "server": "h2-1", "config": ACCOUNT_CONFIG},
-        {"account": "h3", "server": "h3-1", "config": ACCOUNT_CONFIG},
-        {"account": "h4", "server": "h4-1", "config": ACCOUNT_CONFIG},
-        {"account": "h5", "server": "h5-1", "config": ACCOUNT_CONFIG},
-    ],
-    [
-        {"account": "h1", "server": "h1-2", "config": ACCOUNT_CONFIG},
-        {"account": "h2", "server": "h2-2", "config": ACCOUNT_CONFIG},
-        {"account": "h3", "server": "h3-2", "config": ACCOUNT_CONFIG},
-        {"account": "h4", "server": "h4-2", "config": ACCOUNT_CONFIG},
-        {"account": "h5", "server": "h5-2", "config": ACCOUNT_CONFIG},
+        {"account": "h2", "server": "h2-1", "config": ACCOUNT_CONFIG},
     ]
 ]

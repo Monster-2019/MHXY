@@ -38,7 +38,7 @@ class CaptureScreen(object):
     def custom_capture(self, key):
         if not key: return
 
-        coor, wh = COOR(key)
+        coor, wh = COOR[key]
 
         self.save_img(coor, wh)
 

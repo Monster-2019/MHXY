@@ -8,6 +8,22 @@ class Bangpai(object):
             self.__dict__[key] = val
         self.task_finished = task_finished
 
+    def check_in(self):
+        self.btn.hotkey('bp')
+
+        step_list = ['bp_fl', 'bp_check_in', 'bp_check_finish']
+
+        complete = False
+        while not complete:
+            for item in step_list:
+                coor = self.smc(item)
+                if coor and item == 'bp_check_finish':
+                    complete = True
+                    self.btn.r()
+                    break
+
+        print('签到完成')
+
     def changeTask(self, has_task=True):
         step_list = ["rw_dqrw", "rw_cgrw", "rw_bprw", "rw_fqrw", "qd"]
 
@@ -148,3 +164,4 @@ if __name__ == "__main__":
     complex_task = Complex(adb)
 
     Bangpai(adb, complex_task.task_finished).start()
+    # Bangpai(adb, complex_task.task_finished).check_in()

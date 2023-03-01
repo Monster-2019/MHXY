@@ -3,18 +3,19 @@ from random import randint
 import win32api, win32con
 
 JWM = {
+    'bp': 66,
     'hd': 67,
     'fl': 68,
+    'bb': 69,
     'hy': 70,
     'gj': 71,
-    'rw': 89,
-    'dw': 84,
-    'bb': 69,
     'xt': 74,
     'dt': 77,
     'jy': 78,
-    'js': 87,
     'jn': 83,
+    'dw': 84,
+    'js': 87,
+    'rw': 89,
     'zz': 90
 }
 
@@ -95,7 +96,7 @@ class Btn(object):
         for i in range(end_y - start_y):
             if i % 10 == 0:
                 start_h = start_y + i
-                self.MBtn(start_x, start_h)
+                self.m(start_x, start_h)
                 win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN,
                                      win32con.MK_LBUTTON,
                                      win32api.MAKELONG(start_x, start_h))

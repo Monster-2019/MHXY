@@ -9,7 +9,7 @@ import win32gui
 from loguru import logger
 
 from btn import Btn
-from capture import Capture
+from capture import CaptureScreen
 from config.user import ACCTZU
 from match import Match
 
@@ -42,7 +42,7 @@ def mnqInit():
         if mnq_hwnd:
             break
 
-    mnq_screen = Capture(mnq_hwnd).cutScreen
+    mnq_screen = CaptureScreen(mnq_hwnd).cutScreen
     mnq_match = Match('mnq').matchTem
     mnq_btn = Btn(mnq_hwnd)
 
@@ -114,7 +114,7 @@ def mnq_login(account):
 
 
 def game_login(hwnd, server):
-    screen = Capture(hwnd).cutScreen
+    screen = CaptureScreen(hwnd).cutScreen
     match = Match('mnq').matchTem
     btn = Btn(hwnd)
 
@@ -161,7 +161,7 @@ def login(group, hwnd_list):
         sleep(1)
 
         login_window_hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
-        login_window_hwnd_screen = Capture(login_window_hwnd,
+        login_window_hwnd_screen = CaptureScreen(login_window_hwnd,
                                            './images/mnq/').cutScreen
         login_window_hwnd_screen()
 
