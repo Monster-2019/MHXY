@@ -145,6 +145,8 @@ class Complex(object):
             self.smc('sygb', sleep_time=0.3)
 
         self.btn.r()
+        self.btn.r()
+        self.btn.r()
 
         logger.info(f"刮奖完成")
 

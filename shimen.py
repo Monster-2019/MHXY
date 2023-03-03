@@ -16,13 +16,15 @@ class Shimen(object):
             if not self.smc("sygb", sleep_time=0.5):
                 break
 
-        # if self.task_finished('sm_wc'):
-        # return
+        if self.task_finished('sm_wc'):
+            print('师门完成')
+            return
 
         # self.btn.hotkey('zz', sleep_time=1)
         # self.btn.l('zr1', sleep_time=0.5)
         # self.btn.r()
 
+        print('师门进行中')
         sleep(1)
         self.btn.hotkey("hd")
         self.smc("rchd", sleep_time=0.5)
@@ -35,10 +37,8 @@ class Shimen(object):
             for n in range(31):
                 if n % 10 == 0:
                     self.capture()
-                    tem_coor = self.match("hd_smrw") or self.match("hd_smrw1")
-                    btn_coor = self.match(
-                        "cj", screen="imgTem/hd_smrw") or self.match(
-                            "cj", screen="imgTem/hd_smrw1")
+                    tem_coor = self.match("hd_smrw")
+                    btn_coor = self.match("cj", screen="imgTem/hd_smrw")
                     if tem_coor and btn_coor:
                         new_coor = ((tem_coor[0] + btn_coor[0],
                                      tem_coor[1] + btn_coor[1], btn_coor[2],
@@ -58,8 +58,6 @@ class Shimen(object):
                         break
                 else:
                     self.btn.v(-1)
-
-        print(1, processing)
 
         if processing:
             step_list = [

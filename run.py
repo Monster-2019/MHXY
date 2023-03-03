@@ -26,6 +26,7 @@ from smc import SMC
 from utils import hide_login, push_msg
 from yunbiao import Yunbiao
 from zhuogui import Zhuogui
+from bangpai import Bangpai
 
 conf = configparser.ConfigParser()
 
@@ -86,7 +87,6 @@ shell = win32com.client.Dispatch("WScript.Shell")
 
 @logger.catch()
 def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
-    print(2)
     capture = CaptureScreen(hwnd, screen)
     match = Match(screen)
     btn = Btn(hwnd, lock)
@@ -113,6 +113,10 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
     # complex_task.get_info()
 
     complex_task.singin()
+
+    bangpai = Bangpai(adb, complex_task.task_finished)
+
+    bangpai.check_in()
 
     # if screen == '0':
     #     complex_task.join_team_leader()
@@ -170,10 +174,8 @@ def start(single=False):
             game_count = len(hwnd_list)
             p = Pool(game_count)
             for i in range(game_count):
-                p.apply_async(
-                    daily_tasks,
-                    (str(i), hwnd_list[i], lock, manager_dict, manager_list, pipe))
-                sleep(1)
+                p.apply_async(daily_tasks, (str(i), hwnd_list[i], lock,
+                                            manager_dict, manager_list, pipe))
             p.close()
             p.join()
 

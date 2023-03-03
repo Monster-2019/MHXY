@@ -9,6 +9,9 @@ class Bangpai(object):
         self.task_finished = task_finished
 
     def check_in(self):
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
+            
         self.btn.hotkey('bp')
 
         step_list = ['bp_fl', 'bp_check_in', 'bp_check_finish']
