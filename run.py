@@ -27,6 +27,7 @@ from utils import hide_login, push_msg
 from yunbiao import Yunbiao
 from zhuogui import Zhuogui
 from bangpai import Bangpai
+from gengzhong import GengZhong
 
 conf = configparser.ConfigParser()
 
@@ -118,6 +119,8 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     bangpai.check_in()
 
+    GengZhong(adb, complex_task.task_finished).start()
+
     # if screen == '0':
     #     complex_task.join_team_leader()
     # else:
@@ -146,7 +149,12 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     Yunbiao(adb, complex_task.task_finished).start()
 
+    GengZhong(adb, complex_task.task_finished).start(True)
+
+    print(f"{screen}账号完成")
+
     # getInfo()
+
 
 def start(single=False):
     try:

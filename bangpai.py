@@ -103,7 +103,6 @@ class Bangpai(object):
                     coor = self.match(item, simi=0.95)
                 else:
                     coor = self.match(item)
-                print(item, coor)
                 if coor:
                     count = 0
                     if item == 'gm' or item == "gm_shanghui":
@@ -135,7 +134,6 @@ class Bangpai(object):
 
                     if count == 5:
                         complete = self.changeTask()
-                        print(complete)
                         count = 0
                         if complete:
                             processing = False

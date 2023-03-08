@@ -1,91 +1,66 @@
 from time import sleep
-from time import time
 from datetime import datetime
-from cutScreen import CScreen
-from match import Match
-from smc import SMC
-from btn import Btn
-from glo import Glo
-from log import log
-import traceback
 
 
-class GengZhong:
-    def __init__(self):
-        self.g = Glo()
-        self.name = self.g.get('name')
-        self.B = Btn()
-        CScreenOjb = CScreen()
-        self.cutScreen = CScreenOjb.cutScreen
-        self.customCutScreen = CScreenOjb.customCutScreen
-        self.matchTem = Match().matchTem
-        self.smc = SMC().smc
+class GengZhong(object):
+
+    def __init__(self, adb, task_finished):
+        for key, val in adb.items():
+            self.__dict__[key] = val
+        self.task_finished = task_finished
         self.weekday = datetime.today().isoweekday()
 
     def sell(self):
-        while True:
-            res = self.smc('hd', count=0)
-            if res == 0:
-                self.btn.r()
-            else:
-                break
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
         self.btn.hotkey('bb')
         self.smc('bb_zl', sleep_time=0.5)
-        self.B.MBtn(720, 440)
-        self.B.v(1, 30)
+        self.btn.m(720, 440)
+        self.btn.v(1, 30)
         sleep(0.5)
 
         page = 1
-        while True:
-            res = self.smc('bb_jyh', sleep_time=0.5)
-            if res != 0:
-                self.smc('bb_gd', sleep_time=0.5)
-                self.smc('bb_gfbt', sleep_time=1)
-                self.btn.r()
-                break
-
-            else:
-                self.B.MBtn(720, 440)
-                self.B.v(-1, 6)
-                page += 1
-                if page == 6:
-                    log(f"账号: { self.name } 无金银花")
+        for n in range(61):
+            if n % 10 == 0:
+                res = self.smc('bb_jyh', sleep_time=0.5)
+                if res:
+                    self.smc('bb_gd', sleep_time=0.5)
+                    self.smc('bb_gfbt', sleep_time=1)
                     self.btn.r()
                     break
 
+                else:
+                    self.btn.m(720, 440)
+                    self.btn.v(-1, 6)
+
         complete = False
-        count = 0
         while not complete:
             res = self.smc('gfbt_gq', sleep_time=0.5)
-            if res != 0:
+            if res:
                 self.smc('gfbt_cxsj', sleep_time=0.5)
                 self.smc('bzts', sleep_time=0.5)
                 self.smc('qd', sleep_time=0.5)
-                count += 1
             else:
                 complete = True
                 break
-        log(f"账号：{self.name} 重新上架{count}组金银花")
 
         complete = False
-        count = 0
         while not complete:
-            self.customCutScreen('gfbt')
-            res = self.matchTem('gfbt_jyh')
+            self.capture.custom_capture('gfbt')
+            res = self.match('gfbt_jyh')
             if res:
-                Coor = ((647 + res[0][0], 207 + res[0][1]), res[1])
+                Coor = ((647 + res[0], 207 + res[1], res[2], res[3]))
                 self.btn.l(Coor, sleep_time=0.5)
-            # res = self.smc('gfbt_jyh', infoKey='gfbt', sleep_time=0.5)
-            # if res != 0:
+                # res = self.smc('gfbt_jyh', infoKey='gfbt', sleep_time=0.5)
+                # if res != 0:
                 self.smc('gfbt_sj', sleep_time=0.5)
                 res = self.smc('gfbt_max', sleep_time=0.5)
-                if res != 0:
+                if res:
                     complete = True
                     break
                 self.smc('bzts', sleep_time=0.5)
                 self.smc('qd', sleep_time=0.5)
-                count += 1
             else:
                 complete = True
                 break
@@ -93,92 +68,74 @@ class GengZhong:
         self.btn.r()
         self.btn.r()
 
-        log(f"账号：{self.name} 上架{count}组金银花")
+        print(f"已售卖")
 
         return complete
 
     def start(self, isSell=False):
-        try:
-            log(f"账号: { self.name } 开始耕种")
-            complete = False
-            isTill = True
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
 
-            while True:
-                res = self.smc('hd', count=0)
-                if res == 0:
-                    self.btn.r()
-                else:
-                    break
+        self.btn.hotkey('jy', sleep_time=2)
 
-            self.btn.hotkey('jy', sleep_time=1)
+        self.smc('jy_hj', sleep_time=3)
 
-            self.smc('jy_hj', sleep_time=3)
+        while not self.smc('hd', is_click=False):
+            sleep(1)
 
-            while not self.smc('hd', count=0):
-                sleep(1)
+        self.smc('td_status', sleep_time=0.5)
 
-            self.cutScreen()
-            btnCoor = self.matchTem('gz_sh')
-            temCoor = self.matchTem('gz_td', simi=0.999) or self.matchTem('gz_td_l', simi=0.999) or self.matchTem('gz_td_r', simi=0.999)
-            if btnCoor == 0 and temCoor == 0:
-                isTill = False
-                complete = True
+        is_sh = self.smc('btn_sh')
 
-            xhList = [
-                'gz_sh', 'sh', 'gz_td', 'gz_td_l', 'gz_td_r', 'gz_prve', 'gz_jyh', 'gz_zz'
-            ]
+        is_zz = self.smc('gz_zz', is_click=False)
 
-            count = 0
-            while isTill:
-                for item in xhList:
-                    self.cutScreen()
-                    btnCoor = self.matchTem(item, simi=0.998)
-                    if btnCoor != 0:
-                        if item == 'gz_jyh':
-                            temCoor = self.matchTem('gz_add', 'imgTem/gz_jyh')
-                            newCoor = ((btnCoor[0][0] + temCoor[0][0],
-                                        btnCoor[0][1] + temCoor[0][1]),
-                                       temCoor[1])
-                            for n in range(10):
-                                self.btn.l(newCoor)
-                                sleep(0.1)
+        if not is_sh and not is_zz:
+            print('无收获， 无耕种')
+            return
 
-                        elif item == 'gz_zz':
-                            self.btn.l(btnCoor, sleep_time=0.5)
-                            self.cutScreen()
-                            temCoor = self.matchTem('gf_nothl')
-                            if temCoor != 0:
-                                self.btn.r()
-                            isTill = False
-                            complete = True
+        self.smc('td_status', sleep_time=0.5)
 
-                        else:
-                            self.btn.l(btnCoor)
+        self.capture()
+        tem_coor = self.match('gz_jyh')
+        btn_coor = self.match('gz_add', screen='imgTem/gz_jyh')
+        if tem_coor and btn_coor:
+            new_coor = ((tem_coor[0] + btn_coor[0], tem_coor[1] + btn_coor[1],
+                         btn_coor[2], btn_coor[3]))
+            for i in range(10):
+                self.btn.l(new_coor)
+                sleep(0.1)
 
-                    else:
-                        if item == 'gz_td' or item == 'gz_td_l' or item == 'gz_td_r':
-                            count+=1
+            self.smc('gz_zz', sleep_time=0.5)
 
-                    sleep(0.5)
+            self.btn.r()
 
-                if count == 5:
-                    isTill = False
-                    complete = True
-                    break
-
-            if ((self.weekday - 1) % 2 == 0) or isSell:
-                self.sell()
-
-            if complete:
-                log(f"账号: { self.name } 耕种完成")
-                return 1
-            else:
-                self.start()
-        except Exception as e:
-            # print(e)
-            # traceback.print_exc()
-            log(e, True)
+        if ((self.weekday - 1) % 2 == 0) or isSell:
+            self.sell()
 
 
 if __name__ == "__main__":
-    GengZhong().start(True)
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+
+    GengZhong(adb, complex_task.task_finished).start(True)
