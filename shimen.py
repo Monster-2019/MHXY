@@ -103,6 +103,8 @@ class Shimen(object):
                                 res = self.smc("djjx", sleep_time=0.2)
                                 if res:
                                     break
+                            
+                            sleep(0.5)
 
                         elif item == "btgm" or item == "gfgm":
                             sleep(2)

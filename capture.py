@@ -12,7 +12,8 @@ COOR = {
     "silver": ((300, 634), (160, 24)),
     "bb": ((513, 202), (407, 407)),
     "gfbt": ((647, 207), (306, 461)),
-    "hy": ((862, 615), (110, 20))
+    "hy": ((862, 615), (110, 20)),
+    "level": ((913, 49), (23, 18))
 }
 
 DEFAULT_SAVE_URL = "./images/"
@@ -65,3 +66,11 @@ class CaptureScreen(object):
 
     def __call__(self):
         self.capture()
+
+if __name__ == "__main__":
+    import win32gui
+    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    capture.custom_capture('name')
+    # Match('0').match_tem('dhda')

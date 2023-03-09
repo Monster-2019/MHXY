@@ -18,7 +18,7 @@ class Complex(object):
 
         self.btn.hotkey('js')
         self.capture.custom_capture('name')
-        name_level = ocr(f'./images/{self.capture.screen}.jpg')[0]
+        name_level = ocr(f'./images/{self.capture.screen}.jpg', lang="chi_sim")
         self.btn.r()
 
         if name_level:
@@ -31,12 +31,12 @@ class Complex(object):
 
         self.btn.hotkey('bb')
         self.capture.custom_capture('gold')
-        gold = ocr(f'./images/{self.capture.screen}.jpg')[0]
+        gold = ocr(f'./images/{self.capture.screen}.jpg')
 
         sleep(0.5)
 
         self.capture.custom_capture('silver')
-        silver = ocr(f'./images/{self.capture.screen}.jpg')[0]
+        silver = ocr(f'./images/{self.capture.screen}.jpg')
 
         self.btn.r()
 
@@ -268,4 +268,4 @@ if __name__ == '__main__':
         'smc': smc,
     }
     
-    Complex(adb).singin()
+    Complex(adb).get_info()
