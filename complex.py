@@ -134,7 +134,7 @@ class Complex(object):
         self.smc('fl_mrfl', sleep_time=0.5)
         self.smc('fl_dkggl', sleep_time=0.5)
 
-        self.btn.d((533, 396), (850, 485))
+        self.btn.d_horizontal((533, 396, 850, 485))
 
         reward_list = [(655, 567, 66, 66), (550, 567, 66, 66),
                        (760, 567, 66, 66), (865, 567, 66, 66)]

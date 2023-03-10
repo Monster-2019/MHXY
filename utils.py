@@ -71,3 +71,6 @@ class HsvFilter:
         self.sSub = sSub
         self.vAdd = vAdd
         self.vSub = vSub
+
+if __name__ == "__main__":
+    hide_login()

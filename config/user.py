@@ -31,7 +31,10 @@ ACCTZU = [
     # ]
     # 心意
     [
-        {"account": "h2", "server": "h2-1", "config": ACCOUNT_CONFIG},
-        {"account": "h2", "server": "h2-1", "config": ACCOUNT_CONFIG},
+        {"account": "h1", "server": "h1_xyxt", "config": ACCOUNT_CONFIG},
+        {"account": "h2", "server": "h2_xyxt", "config": ACCOUNT_CONFIG},
+        {"account": "h3", "server": "h3_xyxt", "config": ACCOUNT_CONFIG},
+        {"account": "h4", "server": "h4_xyxt", "config": ACCOUNT_CONFIG},
+        {"account": "h5", "server": "h5_xyxt", "config": ACCOUNT_CONFIG}
     ]
 ]
