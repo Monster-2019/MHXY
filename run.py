@@ -111,7 +111,7 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     complex_task = Complex(adb)
 
-    # complex_task.get_info()
+    complex_task.get_info()
 
     complex_task.singin()
 
