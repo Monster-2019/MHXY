@@ -25,7 +25,6 @@ def ocr(path, lang="eng", **kwds):
     # print(pytesseract.image_to_string(image, lang='chi_sim+eng',
     #                                   config=config))
 
-    print(text)
     return text
 
 

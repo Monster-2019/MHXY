@@ -42,7 +42,6 @@ def mnqInit():
     leidianIsOpened = win32gui.FindWindow(None, '雷电模拟器')
     if leidianIsOpened:
         mnq_hwnd = win32gui.FindWindowEx(leidianIsOpened, None, 'RenderWindow', None)
-        print(mnq_hwnd)
         mnq_capture = CaptureScreen(mnq_hwnd, 'mnq').capture
         mnq_match = Match('mnq').match_tem
         mnq_btn = Btn(mnq_hwnd)
@@ -92,7 +91,8 @@ def mnq_login(account):
     while not status:
         for item in login_step:
             mnq_capture()
-            coor = mnq_match(item, simi=0.999)
+            coor = mnq_match(item, simi=0.998)
+            print(item, coor)
             if coor:
                 if item == 'mnq_tk':
                     mnq_btn.l(coor, sleep_time=1)
@@ -103,12 +103,12 @@ def mnq_login(account):
                         if coor:
                             break
                         else:
-                            mnq_btn.l((140, 345, 2, 2))
+                            mnq_btn.l((100, 245, 2, 2))
                             # self.mnqBtn.l(((650, 480), (2, 2)))
                         sleep(0.5)
 
                     sleep(0.5)
-                    mnq_btn.l((640, 300, 2, 2))
+                    mnq_btn.l((470, 230, 2, 2))
                     sleep(1)
 
                 else:
@@ -119,14 +119,16 @@ def mnq_login(account):
 
             else:
                 if item == account:
-                    print(3333)
-                    for index in range(3):
+                    while True:
                         mnq_capture()
                         coor = mnq_match(item)
                         if coor:
+                            mnq_btn.l(coor)
                             break
-                        mnq_btn.d_vertical((640, 300, 640, 100))
-                        sleep(0.5)
+                        mnq_btn.d_vertical((470, 230, 470, 100))
+                        sleep(1)
+
+                    sleep(1)
             
             sleep(0.5)
 
@@ -175,13 +177,9 @@ def login(group, hwnd_list):
         if hwnd and not_logged:
             login_list.append(hwnd)
 
-    if len(login_list) == 5:
-        mnqInit()
-    else:
-        logger.info('存在不同登录态，请检查')
-        return os._exit()
+    mnqInit()
 
-    for i in range(5):
+    for i in range(len(hwnd_list)):
         login_account = ACCTZU[group][i]['account']
         login_server = ACCTZU[group][i]['server']
 

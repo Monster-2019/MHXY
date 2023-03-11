@@ -184,6 +184,7 @@ def start(single=False):
             for i in range(game_count):
                 p.apply_async(daily_tasks, (str(i), hwnd_list[i], lock,
                                             manager_dict, manager_list, pipe))
+                sleep(1)
             p.close()
             p.join()
 
