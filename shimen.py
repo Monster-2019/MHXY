@@ -9,6 +9,7 @@ class Shimen(object):
         self.task_finished = task_finished
 
     def start(self):
+        print('开始师门任务')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -17,14 +18,14 @@ class Shimen(object):
                 break
 
         if self.task_finished('sm_wc'):
-            print('师门完成')
+            print('师门任务已完成')
+            self.btn.r()
             return
 
         # self.btn.hotkey('zz', sleep_time=1)
         # self.btn.l('zr1', sleep_time=0.5)
         # self.btn.r()
 
-        print('师门进行中')
         sleep(1)
         self.btn.hotkey("hd")
         self.smc("rchd", sleep_time=0.5)
@@ -34,6 +35,7 @@ class Shimen(object):
         processing = self.smc('sm_sm')
 
         if not processing:
+            print('领取师门任务')
             for n in range(31):
                 if n % 10 == 0:
                     self.capture()
@@ -60,6 +62,7 @@ class Shimen(object):
                     self.btn.v(-1)
 
         if processing:
+            print('师门任务进行中')
             step_list = [
                 "sm_mpgx",
                 "sm_sm",
@@ -81,7 +84,7 @@ class Shimen(object):
                     self.capture()
                     is_hd = self.match('hd')
                     if item == "dh" or item == 'dhda' or item == "sm_sm":  #
-                        coor = self.match(item, simi=0.95)
+                        coor = self.match(item, simi=0.94)
                     else:
                         coor = self.match(item)
                     if coor:
@@ -138,6 +141,8 @@ class Shimen(object):
                                 self.btn.r()
                                 self.btn.m(900, 300)
                                 self.btn.v(1, 10)
+                    
+                    sleep(1 / len(step_list))
 
             sleep(0.5)
             while True:
@@ -145,6 +150,7 @@ class Shimen(object):
                 if not coor:
                     break
 
+        print('完成师门任务')
         return 1
 
 

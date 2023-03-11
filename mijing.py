@@ -62,6 +62,8 @@ class Mijing:
                         self.btn.l(coor)
 
                     sleep(0.5)
+                
+                sleep(1 / len(join_list))
 
         step_list = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
         # # , 'mj_lq', 'mj_gb'
@@ -92,8 +94,8 @@ class Mijing:
                         self.btn.l(coor, min_x=350)
 
                     sleep(0.1)
-                else:
-                    sleep(0.2)
+
+                sleep(1 / len(step_list))
 
         while not self.smc('hd', is_click=False):
             self.smc('mj_lk')
