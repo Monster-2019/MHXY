@@ -39,6 +39,7 @@ class Baotu(object):
 
     def dig(self):
         # 打开背包
+        print('开始挖宝')
         cbt_coor = self.has_cbt()
 
         if cbt_coor:
@@ -72,23 +73,16 @@ class Baotu(object):
                         sleep(4)
                         count = 0
 
+        print('完成挖宝')
         return 1
 
     def start(self):
+        print('开始宝图任务')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
-        # 已领取
-        # self.btn.MBtn(900, 300)
-        # self.btn.v(1, 20)
-        # sleep(0.5)
-
-        # if self.matchTem('rw_bt', simi=0.95):
-        #     print(f"账号: { self.name } 已领取宝图任务")
-        #     processing = True
-        # sleep(0.5)
-
         if self.task_finished('bt_wc'):
+            print('宝图任务已完成')
             self.dig()
             return
 
@@ -101,6 +95,7 @@ class Baotu(object):
         processing = self.smc('rw_bt', simi=0.95)
 
         if not processing:
+            print('领取宝图任务')
             for n in range(31):
                 if n % 10 == 0:
                     self.capture()
@@ -139,6 +134,7 @@ class Baotu(object):
         self.btn.r()
 
         if processing:
+            print('宝图任务进行中')
             step_list = ['bt_cbthdwc', 'rw_bt']
 
             while processing:
@@ -173,6 +169,7 @@ class Baotu(object):
 
                             sleep(5)
 
+        print('完成宝图任务')
         self.dig()
 
 

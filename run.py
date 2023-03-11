@@ -111,7 +111,7 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     complex_task = Complex(adb)
 
-    # complex_task.get_info()
+    complex_task.get_info()
 
     complex_task.singin()
 
@@ -167,8 +167,8 @@ def start(single=False):
 
             if not single:
                 openGame(hwnd_list)
-
-            hwnd_list = getHwndList()
+                hwnd_list = getHwndList()
+                
             logger.info(f'开始第 {GROUP_NO} 组号')
 
             if not single:

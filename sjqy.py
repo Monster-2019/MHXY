@@ -9,10 +9,13 @@ class SJ(object):
         self.task_finished = task_finished
 
     def start(self):
+        print('开始三界奇缘')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('sj_wc'):
+            print('三界奇缘已完成')
+            self.btn.r()
             return
 
         self.btn.hotkey("hd")
@@ -45,6 +48,7 @@ class SJ(object):
                 self.btn.v(-1)
 
         if processing:
+            print('三界奇缘进行中')
             while processing:
                 res = self.smc('sj_dw', is_click=False)
                 if res:
@@ -53,6 +57,8 @@ class SJ(object):
                     break
                 else:
                     self.btn.l((380, 230, 170, 240), sleep_time=0.5)
+
+        print('完成三界奇缘')
 
 
 if __name__ == '__main__':

@@ -9,10 +9,13 @@ class Yunbiao(object):
         self.task_finished = task_finished
 
     def start(self):
+        print('开始运镖')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('yb_wc'):
+            print('运镖已完成')
+            self.btn.r()
             return
 
         self.btn.hotkey("hd")
@@ -42,6 +45,7 @@ class Yunbiao(object):
 
         count = 0
         step_list = ['yb_ys', 'qd']
+        print('运镖进行中')
         while processing:
             is_hd = self.smc('hd', is_click=False)
             if count >= 3 and is_hd:
@@ -55,6 +59,8 @@ class Yunbiao(object):
                     sleep(20)
 
             sleep(1)
+
+        print('完成运镖')
 
 
 if __name__ == '__main__':
