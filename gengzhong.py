@@ -11,6 +11,7 @@ class GengZhong(object):
         self.weekday = datetime.today().isoweekday()
 
     def sell(self):
+        print('开始出售金银花')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -34,6 +35,7 @@ class GengZhong(object):
                     self.btn.m(720, 440)
                     self.btn.v(-1, 6)
 
+        sleep(1)
         complete = False
         while not complete:
             res = self.smc('gfbt_gq', sleep_time=0.5)
@@ -68,11 +70,12 @@ class GengZhong(object):
         self.btn.r()
         self.btn.r()
 
-        print(f"已售卖")
+        print(f"出售完成")
 
         return complete
 
     def start(self, isSell=False):
+        print('开始耕种')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -83,18 +86,34 @@ class GengZhong(object):
         while not self.smc('hd', is_click=False):
             sleep(1)
 
-        self.smc('td_status', sleep_time=0.5)
+        coor = self.smc('td_status', sleep_time=2)
 
-        is_sh = self.smc('btn_sh')
+        self.capture()
 
-        is_zz = self.smc('gz_zz', is_click=False)
+        is_sh = self.match('btn_sh', simi=0.999)
+
+        is_zz = self.match('gz_zz', simi=0.999)
+
+        if is_sh:
+            self.btn.l(is_sh)
+            print('已成熟，可收获')
+        
+        if is_zz:
+            print('无作物，可耕种')
 
         if not is_sh and not is_zz:
-            print('无收获， 无耕种')
+            print('成熟中')
+            self.btn.r()
             return
+        
+        sleep(3)
 
-        self.smc('td_status', sleep_time=0.5)
+        if is_sh:
+            self.btn.l((250, 250, 2, 2))
+            sleep(3)
+            self.smc('td_status', sleep_time=0.5)
 
+        print('开始耕种')
         self.capture()
         tem_coor = self.match('gz_jyh')
         btn_coor = self.match('gz_add', screen='imgTem/gz_jyh')
@@ -109,6 +128,7 @@ class GengZhong(object):
 
             self.btn.r()
 
+        print('完成耕种')
         if ((self.weekday - 1) % 2 == 0) or isSell:
             self.sell()
 
@@ -138,4 +158,5 @@ if __name__ == "__main__":
     }
     complex_task = Complex(adb)
 
-    GengZhong(adb, complex_task.task_finished).start(True)
+    GengZhong(adb, complex_task.task_finished).start()
+    # GengZhong(adb, complex_task.task_finished).sell()

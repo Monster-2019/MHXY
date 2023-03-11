@@ -167,8 +167,8 @@ def start(single=False):
 
             if not single:
                 openGame(hwnd_list)
-
-            hwnd_list = getHwndList()
+                hwnd_list = getHwndList()
+                
             logger.info(f'开始第 {GROUP_NO} 组号')
 
             if not single:

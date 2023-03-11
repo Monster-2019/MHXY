@@ -24,10 +24,12 @@ class Match(object):
         result = cv.matchTemplate(img1, img2, cv.TM_CCORR_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
 
-        # cv.imshow('img1', img1)
-        # cv.imshow('img2', img2)
-        # cv.waitKey(0)
-        # cv.destroyAllWindows()
+        # if tem == 'btn_sh':
+        #     cv.imshow('img1', img1)
+        #     cv.imshow('img2', img2)
+        #     cv.waitKey(0)
+        #     cv.destroyAllWindows()
+
         if debug:
             print(tem, max_val, max_loc)
         if max_val > simi:
@@ -66,5 +68,5 @@ if __name__ == "__main__":
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     capture()
-    Match('0').match_tem('rw_kg', debug=True)
+    Match('0').match_tem('sm_sm', debug=True)
     # Match('0').match_tem('dhda')

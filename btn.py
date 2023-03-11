@@ -90,9 +90,8 @@ class Btn(object):
         win32api.SendMessage(self.hwnd, win32con.WM_MOUSEMOVE, 0000,
                              win32api.MAKELONG(x, y))
 
-    def d(self, start_coor, end_coor):
-        start_x, start_y = start_coor
-        end_x, end_y = end_coor
+    def d_horizontal(self, coor):
+        start_x, start_y, end_x, end_y = coor
         for i in range(end_y - start_y):
             if i % 10 == 0:
                 start_h = start_y + i
@@ -106,6 +105,18 @@ class Btn(object):
                                      win32con.MK_LBUTTON,
                                      win32api.MAKELONG(end_x, start_h))
                 sleep(0.05)
+
+    def d_vertical(self, coor):
+        start_x, start_y, end_x, end_y = coor
+        win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN,
+                                win32con.MK_LBUTTON,
+                                win32api.MAKELONG(start_x, start_y))
+        win32api.PostMessage(self.hwnd, win32con.WM_MOUSEMOVE, 0000,
+                                win32api.MAKELONG(end_x, end_y))
+        sleep(0.1)
+        win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP,
+                                win32con.MK_LBUTTON,
+                                win32api.MAKELONG(end_x, end_y))
 
     def hotkey(self, char, sleep_time=0.5):
         key = JWM[char]
@@ -126,3 +137,10 @@ class Btn(object):
             self.lock.release()
 
         sleep(sleep_time)
+
+if __name__ == "__main__":
+    print(123)
+    btn = Btn(3146098)
+    btn.d_vertical((640, 300, 640, 150))
+    sleep(5)
+    btn.l((640, 300, 2, 2))

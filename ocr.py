@@ -1,7 +1,13 @@
 import cv2 as cv
 import pytesseract
+import configparser
 
-pytesseract.pytesseract.tesseract_cmd = 'D:/softwera/Tesseract-OCR/tesseract.exe'  # your path may be different
+conf = configparser.ConfigParser()
+
+conf.read('config.ini', encoding='utf-8')
+SHARED_FOLDER = conf.get('software_path', 'tesseract_ocr')
+
+pytesseract.pytesseract.tesseract_cmd = SHARED_FOLDER  # your path may be different
 
 
 def ocr(path, lang="eng", **kwds):
@@ -26,4 +32,4 @@ def ocr(path, lang="eng", **kwds):
 if __name__ == '__main__':
     # ocr('./images/imgTem/ck_max.jpg')
     # get_token()
-    ocr('chi_sim')
+    ocr('./images/0.jpg', 'chi_sim')
