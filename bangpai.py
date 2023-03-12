@@ -25,6 +25,8 @@ class Bangpai(object):
                     self.btn.r()
                     break
 
+                sleep(1 / len(step_list))
+
         print('签到完成')
 
     def changeTask(self, has_task=True):

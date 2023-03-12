@@ -142,7 +142,7 @@ class Baotu(object):
                     self.capture()
                     is_hd = self.match('hd')
                     if item == 'rw_bt':
-                        coor = self.match(item, simi=0.95)
+                        coor = self.match(item, simi=0.9)
                     else:
                         coor = self.match(item)
                     if coor and is_hd:

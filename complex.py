@@ -42,6 +42,8 @@ class Complex(object):
 
         logger.info(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
 
+        sleep(1)
+
         return {
             name: name,
             level: level,
@@ -268,4 +270,4 @@ if __name__ == '__main__':
         'smc': smc,
     }
     
-    Complex(adb).get_info()
+    Complex(adb).singin()
