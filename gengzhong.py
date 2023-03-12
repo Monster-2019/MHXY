@@ -11,7 +11,7 @@ class GengZhong(object):
         self.weekday = datetime.today().isoweekday()
 
     def sell(self):
-        print('开始出售金银花')
+        print(f'{self.name}开始出售金银花')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -70,12 +70,12 @@ class GengZhong(object):
         self.btn.r()
         self.btn.r()
 
-        print(f"出售完成")
+        print(f"{self.name}出售完成")
 
         return complete
 
     def start(self, isSell=False):
-        print('开始耕种')
+        print(f'{self.name}开始耕种')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -96,10 +96,10 @@ class GengZhong(object):
 
         if is_sh:
             self.btn.l(is_sh)
-            print('已成熟，可收获')
+            print(f'{self.name}已成熟，可收获')
         
         if is_zz:
-            print('无作物，可耕种')
+            print(f'{self.name}无作物，可耕种')
 
         if not is_sh and not is_zz:
             print('成熟中')
@@ -113,7 +113,7 @@ class GengZhong(object):
             sleep(3)
             self.smc('td_status', sleep_time=0.5)
 
-        print('开始耕种')
+        print(f'{self.name}耕种中')
         self.capture()
         tem_coor = self.match('gz_jyh')
         btn_coor = self.match('gz_add', screen='imgTem/gz_jyh')
@@ -128,7 +128,7 @@ class GengZhong(object):
 
             self.btn.r()
 
-        print('完成耕种')
+        print(f'{self.name}完成耕种')
         if ((self.weekday - 1) % 2 == 0) or isSell:
             self.sell()
 

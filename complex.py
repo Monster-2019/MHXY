@@ -44,12 +44,12 @@ class Complex(object):
 
         sleep(1)
 
-        return {
-            name: name,
-            level: level,
-            gold: gold,
-            silver: silver,
-        }
+        return (
+            name,
+            level,
+            gold,
+            silver
+        )
 
     def clean(self):
         while not self.smc('hd', isClick=False):
@@ -131,6 +131,9 @@ class Complex(object):
         logger.info(f"清理完成")
 
     def singin(self):
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
+
         self.btn.hotkey('fl')
 
         self.smc('fl_mrfl', sleep_time=0.5)

@@ -111,7 +111,9 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     complex_task = Complex(adb)
 
-    complex_task.get_info()
+    name, level, gold, silver = complex_task.get_info()
+
+    adb["name"] = name
 
     complex_task.singin()
 
@@ -151,7 +153,7 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     GengZhong(adb, complex_task.task_finished).start(True)
 
-    print(f"{screen}账号完成")
+    print(f"{name}账号完成")
 
     # getInfo()
 
@@ -184,6 +186,7 @@ def start(single=False):
             for i in range(game_count):
                 p.apply_async(daily_tasks, (str(i), hwnd_list[i], lock,
                                             manager_dict, manager_list, pipe))
+                sleep(1)
             p.close()
             p.join()
 

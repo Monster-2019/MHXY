@@ -27,7 +27,7 @@ class Bangpai(object):
 
                 sleep(1 / len(step_list))
 
-        print('签到完成')
+        print(f'{self.name}签到完成')
 
     def changeTask(self, has_task=True):
         step_list = ["rw_dqrw", "rw_cgrw", "rw_bprw", "rw_fqrw", "qd"]
