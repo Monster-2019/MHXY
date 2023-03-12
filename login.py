@@ -119,16 +119,15 @@ def mnq_login(account):
 
             else:
                 if item == account:
-                    while True:
-                        mnq_capture()
-                        coor = mnq_match(item)
-                        if coor:
-                            mnq_btn.l(coor)
-                            break
-                        mnq_btn.d_vertical((470, 230, 470, 100))
+                    sleep(0.5)
+                    mnq_btn.d_vertical((470, 230, 470, 100))
+                    
+                    mnq_capture()
+                    coor = mnq_match(item)
+                    if coor:
+                        mnq_btn.l(coor)
                         sleep(1)
 
-                    sleep(1)
             
             sleep(0.5)
 

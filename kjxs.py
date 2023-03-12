@@ -9,12 +9,12 @@ class KJ(object):
         self.task_finished = task_finished
 
     def start(self):
-        print("开始科举乡试")
+        print(f"{self.name}开始科举乡试")
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('kj_wc'):
-            print("科举乡试已完成")
+            print(f"{self.name}科举乡试已完成")
             self.btn.r()
             return
 
@@ -46,7 +46,7 @@ class KJ(object):
                 self.btn.v(-1)
 
         if processing:
-            print("科举乡试进行中")
+            print(f"{self.name}科举乡试进行中")
             while processing:
                 res = self.smc('kj_dw', is_click=False)
                 if res:
@@ -56,7 +56,7 @@ class KJ(object):
                 else:
                     self.btn.l((375, 390, 250, 50), sleep_time=0.5)
 
-        print("完成科举乡试")
+        print(f"{self.name}完成科举乡试")
 
 if __name__ == '__main__':
     import win32gui
