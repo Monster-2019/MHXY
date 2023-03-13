@@ -38,7 +38,7 @@ class Mijing:
             else:
                 self.btn.v(-1)
 
-        join_list = ['mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz']
+        join_list = ['mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_zctz', 'mj_tz']
         # 'mj_mrh', 'mj_yjf', 'mj_esg',
 
         join = False
@@ -52,6 +52,10 @@ class Mijing:
 
                     elif item == 'mj_jr':
                         self.btn.l(coor, max_x=500)
+
+                    elif item == 'mj_zctz':
+                        print('已经挑战过')
+                        return
 
                     elif item == 'mj_tz':
                         self.btn.l(coor)
