@@ -121,13 +121,12 @@ def mnq_login(account):
                 if item == account:
                     sleep(0.5)
                     mnq_btn.d_vertical((470, 230, 470, 100))
+                    sleep(1)
                     
                     mnq_capture()
                     coor = mnq_match(item)
                     if coor:
                         mnq_btn.l(coor)
-                        sleep(1)
-
             
             sleep(0.5)
 
@@ -168,6 +167,9 @@ def game_login(hwnd, server, screen):
 
 
 def login(group, hwnd_list):
+    if len(hwnd_list) == 0:
+        return
+
     login_list = []
     for hwnd in hwnd_list:
         SetForegroundWindowMy(hwnd)

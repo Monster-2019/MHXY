@@ -118,6 +118,8 @@ class Baotu(object):
                             count = 0
                             while True:
                                 if self.smc('bt_ttwf'):
+                                    sleep(0.5)
+                                    self.btn.r()
                                     break
                                 else:
                                     count += 1
@@ -189,6 +191,7 @@ if __name__ == '__main__':
     smc = SMC(capture, match, btn)
 
     adb = {
+        'name': "debug",
         'screen': screen,
         'hwnd': hwnd,
         'capture': capture,

@@ -81,8 +81,7 @@ def openGame(hwnd_list=[]):
     return
 
 
-today = datetime.today()
-week = today.isoweekday()
+week = datetime.now().weekday()
 shell = win32com.client.Dispatch("WScript.Shell")
 
 
@@ -115,6 +114,8 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     adb["name"] = name
 
+    complex_task = Complex(adb)
+
     complex_task.singin()
 
     bangpai = Bangpai(adb, complex_task.task_finished)
@@ -145,17 +146,21 @@ def daily_tasks(screen, hwnd, lock, manager_dict, manager_list, pipe):
 
     Mijing(adb, complex_task.task_finished).start()
 
-    SJ(adb, complex_task.task_finished).start()
+    if datetime.now().hour >= 11:
+        SJ(adb, complex_task.task_finished).start()
 
-    KJ(adb, complex_task.task_finished).start()
+    if week <= 4 and datetime.now().hour >= 17:
+        KJ(adb, complex_task.task_finished).start()
 
     Yunbiao(adb, complex_task.task_finished).start()
 
+    complex_task.get_hyd()
+
     GengZhong(adb, complex_task.task_finished).start(True)
 
-    print(f"{name}账号完成")
+    complex_task.clean()
 
-    # getInfo()
+    print(f"{name}账号完成")
 
 
 def start(single=False):
@@ -167,14 +172,14 @@ def start(single=False):
             GROUP_NO = index + 1
             hwnd_list = getHwndList()
 
-            if not single:
-                openGame(hwnd_list)
-                hwnd_list = getHwndList()
+            # if not single:
+                # openGame(hwnd_list)
+                # hwnd_list = getHwndList()
                 
             logger.info(f'开始第 {GROUP_NO} 组号')
 
-            if not single:
-                login(index, hwnd_list)
+            # if not single:
+                # login(index, hwnd_list)
 
             lock = Manager().Lock()
             manager_dict = Manager().dict()

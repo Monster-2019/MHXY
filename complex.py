@@ -52,7 +52,7 @@ class Complex(object):
         )
 
     def clean(self):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
 
         self.btn.hotkey('bb')
@@ -67,12 +67,12 @@ class Complex(object):
         ]
         page = 1
         while True:
-            self.capture.custom_capture()
+            self.capture.custom_capture('bb')
             coor = self.match.match_tem_list(ck_list)
             if coor:
                 self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
                 self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
-                break
+                
             else:
                 self.btn.m(710, 410)
                 self.btn.v(-1, 6)
@@ -84,13 +84,16 @@ class Complex(object):
         self.smc('bb_zl')
         self.btn.m(710, 410)
         self.btn.v(1, 50)
+        self.btn.r()
+        sleep(0.5)
+        self.btn.hotkey('bb')
 
         use_list = [
             'bb_sy1', 'bb_sy2', 'bb_sy3', 'bb_sy4', 'bb_sy5', 'bb_sy6',
             'bb_sy7', 'bb_sy8', 'bb_sy9'
         ]  #'bb_jr'
         sell_list = [
-            'bb_gms', 'bb_sms', 'bb_hws', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf'
+            'bb_gms', 'bb_sms', 'bb_hws', 'bb_kls', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf'
         ]
         dq_list = [
             'bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1',
@@ -106,20 +109,24 @@ class Complex(object):
             if use:
                 self.btn.l(use)
                 self.btn.l(use)
-
             sell = self.match.match_tem_list(sell_list)
             if sell:
+                self.btn.l(sell, sleep_time=0.5)
                 self.smc('bb_gd', sleep_time=0.5)
                 self.smc('bb_smcs', sleep_time=0.5)
                 self.smc('bb_add_max', sleep_time=0.5)
                 self.smc('bb_cs', sleep_time=0.5)
 
+
             dq = self.match.match_tem_list(dq_list)
             if dq:
+                self.btn.l(dq, sleep_time=0.5)
                 self.smc('bb_dq', sleep_time=0.5)
                 self.smc('qd', sleep_time=0.5)
 
+            print(1, use, sell, dq)
             if not use and not sell and not dq:
+                print(2)
                 self.btn.m(710, 410)
                 self.btn.v(-1, 6)
                 sleep(0.5)
@@ -161,9 +168,15 @@ class Complex(object):
 
         self.btn.hotkey('hd')
 
-        hyd_list = []
+        hyd_list = [
+            (350, 550, 4, 4),
+            (480, 550, 4, 4),
+            (620, 550, 4, 4),
+            (750, 550, 4, 4),
+            (890, 550, 4, 4),
+        ]
         for coor in hyd_list:
-            self.smc(coor, sleep_time=0.2)
+            self.btn.l(coor, sleep_time=0.2)
 
         logger.info(f"账号: { self.name } 活跃度领取完成")
 
@@ -273,4 +286,4 @@ if __name__ == '__main__':
         'smc': smc,
     }
     
-    Complex(adb).singin()
+    Complex(adb).clean()
