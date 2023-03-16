@@ -16,6 +16,11 @@ class Complex(object):
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
+        name = ''
+        level = ''
+        gold = ''
+        silver = ''
+
         self.btn.hotkey('js')
         self.capture.custom_capture('name')
         name_level = ocr(f'./images/{self.capture.screen}.jpg', lang="chi_sim")
@@ -40,7 +45,7 @@ class Complex(object):
 
         self.btn.r()
 
-        logger.info(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
+        print(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
 
         sleep(1)
 
@@ -124,9 +129,7 @@ class Complex(object):
                 self.smc('bb_dq', sleep_time=0.5)
                 self.smc('qd', sleep_time=0.5)
 
-            print(1, use, sell, dq)
             if not use and not sell and not dq:
-                print(2)
                 self.btn.m(710, 410)
                 self.btn.v(-1, 6)
                 sleep(0.5)
@@ -135,7 +138,7 @@ class Complex(object):
                     self.btn.r()
                     break
 
-        logger.info(f"清理完成")
+        print(f"清理完成")
 
     def singin(self):
         while not self.smc('hd', is_click=False):
@@ -160,7 +163,7 @@ class Complex(object):
         self.btn.r()
         self.btn.r()
 
-        logger.info(f"刮奖完成")
+        print(f"刮奖完成")
 
     def get_hyd(self):
         while not self.smc('hd', isClick=False):
@@ -178,7 +181,7 @@ class Complex(object):
         for coor in hyd_list:
             self.btn.l(coor, sleep_time=0.2)
 
-        logger.info(f"账号: { self.name } 活跃度领取完成")
+        print(f"账号: { self.name } 活跃度领取完成")
 
     def join_team_leader(self):
         while not self.smc('hd', isClick=False):

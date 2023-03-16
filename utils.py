@@ -32,45 +32,5 @@ def push_msg(msg):
     return res.json()
 
 
-class GlobalVariable(object):
-    _global_dict = {}
-
-    def __init__(self):
-        global _global_dict
-        self._global_dict = {}
-
-    def set_value(self, key, value):
-        self._global_dict[key] = value
-
-    def get_value(self, key):
-        try:
-            return self._global_dict[key]
-        except:
-            print(f"{key}不存在")
-
-    def remove_value(self, key):
-        try:
-            return self._global_dict.pop(key)
-        except:
-            print(f"{key}不存在")
-
-    def clear(self):
-        for key in self._global_dict.keys():
-            self._global_dict.pop(key)
-
-class HsvFilter:
-    def __init__(self, hMin=None, sMin=None, vMin=None, hMax=None, sMax=None, vMax=None, 
-                    sAdd=None, sSub=None, vAdd=None, vSub=None):
-        self.hMin = hMin
-        self.sMin = sMin
-        self.vMin = vMin
-        self.hMax = hMax
-        self.sMax = sMax
-        self.vMax = vMax
-        self.sAdd = sAdd
-        self.sSub = sSub
-        self.vAdd = vAdd
-        self.vSub = vSub
-
 if __name__ == "__main__":
     hide_login()

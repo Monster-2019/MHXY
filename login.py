@@ -81,7 +81,7 @@ def mnqInit():
             sleep(3)
             break
 
-    logger.info('模拟器初始化完成')
+    print('模拟器初始化完成')
 
 
 def mnq_login(account):
@@ -205,7 +205,7 @@ def login(group, hwnd_list):
 
         game_login(hwnd_list[i], login_server, i)
 
-        logger.info(f'账号 {login_account} 游戏登陆完成')
+        print(f'账号 {login_account} 游戏登陆完成')
 
     os.system('taskkill /F /IM dnplayer.exe')
 
