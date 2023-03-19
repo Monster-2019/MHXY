@@ -264,6 +264,17 @@ class Complex(object):
         sleep(1)
 
         return False
+    
+    def culture(self):
+        while True:
+            coor = self.smc('culture_t', simi=0.998) or self.smc('culture_d', simi=0.998)
+            if coor:
+                sleep(0.2)
+                self.smc('culture_active')
+                sleep(0.3)
+            else:
+                break
+        print('培养激活完成')
 
 
 if __name__ == '__main__':
@@ -289,4 +300,4 @@ if __name__ == '__main__':
         'smc': smc,
     }
     
-    Complex(adb).clean()
+    Complex(adb).culture()

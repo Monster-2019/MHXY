@@ -166,12 +166,12 @@ def game_login(hwnd, server, screen):
     print(f'已登录{server}服务器')
 
 
-def login(group, hwnd_list):
-    if len(hwnd_list) == 0:
+def login(group, hwnds, **kwds):
+    if len(hwnds) == 0:
         return
 
     login_list = []
-    for hwnd in hwnd_list:
+    for hwnd in hwnds:
         SetForegroundWindowMy(hwnd)
         login_hwnd = win32gui.FindWindow('MPAY_LOGIN', None)
         not_logged = win32gui.IsWindowVisible(login_hwnd)
@@ -180,11 +180,11 @@ def login(group, hwnd_list):
 
     mnqInit()
 
-    for i in range(len(hwnd_list)):
+    for i in range(len(hwnds)):
         login_account = ACCTZU[group][i]['account']
         login_server = ACCTZU[group][i]['server']
 
-        game_hwnd = hwnd_list[i]
+        game_hwnd = hwnds[i]
 
         win32api.SendMessage(game_hwnd, win32con.WM_KEYDOWN, 27, 0)
         SetForegroundWindowMy(game_hwnd)
@@ -203,14 +203,14 @@ def login(group, hwnd_list):
 
         sleep(1)
 
-        game_login(hwnd_list[i], login_server, i)
+        game_login(hwnds[i], login_server, i)
 
         print(f'账号 {login_account} 游戏登陆完成')
 
     os.system('taskkill /F /IM dnplayer.exe')
 
 if __name__ == "__main__":
-    hwnd_list = []
+    hwnds = []
     is_finish = False
     hwnd = 0
     while not is_finish:
@@ -219,11 +219,11 @@ if __name__ == "__main__":
         else:
             hwnd = win32gui.FindWindowEx(None, hwnd, None, "《梦幻西游》手游")
         if hwnd:
-            hwnd_list.append(hwnd)
+            hwnds.append(hwnd)
         else:
             is_finish = True
 
-    login(0, hwnd_list)
+    login(0, hwnds)
 
     # hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
 

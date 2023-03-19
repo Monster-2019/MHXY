@@ -69,7 +69,7 @@ class Zhuogui(object):
                 self.capture()
                 isHd = self.match('hd')
                 if item == 'zg_zg':
-                    coor = self.match(item, simi=0.95)
+                    coor = self.match(item, simi=0.9)
                 else:
                     coor = self.match(item)
 
