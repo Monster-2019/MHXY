@@ -45,10 +45,12 @@ jcx = {
 
 class FuBen(object):
 
-    def __init__(self, adb, task_finished, pipe):
+    def __init__(self, adb, pipe):
         for key, val in adb.items():
             self[key] = val
-        self.task_finished = task_finished
+        if adb["print"]: 
+            global print 
+            print = adb["print"]
         self.pipe = pipe
         self.fb_img = empty
 

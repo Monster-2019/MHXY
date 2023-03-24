@@ -3,18 +3,31 @@ import configparser
 import win32gui
 import win32process
 import psutil
+import sys
+import threading
 from time import sleep
 from btn import Btn
 from run import daily_tasks
 from login import login
 from multiprocessing import Pool
+import tkinter as tk
+from tkinter import filedialog
+from utils import PauseableThread
+
+# f = open(os.devnull, 'w')
+# sys.stdout = f
+# sys.stderr = f
+
+import eel
 
 conf = configparser.ConfigParser()
-conf.read('config.ini', encoding='utf-8')
+path = os.path.join(os.getcwd(), "config.ini")
+conf.read(path, encoding='utf-8')
 
 timing_time = ''
 
 
+@eel.expose
 def get_hwnd_list():
     # 查找所有标题为title的窗口句柄
     handles = []
@@ -46,6 +59,39 @@ def get_start_time(hwnd):
     return create_time
 
 
+@eel.expose
+def get_software_path():
+    path = conf.items('software_path')
+    return path
+
+
+@eel.expose
+def set_software_path(path):
+    for key, val in path.items():
+        conf.set('software_path', key, val)
+    conf.write(open('config.ini', 'w'))
+
+
+@eel.expose
+def set_software_dir():
+    root = tk.Tk()
+    root.attributes('-topmost', True)  # Display the dialog in the foreground.
+    root.iconify()  # Hide the little window.
+    folder_path = filedialog.askdirectory()
+    root.destroy()
+    return folder_path
+
+
+@eel.expose
+def set_software_file():
+    root = tk.Tk()
+    root.attributes('-topmost', True)  # Display the dialog in the foreground.
+    root.iconify()  # Hide the little window.
+    soft_path = filedialog.askopenfilename()
+    root.destroy()
+    return soft_path
+
+
 def overopen(hwnd_list=[]):
     if len(hwnd_list) == 5:
         return
@@ -61,11 +107,12 @@ def overopen(hwnd_list=[]):
 
     btn = Btn(hwnd)
     for i in range(5 - len(hwnd_list)):
-        btn.l(((350, 150), (2, 2)))
+        btn.l(((350, 150, 2, 2)))
         sleep(3)
 
     os.system('taskkill /F /IM mhxy.exe')
     return
+
 
 def auto_login(group=0, hwnds=None, **kwds):
     if not hwnds:
@@ -73,55 +120,62 @@ def auto_login(group=0, hwnds=None, **kwds):
     login(group, hwnds)
 
 
-def start(hwnds=None, **kwds):
-    p = Pool(5)
+threads = dict()
+
+
+def stop(hwnd):
+    global threads
+    threads[hwnd].stop_thread()
+
+
+@eel.expose
+def stopAll(hwnds):
     if not hwnds:
-        hwnds = get_hwnd_list()
+        return
+    global threads
     for hwnd in hwnds:
-        p.apply_async(daily_tasks, args=(hwnd, ))
-
-    p.close()
-    p.join()
-    print('脚本完成')
-
-methods = {"1": start, "2": overopen, "3": auto_login, "9": get_hwnd_list}
+        stop(hwnd)
 
 
-def call_method(param, **kwds):
-    methods.get(param, lambda: print("Invalid parameter"))(**kwds)
+@eel.expose
+def start(hwnds=None, **kwds):
+    lock = threading.Lock()
+
+    for hwnd in hwnds:
+        t = PauseableThread(target=daily_tasks,
+                            args=(hwnd, lock, eel.updateInfo, eel.updateState))
+        t.start()
+        threads[hwnd] = t
 
 
-def command_selection():
-    while True:
-        print("Please choose a method to call:")
-        print("1. 开始日常")
-        print("2. 多开")
-        print("3. 自动登录")
-        print("0. Exit")
-        choice = input("Your choice: ")
-        if choice in methods:
-            call_method(choice)
-            if choice == '1':
-                break
-        elif choice == "0":
-            break
-        else:
-            print("Invalid choice:", choice)
+def init_gui(develop):
+    print(develop)
+    if develop:
+        directory = 'web/src'
+        app = 'chrome'
+        page = {'port': 5173}
+    else:
+        directory = 'web/dist'
+        app = 'chrome'
+        page = 'index.html'
+    eel_kwargs = dict(
+        host='localhost',
+        port=9000,
+        size=(1200, 410),
+    )
+    eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html', '.css'])
+    try:
+        eel.start(page, mode=app, **eel_kwargs)
+    except EnvironmentError as e:
+        pass
+        # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
+        # if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
+        #     eel.start(page, mode='edge', **eel_kwargs)
+        # else:
+        #     raise
 
 
 if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--time', '-t', type=str)
-    parser.add_argument('--action',
-                        '-a',
-                        choices=["1", "2", "3", "9"],
-                        help="1. 开始日常、2. 多开、3. 自动登录")
-    parser.add_argument('--group', '-g', type=int)
+    import sys
 
-    args = parser.parse_args()
-    timing_time = args.time
-    if args.action:
-        call_method(args.action, **args)
-    else:
-        command_selection()
+    init_gui(develop=len(sys.argv) == 2)

@@ -8,3 +8,5 @@ cache/*
 images/mnq/mnq.jpg
 *.ini
 cache
+build/*
+dist/*

@@ -3,15 +3,17 @@ from time import sleep
 
 class Bangpai(object):
 
-    def __init__(self, adb, task_finished):
+    def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        self.task_finished = task_finished
+        if adb["print"]:
+            global print
+            print = adb["print"]
 
     def check_in(self):
         while not self.smc('hd', is_click=False):
             self.btn.r()
-            
+
         self.btn.hotkey('bp')
 
         step_list = ['bp_fl', 'bp_check_in', 'bp_check_finish']

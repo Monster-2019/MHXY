@@ -1,10 +1,12 @@
 import cv2 as cv
 import pytesseract
 import configparser
+import os
 
 conf = configparser.ConfigParser()
+path = os.path.join(os.getcwd(), "config.ini")
+conf.read(path, encoding='utf-8')
 
-conf.read('config.ini', encoding='utf-8')
 SHARED_FOLDER = conf.get('software_path', 'tesseract_ocr')
 
 pytesseract.pytesseract.tesseract_cmd = SHARED_FOLDER  # your path may be different

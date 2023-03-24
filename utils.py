@@ -2,6 +2,9 @@ from win32 import win32process
 import win32gui
 import os
 import requests
+import threading
+import sys
+import time
 
 
 def hide_login():
@@ -30,6 +33,39 @@ def push_msg(msg):
     print(res.json())
 
     return res.json()
+
+
+class PauseableThread(threading.Thread):
+    def __init__(self, target, args=()):
+        super(PauseableThread, self).__init__()
+        self.target = target
+        self.args = args
+        self.pause = False    # 用于暂停线程的标识
+        self.stop = False    # 用于停止线程的标识
+
+    def run(self):
+        sys.settrace(self.trace_func)
+        if self.args:
+            self.target(*self.args)
+        else:
+            self.target()
+
+    def trace_func(self, frame, event, arg):
+        if self.pause:
+            while self.pause:
+                time.sleep(0.1)
+        if self.stop:
+            sys.exit()
+        return self.trace_func
+
+    def pause_thread(self):
+        self.pause = True
+
+    def resume_thread(self):
+        self.pause = False
+
+    def stop_thread(self):
+        self.stop = True
 
 
 if __name__ == "__main__":

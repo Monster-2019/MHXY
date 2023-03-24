@@ -3,10 +3,12 @@ from time import sleep
 
 class SJ(object):
 
-    def __init__(self, adb, task_finished):
+    def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        self.task_finished = task_finished
+        if adb["print"]: 
+            global print 
+            print = adb["print"]
 
     def start(self):
         print(f'{self.name}开始三界奇缘')

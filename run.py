@@ -35,12 +35,21 @@ shell = win32com.client.Dispatch("WScript.Shell")
 
 
 @logger.catch()
-def daily_tasks(hwnd):
+def daily_tasks(hwnd, lock=None, updateInfo=None, updateStatus=None):
     hwnd = str(hwnd)
     capture = CaptureScreen(hwnd, hwnd)
     match = Match(hwnd)
-    btn = Btn(hwnd)
+    btn = Btn(hwnd, lock)
     smc = SMC(capture, match, btn)
+
+    global print
+    original_print = print
+
+    def updateState(*args, **kwds):
+        updateStatus({"hwnd": hwnd, "status": args[0]})
+        original_print(args[0])
+
+    print = updateState
 
     adb = {
         'screen': hwnd,
@@ -49,6 +58,8 @@ def daily_tasks(hwnd):
         'match': match,
         'btn': btn,
         'smc': smc,
+        "original_print": original_print,
+        "print": print
     }
 
     try:
@@ -62,17 +73,27 @@ def daily_tasks(hwnd):
 
     name, level, gold, silver = complex_task.get_info()
 
+    updateInfo({
+        "hwnd": hwnd,
+        "name": name,
+        "level": level,
+        "gold": gold,
+        "silver": silver,
+    })
+
     adb["name"] = name
 
     complex_task = Complex(adb)
 
+    adb["task_finished"] = complex_task.task_finished
+
     complex_task.singin()
 
-    bangpai = Bangpai(adb, complex_task.task_finished)
+    bangpai = Bangpai(adb)
 
     bangpai.check_in()
 
-    # GengZhong(adb, complex_task.task_finished).start()
+    # GengZhong(adb).start()
 
     # if screen == '0':
     #     complex_task.join_team_leader()
@@ -81,36 +102,38 @@ def daily_tasks(hwnd):
 
     # if week >= 6:
     #     if screen == '0':
-    #         Zhuogui(adb, complex_task.task_finished, pipe).leader()
+    #         Zhuogui(adb, pipe).leader()
     #     else:
-    #         Zhuogui(adb, complex_task.task_finished, pipe).player()
+    #         Zhuogui(adb, pipe).player()
 
     # if screen == '0':
-    #     FuBen(adb, complex_task.task_finished, pipe).leader('ecy')
+    #     FuBen(adb, pipe).leader('ecy')
     # else:
-    #     FuBen(adb, complex_task.task_finished, pipe).player()
+    #     FuBen(adb, pipe).player()
 
-    Shimen(adb, complex_task.task_finished).start()
+    Shimen(adb).start()
 
-    Baotu(adb, complex_task.task_finished).start()
+    Baotu(adb).start()
 
-    Mijing(adb, complex_task.task_finished).start()
+    Mijing(adb).start()
 
     if datetime.now().hour >= 11:
-        SJ(adb, complex_task.task_finished).start()
+        SJ(adb).start()
 
     if week <= 4 and datetime.now().hour >= 17:
-        KJ(adb, complex_task.task_finished).start()
+        KJ(adb).start()
 
-    Yunbiao(adb, complex_task.task_finished).start()
+    Yunbiao(adb).start()
 
     complex_task.get_hyd()
 
-    # GengZhong(adb, complex_task.task_finished).start(True)
+    # GengZhong(adb).start(True)
 
     complex_task.clean()
 
     print(f"{name}账号完成")
+
+    print = original_print
 
 
 if __name__ == "__main__":

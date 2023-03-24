@@ -7,10 +7,12 @@ COUNT = 2
 
 class Zhuogui(object):
 
-    def __init__(self, adb, task_finished, pipe=None):
+    def __init__(self, adb, pipe=None):
         for key, val in adb.items():
             self.__dict__[key] = val
-        self.task_finished = task_finished
+        if adb["print"]: 
+            global print 
+            print = adb["print"]
         self.pipe = pipe
 
     def leader(self):

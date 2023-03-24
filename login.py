@@ -15,8 +15,9 @@ from config.user import ACCTZU
 from match import Match
 
 conf = configparser.ConfigParser()
+path = os.path.join(os.getcwd(), "config.ini")
+conf.read(path, encoding='utf-8')
 
-conf.read('config.ini', encoding='utf-8')
 LEIDIAN_PATH = conf.get('software_path', 'leidian')
 SHARED_FOLDER = conf.get('software_path', 'shared_folder')
 
