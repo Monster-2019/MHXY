@@ -64,7 +64,7 @@ class Match(object):
 if __name__ == "__main__":
     from capture import CaptureScreen
     import win32gui
-    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     capture()

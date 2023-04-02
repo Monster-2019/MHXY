@@ -12,7 +12,7 @@ from login import login
 from multiprocessing import Pool
 import tkinter as tk
 from tkinter import filedialog
-from utils import PauseableThread
+from utils import PauseableThread, push_msg
 
 # f = open(os.devnull, 'w')
 # sys.stdout = f
@@ -34,7 +34,7 @@ def get_hwnd_list():
 
     def callback(hwnd, handles):
         if win32gui.IsWindowVisible(hwnd) and not win32gui.IsIconic(
-                hwnd) and '《梦幻西游》手游' in win32gui.GetWindowText(hwnd):
+                hwnd) and '梦幻西游：时空' in win32gui.GetWindowText(hwnd):
             handles.append({"hwnd": hwnd})
 
         return True
@@ -139,6 +139,7 @@ def stopAll(hwnds):
 
 @eel.expose
 def start(hwnds=None, **kwds):
+    global threads
     lock = threading.Lock()
 
     for hwnd in hwnds:
@@ -146,6 +147,20 @@ def start(hwnds=None, **kwds):
                             args=(hwnd, lock, eel.updateInfo, eel.updateState))
         t.start()
         threads[hwnd] = t
+
+    for thread in threads:
+        thread.join()
+
+    push_msg('已全部完成')
+
+
+@eel.expose
+def onekey():
+    hwnds = get_hwnd_list()
+    overopen(hwnds)
+    hwnds = get_hwnd_list()
+    auto_login(0, hwnds)
+    start(hwnds)
 
 
 def init_gui(develop):

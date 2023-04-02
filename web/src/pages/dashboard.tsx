@@ -137,15 +137,15 @@ const Dashboard: React.FC = () => {
         setData(prev => prev.map((t, i) => ({ ...t, ...cpData[i] })))
     }
 
-    const updateState = (val) => {
+    const updateState = val => {
         // console.log(hwnd, status)
-        const {hwnd, status} = val
+        const { hwnd, status } = val
         let cpData = [...dataRef.current]
         const rowIndex = cpData.findIndex(t => t.hwnd == hwnd)
         const rowData = cpData[rowIndex]
         const newData = {
             ...rowData,
-            status
+            status,
         }
         cpData.splice(rowIndex, 1, newData)
         setData(prev => prev.map((t, i) => ({ ...t, ...cpData[i] })))
@@ -190,6 +190,10 @@ const Dashboard: React.FC = () => {
         window.eel.stopAll(hwnds)
     }
 
+    const handleOnekey = () => {
+        window.eel.onekey()
+    }
+
     return (
         <>
             <Table
@@ -206,6 +210,9 @@ const Dashboard: React.FC = () => {
             <div className="my-4">
                 <Button className="mr-4" onClick={handleUpdateWindow}>
                     刷新窗口
+                </Button>
+                <Button className="mr-4" onClick={handleOnekey}>
+                    一键
                 </Button>
                 <Button className="mr-4" onClick={handleStart}>
                     启动

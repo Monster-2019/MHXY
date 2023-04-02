@@ -71,7 +71,7 @@ if __name__ == '__main__':
     from smc import SMC
     from complex import Complex
 
-    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     match = Match(screen)

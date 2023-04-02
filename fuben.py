@@ -45,26 +45,25 @@ jcx = {
 
 class FuBen(object):
 
-    def __init__(self, adb, pipe):
+    def __init__(self, adb):
         for key, val in adb.items():
-            self[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
-        self.pipe = pipe
+            self.__dict__[key] = val
+        # if adb["print"]: 
+        #     global print 
+        #     print = adb["print"]
         self.fb_img = empty
 
     def leader(self, fb):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
 
-        complete = self.task_finished(self.fbImg['wc'])
+        self.fb_img = eval(fb)
+        print(self.fb_img)
+
+        complete = self.task_finished(self.fb_img['wc'])
 
         if complete:
-            self.pipe.send('fb_wc')
             return
-
-        self.fb_img = eval(fb)
 
         self.btn.hotkey('hd')
         self.smc('rchd', sleep_time=0.5)
@@ -75,10 +74,10 @@ class FuBen(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_x, tem_y = self.match(self.fb_img["hd"])
+                tem_x, tem_y, tem_w, tem_h = self.match(self.fb_img["hd"])
                 if tem_x:
                     x, y, w, h = self.match("cj",
-                                            "imgTem/" + self.fb_img["hd"])
+                                            screen="imgTem/" + self.fb_img["hd"])
                     new_coor = (tem_x + x, tem_y + y, w, h)
                     if x:
                         self.btn.l(new_coor, sleep_time=1)
@@ -90,7 +89,7 @@ class FuBen(object):
                                 r = self.smc(item, sleep_time=1)
                                 if r and item == self.fb_img["xz"]:
                                     btn_coor = self.match(
-                                        'fb_jr', 'imgTem/' + self.fb_img["xz"])
+                                        'fb_jr', screen='imgTem/' + self.fb_img["xz"])
                                     if btn_coor != 0:
                                         new_coor = ((
                                             r[0] + btn_coor[0],
@@ -144,7 +143,7 @@ class FuBen(object):
                         while True:
                             self.capture()
                             coor = self.match('dh', simi=0.9)
-                            if coor != 0:
+                            if coor:
                                 new_coor = (coor[0] + 14, coor[1] + 64,
                                             247, 41)
                                 self.btn.l(new_coor)
@@ -167,18 +166,39 @@ class FuBen(object):
                         res = self.smc('hd')
                         if res:
                             processing = False
-                            self.pipe.send('fb_wc')
                             logger.info('完成')
                             break
 
         return 1
 
     def palyer(self):
-        while True:
-            recv = self.pipe.recv()
-            if recv == 'fb_wc':
-                break
+        pass
 
 
 if __name__ == "__main__":
-    FuBen('jcx').leader()
+    import win32gui
+    from capture import CaptureScreen
+    from match import Match
+    from btn import Btn
+    from smc import SMC
+    from complex import Complex
+
+    hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+    }
+    complex_task = Complex(adb)
+    adb["task_finished"] = complex_task.task_finished
+
+    FuBen(adb).leader('lls')

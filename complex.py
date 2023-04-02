@@ -166,7 +166,7 @@ class Complex(object):
         print(f"刮奖完成")
 
     def get_hyd(self):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
 
         self.btn.hotkey('hd')
@@ -184,8 +184,10 @@ class Complex(object):
         print(f"账号: { self.name } 活跃度领取完成")
 
     def join_team_leader(self):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
+
+        self.leave_team()
 
         self.btn.hotkey('dw')
 
@@ -205,18 +207,20 @@ class Complex(object):
         self.btn.r()
 
     def join_team_player(self):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
 
+        self.leave_team()
+        
         self.btn.hotkey('hy')
         self.smc('lxr')
 
         while True:
             self.capture()
-            dz_x, dz_y = self.match('dz')
+            dz_x, dz_y, dz_w, dz_h = self.match('dz')
             if dz_x:
-                x, y, w, h = self.match('jt', 'imgTem/dz')
-                if coor:
+                x, y, w, h = self.match('jt', screen='imgTem/dz')
+                if x and y:
                     coor = (dz_x + x, dz_y + y, w, h)
                     self.btn.l(coor, sleep_time=1)
 
@@ -226,15 +230,12 @@ class Complex(object):
         self.btn.r()
 
     def leave_team(self):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
 
-        self.btn.hotkey('dw')
+        self.btn.hotkey('dw', sleep_time=1)
 
-        while True:
-            self.smc('tcdw', sleep_time=1)
-            if self.smc('cjdw', is_click=False):
-                break
+        self.smc('tcdw', sleep_time=1)
 
         self.btn.r()
 
@@ -284,7 +285,7 @@ if __name__ == '__main__':
     from btn import Btn
     from smc import SMC
 
-    hwnd = win32gui.FindWindow(None, "《梦幻西游》手游")
+    hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     match = Match(screen)
@@ -300,4 +301,4 @@ if __name__ == '__main__':
         'smc': smc,
     }
     
-    Complex(adb).culture()
+    Complex(adb).join_team_player()

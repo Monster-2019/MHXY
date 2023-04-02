@@ -137,5 +137,5 @@ def daily_tasks(hwnd, lock=None, updateInfo=None, updateStatus=None):
 
 
 if __name__ == "__main__":
-    hwnd = win32gui.FindWindow(None, '《梦幻西游》手游')
+    hwnd = win32gui.FindWindow(None, '梦幻西游：时空')
     daily_tasks(str(hwnd))
