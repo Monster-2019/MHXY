@@ -10,3 +10,4 @@ images/mnq/mnq.jpg
 cache
 build/*
 dist/*
+*.spec

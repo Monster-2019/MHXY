@@ -1,7 +1,9 @@
-import Root from './Root'
-import Dashboard from './pages/dashboard'
-import Config from './pages/config'
-import CustomTask from './pages/customtask'
+import { lazy } from 'react'
+
+const Root = lazy(() => import('./Root'))
+const Dashboard = lazy(() => import('./pages/dashboard'))
+const Config = lazy(() => import('./pages/config'))
+const CustomTask = lazy(() => import('./pages/customtask'))
 
 const router = [
     {

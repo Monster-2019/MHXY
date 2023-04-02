@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { createHtmlPlugin } from 'vite-plugin-html'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -31,6 +32,7 @@ export default defineConfig({
                             : `<script src="http://localhost:9000/eel.js"></script><script>eel.set_host('ws://localhost:9000')</script>`
                 }
             }
-        })
+        }),
+        // visualizer()
     ]
 })
