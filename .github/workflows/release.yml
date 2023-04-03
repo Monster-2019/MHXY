@@ -39,7 +39,7 @@ jobs:
 
             - name: Build
               run: |
-                  ./build.sh
+                  bash ./build.sh
                   ls
 
             - name: Create Release
