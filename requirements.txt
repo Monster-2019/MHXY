@@ -1,6 +1,4 @@
 loguru
 pytesseract
-pywin32
 requests
 eel
-pywin32
