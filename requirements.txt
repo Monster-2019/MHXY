@@ -2,3 +2,4 @@ loguru
 pytesseract
 requests
 eel
+win32gui

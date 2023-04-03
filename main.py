@@ -14,9 +14,9 @@ import tkinter as tk
 from tkinter import filedialog
 from utils import PauseableThread, push_msg
 
-# f = open(os.devnull, 'w')
-# sys.stdout = f
-# sys.stderr = f
+f = open(os.devnull, 'w')
+sys.stdout = f
+sys.stderr = f
 
 import eel
 
