@@ -1,8 +1,5 @@
 loguru==0.5.3
-numpy==1.21.4
-opencv_python==4.7.0.68
-psutil==5.9.4
 pytesseract==0.3.10
-pywin32==302
+pywin32==306
 requests==2.26.0
 win32gui==221.6
