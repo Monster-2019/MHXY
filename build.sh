@@ -7,7 +7,7 @@ if [[ ! $(uname -sr) == MINGW* ]]; then
     ls
     cd dist
     ls
-    zip -r mhxy_script.zip . -i dist/mhxy_script
+    zip mhxy_script.zip mhxy_script
 else 
     echo is windows
 fi
