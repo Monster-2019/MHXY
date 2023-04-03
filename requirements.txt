@@ -3,3 +3,4 @@ pytesseract
 requests
 eel
 pywin32
+psutil
