@@ -40,10 +40,22 @@ jobs:
             - name: Build
               run: |
                   python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;config.ini" --noconfirm --noconsole --name mhxy_script
+                  ls
+
+            - name: Upload Build Files
+              uses: actions/upload-artifact@v2
+              with:
+                name: dist
+                path: ./dist
 
     publish:
         runs-on: ubuntu-latest
         steps:
+            - name: Donwload Build Files
+              uses: actions/download-artifact@v2
+              with:
+                name: dist
+
             - name: Zip Build
               run: |
                 cd dist
