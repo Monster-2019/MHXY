@@ -49,6 +49,7 @@ jobs:
                 path: ./dist
 
     publish:
+        needs: build
         runs-on: ubuntu-latest
         steps:
             - name: Donwload Build Files
