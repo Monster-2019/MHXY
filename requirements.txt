@@ -1,4 +1,5 @@
 loguru
 pytesseract
+pywin32
 requests
 win32gui
