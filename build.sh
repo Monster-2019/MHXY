@@ -4,10 +4,8 @@ python -m eel main.py web/dist --add-data "images:images" --add-data "config.ini
 
 if [[ ! $(uname -sr) == MINGW* ]]; then
     echo not windows
-    folder="dist"
-    if [ ! -d "$folder"]; then
-        echo not dist
-    fi
+    ls
+    cd dist
     ls
     zip -r mhxy_script.zip . -i dist/mhxy_script
 else 
