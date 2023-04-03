@@ -4,3 +4,4 @@ requests
 eel
 pywin32
 psutil
+opencv-python
