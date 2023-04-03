@@ -40,7 +40,6 @@ jobs:
             - name: Build
               run: |
                   python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;config.ini" --noconfirm --noconsole --name mhxy_script
-                  ls
 
             - name: Upload Build Files
               uses: actions/upload-artifact@v2
@@ -60,7 +59,7 @@ jobs:
             - name: Zip Build
               run: |
                 ls
-                zip -r mhxy_script.zip dist/mhxy_script
+                zip -r mhxy_script.zip mhxy_script
 
             - name: Create Release
               id: create_release
@@ -80,6 +79,6 @@ jobs:
                   GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./dist/mhxy_script.zip
+                  asset_path: ./mhxy_script.zip
                   asset_name: mhxy_script.zip
                   asset_content_type: application/zip
