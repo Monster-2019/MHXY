@@ -3,4 +3,3 @@ pytesseract
 requests
 eel
 pywin32
-win32gui
