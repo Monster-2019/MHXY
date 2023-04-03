@@ -2,8 +2,8 @@ name: Eel Build and Publish
 
 on:
     push:
-        branches:
-            - main
+        tags:
+            - "v*"
 
 jobs:
     build-and-publish:
@@ -34,7 +34,7 @@ jobs:
             - name: Install dependencies
               run: |
                   python -m pip install --upgrade pip
-                  pip install pyinstaller
+                  pip install -r requirements.txt
 
             - name: Build
               run: |
@@ -44,10 +44,10 @@ jobs:
               id: create_release
               uses: actions/create-release@v1.0.0
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
               with:
-                  tag_name: v1.0.0
-                  release_name: Release 1.0.0
+                  tag_name: ${{ github.ref }}
+                  release_name: Release ${{ github.ref }}
                   draft: false
                   prerelease: false
 
@@ -55,9 +55,9 @@ jobs:
               id: upload-release-asset
               uses: actions/upload-release-asset@v1.0.1
               env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
               with:
                   upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./dist/my_app.zip
-                  asset_name: my_app.zip
+                  asset_path: ./dist/mhxy_script.zip
+                  asset_name: mhxy_script.zip
                   asset_content_type: application/zip
