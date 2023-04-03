@@ -1,6 +1,6 @@
 #!/bin/sh
 
-python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;config.ini" --noconfirm --noconsole --name mhxy_script
+python -m eel main.py web/dist --add-data "images:images" --add-data "config.ini:." --noconfirm --noconsole --name mhxy_script
 
 if [[ ! $(uname -sr) == MINGW* ]]; then
     echo not windows
