@@ -3,12 +3,12 @@ name: Eel Build and Publish
 on:
     push:
         tags:
-            - "v*"
+            - 'v*'
 
 jobs:
-    build-and-publish:
-        # runs-on: windows-2019
-        runs-on: ubuntu-latest
+    build:
+        runs-on: windows-2019
+        # runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
 
@@ -41,6 +41,9 @@ jobs:
               run: |
                   bash ./build.sh
 
+    publish:
+        runs-on: ubuntu-latest
+        steps:
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1.0.0
