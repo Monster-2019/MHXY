@@ -18,12 +18,13 @@ jobs:
 
             - name: Install package
               run: |
-                  cd web
                   npm install
+              working-directory: web
 
             - name: Build Web
               run: |
                   npm run build
+              working-directory: web
 
             - name: Set up Python
               uses: actions/setup-python@v2
