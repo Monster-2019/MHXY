@@ -40,6 +40,7 @@ jobs:
             - name: Build
               run: |
                   ./build.sh
+                  ls
 
             - name: Create Release
               id: create_release
