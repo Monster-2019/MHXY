@@ -54,6 +54,8 @@ jobs:
                   release_name: Release ${{ github.ref }}
                   draft: false
                   prerelease: false
+              run: |
+                zip -r mhxy_script.zip ./dist/mhxy_script
 
             - name: Upload Release Asset
               id: upload-release-asset
