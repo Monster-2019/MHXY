@@ -58,9 +58,8 @@ jobs:
 
             - name: Zip Build
               run: |
-                cd dist
                 ls
-                zip -r mhxy_script.zip ./dist/mhxy_script
+                zip -r mhxy_script.zip dist/mhxy_script
 
             - name: Create Release
               id: create_release
