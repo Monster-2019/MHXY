@@ -4,7 +4,7 @@ python -m eel main.py web/dist --add-data "images:images" --add-data "config.ini
 
 if [[ ! $(uname -sr) == MINGW* ]]; then
     echo not windows
-    zip -r mhxy_script.zip dist/mhxy_script
+    zip -r mhxy_script.zip . -i dist/mhxy_script
 else 
     echo is windows
 fi
