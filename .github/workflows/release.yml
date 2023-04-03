@@ -44,6 +44,10 @@ jobs:
     publish:
         runs-on: ubuntu-latest
         steps:
+            - name: Zip Build
+              run: |
+                zip -r mhxy_script.zip ./dist/mhxy_script
+
             - name: Create Release
               id: create_release
               uses: actions/create-release@v1.0.0
@@ -54,8 +58,6 @@ jobs:
                   release_name: Release ${{ github.ref }}
                   draft: false
                   prerelease: false
-              run: |
-                zip -r mhxy_script.zip ./dist/mhxy_script
 
             - name: Upload Release Asset
               id: upload-release-asset
