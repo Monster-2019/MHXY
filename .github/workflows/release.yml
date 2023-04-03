@@ -39,7 +39,7 @@ jobs:
 
             - name: Build
               run: |
-                  python -m eel main.py web/dist --add-data "images:images" --add-data "config.ini:." --noconfirm --noconsole --name mhxy_script
+                  python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
 
     publish:
         runs-on: ubuntu-latest
