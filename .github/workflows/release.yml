@@ -44,7 +44,7 @@ jobs:
 
             - name: Build
               run: |
-                  python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;config.ini" --noconfirm --noconsole --name mhxy_script
+                  python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
 
             - name: Upload Build Files
               uses: actions/upload-artifact@v2
