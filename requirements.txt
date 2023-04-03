@@ -1,5 +1,5 @@
-loguru==0.5.3
-pytesseract==0.3.10
-pywin32 > 300
-requests==2.26.0
-win32gui==221.6
+loguru
+pytesseract
+pywin32
+requests
+win32gui
