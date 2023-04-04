@@ -55,24 +55,9 @@ jobs:
               run: |
                   python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
 
-            - name: Upload Build Files
-              uses: actions/upload-artifact@v2
-              with:
-                  name: dist
-                  path: ./dist
-
-    publish:
-        runs-on: ubuntu-latest
-        needs: build
-        steps:
-            - name: Download Build Files
-              uses: actions/download-artifact@v2
-              with:
-                  name: dist
-
             - name: Zip Build
               run: |
-                  zip -r mhxy_script.zip mhxy_script
+                  Compress-Archive -Path .\dist\mhxy_script -DestinationPath .\mhxy_script.zip
 
             - name: Create Release
               id: create_release
