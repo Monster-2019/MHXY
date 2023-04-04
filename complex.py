@@ -1,8 +1,6 @@
 import re
 from time import sleep
 
-from loguru import logger
-
 from ocr import ocr
 
 

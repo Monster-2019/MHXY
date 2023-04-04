@@ -102,8 +102,9 @@ const columns: ColumnsType<DataType> = [
 //     group: '1'
 // }
 
+let isUpdating = false
+
 const Dashboard: React.FC = () => {
-    const [scriptValue, setScriptValue] = useState('1')
     const [data, setData] = useRecoilState(windowsState)
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>(
         data.filter((t: any) => t.hwnd).map((_, i) => i)
@@ -114,6 +115,7 @@ const Dashboard: React.FC = () => {
     useEffect(() => {
         window.eel.expose(updateInfo, 'updateInfo')
         window.eel.expose(updateState, 'updateState')
+        window.eel.expose(updateWindows, 'updateWindows')
     }, [])
 
     useEffect(() => {
@@ -123,32 +125,44 @@ const Dashboard: React.FC = () => {
     }, [data])
 
     const updateInfo = val => {
-        const { hwnd, ...args } = val
-
-        let cpData = [...dataRef.current]
-        const rowIndex = cpData.findIndex(t => t.hwnd == hwnd)
-        const rowData = cpData[rowIndex]
-        const newData = {
-            ...rowData,
-            ...args,
-            key: rowIndex
-        }
-        cpData.splice(rowIndex, 1, newData)
-        setData(prev => prev.map((t, i) => ({ ...t, ...cpData[i] })))
+        setData(prevData => {
+            const updateData = prevData.map(row => {
+                if (row.hwnd == val.hwnd) {
+                    return { ...row, ...val }
+                }
+                return row
+            })
+            return updateData
+        })
     }
 
     const updateState = val => {
         // console.log(hwnd, status)
-        const { hwnd, status } = val
-        let cpData = [...dataRef.current]
-        const rowIndex = cpData.findIndex(t => t.hwnd == hwnd)
-        const rowData = cpData[rowIndex]
-        const newData = {
-            ...rowData,
-            status,
+        const finishUpdate = () => {
+            setData(prevData => {
+                const updateData = prevData.map(row => {
+                    if (row.hwnd == val.hwnd) {
+                        return { ...row, ...val }
+                    }
+                    return row
+                })
+                return updateData
+            })
+            isUpdating = false
         }
-        cpData.splice(rowIndex, 1, newData)
-        setData(prev => prev.map((t, i) => ({ ...t, ...cpData[i] })))
+
+        if (isUpdating) {
+            setTimeout(() => {
+                updateState(val)
+            }, 0)
+        } else {
+            isUpdating = true
+            finishUpdate()
+        }
+    }
+
+    const updateWindows = val => {
+        handleUpdateWindow(val)
     }
 
     const handleSelected = (selectedRowKeys: React.Key[]) => {
@@ -160,8 +174,13 @@ const Dashboard: React.FC = () => {
         selectedRowKeys
     }
 
-    const handleUpdateWindow = async () => {
-        const res = await window.eel.get_hwnd_list()()
+    const handleUpdateWindow = async (val: number[]) => {
+        let res
+        if (!val) {
+            res = await window.eel.get_hwnd_list()()
+        } else {
+            res = val
+        }
         const result = data.map((item, index) => {
             if (res[index]) {
                 return {
@@ -208,7 +227,7 @@ const Dashboard: React.FC = () => {
                 size={'small'}
             />
             <div className="my-4">
-                <Button className="mr-4" onClick={handleUpdateWindow}>
+                <Button className="mr-4" onClick={() => handleUpdateWindow()}>
                     刷新窗口
                 </Button>
                 <Button className="mr-4" onClick={handleOnekey}>

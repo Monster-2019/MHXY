@@ -13,6 +13,9 @@ from multiprocessing import Pool
 import tkinter as tk
 from tkinter import filedialog
 from utils import PauseableThread, push_msg
+# import loguru
+
+# loguru.logger.add(sys.stderr, format="{message}", )
 
 f = open(os.devnull, 'w')
 sys.stdout = f
@@ -94,8 +97,9 @@ def set_software_file():
 
 def overopen(hwnd_list=[]):
     if len(hwnd_list) == 5:
+        print('已经打开五个客户端')
         return
-
+        
     os.system(f"start {conf.get('software_path', 'ssk')}")
     sleep(2)
 
@@ -110,6 +114,7 @@ def overopen(hwnd_list=[]):
         btn.l(((350, 150, 2, 2)))
         sleep(3)
 
+    print('已打开五个客户端')
     os.system('taskkill /F /IM mhxy.exe')
     return
 
@@ -131,10 +136,11 @@ def stop(hwnd):
 @eel.expose
 def stopAll(hwnds):
     if not hwnds:
-        return
-    global threads
+        hwnds = get_hwnd_list()
     for hwnd in hwnds:
         stop(hwnd)
+
+    push_msg('已终止')
 
 
 @eel.expose
@@ -159,6 +165,7 @@ def onekey():
     hwnds = get_hwnd_list()
     overopen(hwnds)
     hwnds = get_hwnd_list()
+    eel.updateWindows(hwnds)
     auto_login(0, hwnds)
     start(hwnds)
 
