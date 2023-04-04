@@ -1,98 +1,109 @@
 name: Eel Build and Publish
 
 on:
-    push:
-        tags:
-            - 'v*'
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-    build:
-        runs-on: windows-2019
-        # runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        node-version: [14.x, 16.x]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-            - name: Set up Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 16
-            
-            - name: Cache node_modules
-              uses: actions/cache@v2
-              with:
-                path: ~/.npm
-                key: ${{ runner.os }}-node-${{ hashFiles('**/web/package-lock.json') }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
 
-            - name: Install package
-              run: |
-                  npm install
-              working-directory: web
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('web/package-lock.json') }}
 
-            - name: Build Web
-              run: |
-                  npm run build
-              working-directory: web
+      - name: Install Node.js dependencies
+        run: |
+          cd web
+          npm install
+        shell: bash
 
-            - name: Set up Python
-              uses: actions/setup-python@v4
-              with:
-                  python-version: '3.9'
+      - name: Build Web
+        run: |
+          cd web
+          npm run build
+        shell: bash
 
-            - name: Cache pip packages
-              uses: actions/cache@v2
-              with:
-                path: ~/.cache/pip
-                key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-                restore-keys: |
-                  ${{ runner.os }}-pip-
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
 
-            - name: Install dependencies
-              run: |
-                  pip install -r requirements.txt
-                  pip install pyinstaller
+      - name: Cache Python packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
 
-            - name: Build
-              run: |
-                  python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
+      - name: Install Python dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+        shell: bash
 
-            - name: Upload Build Files
-              uses: actions/upload-artifact@v2
-              with:
-                name: dist
-                path: ./dist
+      - name: Build executable
+        run: |
+          python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
+        shell: bash
 
-    publish:
-        needs: build
-        runs-on: ubuntu-latest
-        steps:
-            - name: Donwload Build Files
-              uses: actions/download-artifact@v2
-              with:
-                name: dist
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: ./dist
 
-            - name: Zip Build
-              run: |
-                ls
-                zip -r mhxy_script.zip mhxy_script
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
 
-            - name: Create Release
-              id: create_release
-              uses: actions/create-release@v1.0.0
-              env:
-                  GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
-              with:
-                  tag_name: ${{ github.ref }}
-                  release_name: Release ${{ github.ref }}
-                  draft: false
-                  prerelease: false
+      - name: Zip build
+        run: |
+          ls
+          zip -r mhxy_script.zip mhxy_script
+        shell: bash
 
-            - name: Upload Release Asset
-              id: upload-release-asset
-              uses: actions/upload-release-asset@v1.0.1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./mhxy_script.zip
-                  asset_name: mhxy_script.zip
-                  asset_content_type: application/zip
+      - name: Create release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ### New Features
+            - ...
+            ### Bug Fixes
+            - ...
+          draft: false
+          prerelease: false
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./mhxy_script.zip
+          asset_name: mhxy_script.zip
+          asset_content_type: application/zip
