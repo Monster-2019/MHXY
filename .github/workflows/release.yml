@@ -75,14 +75,13 @@ jobs:
                   zip -r mhxy_script.zip mhxy_script
 
             - name: Create Release
+              id: create_release
               uses: actions/create-release@v1.0.0
               env:
                   GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
               with:
                   tag_name: ${{ github.ref }}
                   release_name: Release ${{ github.ref }}
-                  body: |
-                      Release ${{ github.ref }}
                   draft: false
                   prerelease: false
 
