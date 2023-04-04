@@ -12,7 +12,6 @@ const router = [
         children: [
             {
                 index: true,
-                path: '/',
                 element: <Dashboard />
             },
             {

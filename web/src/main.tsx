@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import 'antd/dist/reset.css'
@@ -20,9 +20,11 @@ const App = () => {
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     // <React.StrictMode>
     <RecoilRoot>
-        <Router basename={import.meta.env.PROD ? '/index.html' : '/'}>
-            <App />
-        </Router>
+        <Suspense>
+            <Router basename={import.meta.env.PROD ? '/index.html' : '/'}>
+                <App />
+            </Router>
+        </Suspense>
     </RecoilRoot>
     // </React.StrictMode>
 )
