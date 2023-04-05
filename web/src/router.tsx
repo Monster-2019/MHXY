@@ -4,6 +4,7 @@ const Root = lazy(() => import('./Root'))
 const Dashboard = lazy(() => import('./pages/dashboard'))
 const Config = lazy(() => import('./pages/config'))
 const CustomTask = lazy(() => import('./pages/customtask'))
+const AutoLogin = lazy(() => import('./pages/autologin'))
 
 const router = [
     {
@@ -13,6 +14,10 @@ const router = [
             {
                 index: true,
                 element: <Dashboard />
+            },
+            {
+                path: '/autologin',
+                element: <AutoLogin />
             },
             {
                 path: '/config',

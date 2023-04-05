@@ -7,28 +7,24 @@ COUNT = 2
 
 class Zhuogui(object):
 
-    def __init__(self, adb, pipe=None):
+    def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
+        if adb["print"]:
+            global print
             print = adb["print"]
-        self.pipe = pipe
 
     def leader(self):
-        while not self.smc('hd', isClick=False):
+        while not self.smc('hd', is_click=False):
             self.btn.r()
 
         complete = self.task_finished('zg_wc')
 
         if complete:
-            self.pipe.send('zg_wc')
             return
 
         self.btn.hotkey('hd')
-
         self.smc('rchd', sleep_time=0.5)
-
         self.btn.m(590, 330)
         self.btn.v(1, 31)
         sleep(0.5)
@@ -36,15 +32,11 @@ class Zhuogui(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_coor = self.match('hd_zgrw') or self.match('hd_zgrw1')
-                if tem_coor:
-                    btn_coor = self.match('cj',
-                                          'imgTem/hd_zgrw') or self.match(
-                                              'cj', 'imgTem/hd_zgrw1')
-                    new_coor = ((tem_coor[0] + btn_coor[0],
-                                 tem_coor[1] + btn_coor[1], btn_coor[2],
-                                 btn_coor[3]))
-                    if btn_coor:
+                tem_x, tem_y, tem_w, tem_h = self.match('hd_zgrw')
+                if tem_x:
+                    x, y, w, h = self.match('cj', screen='imgTem/hd_zgrw')
+                    new_coor = (tem_x + x, tem_y + y, w, h)
+                    if x:
                         self.btn.l(new_coor)
                         break
 
@@ -53,20 +45,15 @@ class Zhuogui(object):
 
         self.loop(COUNT)
 
-        self.pipe.send('zg_wc')
-
         logger.info(f"捉鬼任务结束")
 
     def player(self):
-        while True:
-            recv = self.pipe.recv()
-            if recv == 'zg_wc':
-                break
+        pass
 
     def loop(self, count=99):
         step_list = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
         cur_count = 0
-        while cur_count <= count:
+        while cur_count < count:
             for item in step_list:
                 self.capture()
                 isHd = self.match('hd')

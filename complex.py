@@ -3,6 +3,28 @@ from time import sleep
 
 from ocr import ocr
 
+# change_skill_coor = (1580, 1040, 2, 2)
+
+# skill_coor = {
+#     "1": (760,390, 2, 2),
+#     "2": (850,390, 2, 2),
+#     "3": (940,390, 2, 2),
+#     "4": (760,470, 2, 2),
+#     "5": (850,470, 2, 2),
+#     "6": (940,470, 2, 2)
+# }
+
+# hs_skill = {
+#     "shield": skill_coor('3'),
+#     "blood": skill_coor('2'),
+#     "rebirth": skill_coor('4'),
+# }
+
+# pt_skill = {
+#     "shield": skill_coor('4'),
+#     "blood": skill_coor('1'),
+#     "rebirth": skill_coor('2'),
+# }
 
 class Complex(object):
 
@@ -197,8 +219,9 @@ class Complex(object):
 
         while True:
             accept = self.smc('dw_js')
+            sleep(0.5)
             if accept:
-                n += 1
+                count += 1
             elif count >= 4:
                 break
 
@@ -236,6 +259,11 @@ class Complex(object):
         self.smc('tcdw', sleep_time=1)
 
         self.btn.r()
+
+        sleep(0.5)
+
+    def fight(self):
+        pass
 
     def task_finished(self, rw_list, type='rchd'):
         if isinstance(rw_list, str):
@@ -299,4 +327,4 @@ if __name__ == '__main__':
         'smc': smc,
     }
     
-    Complex(adb).join_team_player()
+    Complex(adb).join_team_leader()

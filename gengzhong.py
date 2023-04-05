@@ -103,6 +103,10 @@ class GengZhong(object):
         if is_zz:
             print(f'{self.name}无作物，可耕种')
 
+        if not coor:
+            print('未识别到土地')
+            return
+
         if not is_sh and not is_zz:
             print('成熟中')
             self.btn.r()

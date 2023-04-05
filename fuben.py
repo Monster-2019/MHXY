@@ -48,9 +48,9 @@ class FuBen(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        # if adb["print"]: 
-        #     global print 
-        #     print = adb["print"]
+        if adb["print"]: 
+            global print 
+            print = adb["print"]
         self.fb_img = empty
 
     def leader(self, fb):
@@ -58,7 +58,6 @@ class FuBen(object):
             self.btn.r()
 
         self.fb_img = eval(fb)
-        print(self.fb_img)
 
         complete = self.task_finished(self.fb_img['wc'])
 

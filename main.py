@@ -5,11 +5,12 @@ import win32process
 import psutil
 import sys
 import threading
+import json
 from time import sleep
 from btn import Btn
 from run import daily_tasks
 from login import login
-from multiprocessing import Pool
+from multiprocessing import Value
 import tkinter as tk
 from tkinter import filedialog
 from utils import PauseableThread, push_msg
@@ -51,7 +52,6 @@ def get_hwnd_list():
 
     handles = [item["hwnd"] for item in handles]
 
-    print(handles)
     return handles
 
 
@@ -99,7 +99,7 @@ def overopen(hwnd_list=[]):
     if len(hwnd_list) == 5:
         print('已经打开五个客户端')
         return
-        
+
     os.system(f"start {conf.get('software_path', 'ssk')}")
     sleep(2)
 
@@ -119,7 +119,7 @@ def overopen(hwnd_list=[]):
     return
 
 
-def auto_login(group=0, hwnds=None, **kwds):
+def auto_login(group, hwnds=None, **kwds):
     if not hwnds:
         hwnds = get_hwnd_list()
     login(group, hwnds)
@@ -144,34 +144,59 @@ def stopAll(hwnds):
 
 
 @eel.expose
-def start(hwnds=None, **kwds):
+def start(groupConfig, **kwds):
     global threads
+    
     lock = threading.Lock()
+    memory = Value('i', 0)
 
-    for hwnd in hwnds:
+    for row in groupConfig:
         t = PauseableThread(target=daily_tasks,
-                            args=(hwnd, lock, eel.updateInfo, eel.updateState))
+                            args=(row['hwnd'], lock, row['config'], memory, eel.updateInfo, eel.updateState))
         t.start()
-        threads[hwnd] = t
+        threads[row['hwnd']] = t
 
-    for thread in threads:
-        thread.join()
+    for key, value in threads.items():
+        value.join()
 
     push_msg('已全部完成')
 
 
 @eel.expose
 def onekey():
-    hwnds = get_hwnd_list()
-    overopen(hwnds)
-    hwnds = get_hwnd_list()
-    eel.updateWindows(hwnds)
-    auto_login(0, hwnds)
-    start(hwnds)
+    account_json = get_auto_login_json()
+    account_json = json.loads(account_json)["accounts"]
+    for group in account_json:
+        hwnds = get_hwnd_list()
+        overopen(hwnds)
+        hwnds = get_hwnd_list()
+        eel.updateWindows(hwnds)
+        auto_login(group, hwnds)
+        start(hwnds)
+
+
+@eel.expose
+def get_auto_login_json():
+    with open('config/auto_login.json', 'r') as f:
+        json_data = f.read()
+        data = json.loads(json_data)
+        formatted_data = json.dumps(data, indent=2)
+    return formatted_data
+
+
+@eel.expose
+def set_auto_login_json(json_data):
+    with open('config/auto_login.json', 'w') as f:
+        json.dump(json_data, f, indent=2)
+
+def init_auto_login_json():
+    if not os.path.isfile('config/auto_login.json'):
+        with open('config/auto_login.json', 'w') as f:
+            json.dump({"accounts": []}, f)
 
 
 def init_gui(develop):
-    print(develop)
+    init_auto_login_json()
     if develop:
         directory = 'web/src'
         app = 'chrome'

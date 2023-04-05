@@ -68,10 +68,10 @@ const columns: ColumnsType<DataType> = [
                     style={{ width: 100 }}
                     onChange={value => handleChange(value, index)}
                     options={[
-                        { value: 'single_daily', label: '单人日常' },
+                        { value: 'daily_single', label: '单人日常' },
                         { value: 'daily_leader', label: '日常队长' },
                         { value: 'daily_user', label: '日常队友' },
-                        { value: 'custom', label: '自定义' }
+                        { value: 'daily_custom', label: '自定义' }
                     ]}
                 />
             </>
@@ -196,7 +196,11 @@ const Dashboard: React.FC = () => {
     }
 
     const handleStart = () => {
-        const selectHnwds = selectedRowKeys.map(i => hwnds[i])
+        let selectHnwds = selectedRowKeys.map(i => hwnds[i])
+        selectHnwds = selectHnwds.map(hwnd => {
+            const { config } = data.find(item => item.hwnd === hwnd)
+            return { hwnd, config }
+        })
         window.eel.start(selectHnwds)
     }
 

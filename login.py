@@ -8,7 +8,6 @@ import win32gui
 
 from btn import Btn
 from capture import CaptureScreen
-from config.user import ACCTZU
 from match import Match
 from smc import SMC
 
@@ -30,7 +29,6 @@ coor = {
 
 
 def game_login(hwnd, server):
-    print(server)
     screen = str(hwnd)
     capture = CaptureScreen(hwnd, screen).capture
     match = Match(screen).match_tem
@@ -78,8 +76,8 @@ def login(group, hwnds, **kwds):
         return
 
     for i in range(len(hwnds)):
-        login_account = ACCTZU[group][i]['account']
-        login_server = ACCTZU[group][i]['server']
+        login_account = group[i]['account']
+        login_server = group[i]['server']
 
         game_hwnd = hwnds[i]
 

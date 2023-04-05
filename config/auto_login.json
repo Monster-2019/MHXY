@@ -1,0 +1,26 @@
+{
+  "accounts": [
+    [
+      {
+        "account": "h1",
+        "server": "h1_xyxt"
+      },
+      {
+        "account": "h2",
+        "server": "h2_xyxt"
+      },
+      {
+        "account": "h3",
+        "server": "h3_xyxt"
+      },
+      {
+        "account": "h4",
+        "server": "h4_xyxt"
+      },
+      {
+        "account": "h5",
+        "server": "h5_xyxt"
+      }
+    ]
+  ]
+}

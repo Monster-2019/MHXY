@@ -1,7 +1,4 @@
 import cv2 as cv
-import numpy as np
-
-from config import base
 
 MIN_MATCH_COUNT = 10
 FLANN_INDEX_KDTREE = 1
@@ -11,7 +8,7 @@ flann = cv.FlannBasedMatcher(index_params, search_params)
 
 
 class Match(object):
-    default_simi = base.GLOBAL_SIMI
+    default_simi = 0.99
     default_feature_count = MIN_MATCH_COUNT
 
     def __init__(self, screen):
