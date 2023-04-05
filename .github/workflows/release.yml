@@ -53,7 +53,7 @@ jobs:
 
             - name: Build executable
               run: |
-                  python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
+                  python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --add-data "config;config" --noconfirm --noconsole --name mhxy_script
 
             - name: Zip Build
               run: |
