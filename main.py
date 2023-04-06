@@ -16,7 +16,7 @@ import tkinter as tk
 from tkinter import filedialog
 from utils import PauseableThread, push_msg
 
-if len(sys.argv) == 2:
+if len(sys.argv) == 1:
     f = open(os.devnull, 'w')
     sys.stdout = f
     sys.stderr = f
