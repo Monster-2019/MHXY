@@ -28,7 +28,7 @@ jobs:
                       ${{ runner.os }}-
 
             - name: Install Node.js dependencies
-              if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+              if: steps.cache-npm.outputs.cache-hit != 'true'
               run: |
                   cd web
                   npm install
@@ -54,7 +54,7 @@ jobs:
                       ${{ runner.os }}-
 
             - name: Install Python dependencies
-              if: ${{ steps.cache-pip.outputs.cache-hit != 'true' }}
+              if: steps.cache-pip.outputs.cache-hit != 'true'
               run: |
                   pip install -r requirements.txt
                   pip install pyinstaller
