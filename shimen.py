@@ -6,12 +6,9 @@ class Shimen(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def start(self):
-        print(f'{self.name}开始师门任务')
+        self.logger.info(f'师门开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -20,7 +17,7 @@ class Shimen(object):
                 break
 
         if self.task_finished('sm_wc'):
-            print(f'{self.name}师门任务已完成')
+            self.logger.info(f'师门完成')
             self.btn.r()
             return
 
@@ -28,7 +25,6 @@ class Shimen(object):
         # self.btn.l('zr1', sleep_time=0.5)
         # self.btn.r()
 
-        sleep(1)
         self.btn.hotkey("hd")
         self.smc("rchd", sleep_time=0.5)
         self.btn.m(590, 330)
@@ -37,7 +33,7 @@ class Shimen(object):
         processing = self.smc('sm_sm')
 
         if not processing:
-            print(f'{self.name}领取师门任务')
+            self.logger.info(f'师门领取')
             for n in range(31):
                 if n % 10 == 0:
                     self.capture()
@@ -64,7 +60,7 @@ class Shimen(object):
                     self.btn.v(-1)
 
         if processing:
-            print(f'{self.name}师门任务进行中')
+            self.logger.info(f'师门进行中')
             step_list = [
                 "sm_mpgx",
                 "sm_sm",
@@ -152,7 +148,7 @@ class Shimen(object):
                 if not coor:
                     break
 
-        print(f'{self.name}完成师门任务')
+        self.logger.info(f'师门完成')
         return 1
 
 

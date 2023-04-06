@@ -6,25 +6,22 @@ class Ring(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def start(self):
-        print(f"开始经验链")
+        self.logger.info(f"开始经验链")
 
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         processing = self.smc('rw_jyl', simi=0.9, is_click=False)
-        print(processing)
+        self.logger.info(processing)
 
         if not processing:
             if self.task_finished('jyl_wc'):
-                print('经验链完成')
+                self.logger.info('经验链完成')
                 return
 
-        print(f"经验链进行中")
+        self.logger.info(f"经验链进行中")
 
         if not processing:
             self.btn.hotkey("hd")
@@ -59,7 +56,7 @@ class Ring(object):
                     self.btn.v(-1)
 
         if not processing:
-            print('未找到任务')
+            self.logger.info('未找到任务')
             return
 
         step_list = ["rw_jyl_wc", "rw_jyl", "gm", "gm_1", 'btgm', "dh", "sj"]
@@ -96,7 +93,7 @@ class Ring(object):
                         res = self.smc('bt_sj') or self.smc(
                             'bt_jlh') or self.smc('bt_mgh')
                         if res:
-                            print("高价物品，手动处理")
+                            self.logger.info("高价物品，手动处理")
                             return
 
                             # self.btn.hotkey('gj')
@@ -144,10 +141,10 @@ class Ring(object):
 
                         if count == 6:
                             processing = False
-                            print('未找到任务，任务完成')
+                            self.logger.info('未找到任务，任务完成')
                             break
 
-        print(f"经验链结束")
+        self.logger.info(f"经验链结束")
 
 
 if __name__ == "__main__":

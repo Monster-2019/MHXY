@@ -71,8 +71,8 @@ def login(group, hwnds, **kwds):
         if hwnd and not_logged:
             login_list.append(hwnd)
 
-    print(login_list)
     if not login_list:
+        print('已经全部登录')
         return
 
     for i in range(len(hwnds)):

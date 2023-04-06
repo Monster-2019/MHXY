@@ -6,17 +6,14 @@ class SJ(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def start(self):
-        print(f'{self.name}开始三界奇缘')
+        self.logger.info(f'三界开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('sj_wc'):
-            print(f'{self.name}三界奇缘已完成')
+            self.logger.info(f'三界完成')
             self.btn.r()
             return
 
@@ -28,6 +25,7 @@ class SJ(object):
 
         processing = False
 
+        self.logger.info(f'三界领取')
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
@@ -50,7 +48,7 @@ class SJ(object):
                 self.btn.v(-1)
 
         if processing:
-            print(f'{self.name}三界奇缘进行中')
+            self.logger.info(f'三界进行中')
             while processing:
                 res = self.smc('sj_dw', is_click=False)
                 if res:
@@ -60,7 +58,9 @@ class SJ(object):
                 else:
                     self.btn.l((380, 230, 170, 240), sleep_time=0.5)
 
-        print(f'{self.name}完成三界奇缘')
+        self.logger.info(f'三界完成')
+
+        return 1
 
 
 if __name__ == '__main__':

@@ -16,9 +16,12 @@ interface DataType {
     action?: any
 }
 
-const handleChange = (value: string, index: number) => {
-    console.log(value, index)
-}
+const configs = [
+    { value: 'daily_single', label: '单人日常' },
+    { value: 'daily_leader', label: '日常队长' },
+    { value: 'daily_user', label: '日常队友' },
+    { value: 'daily_custom', label: '自定义' }
+]
 
 const columns: ColumnsType<DataType> = [
     {
@@ -63,17 +66,7 @@ const columns: ColumnsType<DataType> = [
         width: 100,
         render: (_, record, index) => (
             <>
-                <Select
-                    defaultValue={record.config}
-                    style={{ width: 100 }}
-                    onChange={value => handleChange(value, index)}
-                    options={[
-                        { value: 'daily_single', label: '单人日常' },
-                        { value: 'daily_leader', label: '日常队长' },
-                        { value: 'daily_user', label: '日常队友' },
-                        { value: 'daily_custom', label: '自定义' }
-                    ]}
-                />
+                <Select defaultValue={record.config} style={{ width: 100 }} options={configs} />
             </>
         )
     },
@@ -90,18 +83,6 @@ const columns: ColumnsType<DataType> = [
     }
 ]
 
-// {
-//     key: 3,
-//     hwnd: 1231313,
-//     name: 'Monster1',
-//     level: 69,
-//     gold: '10000',
-//     silver: '10000',
-//     status: '宝图任务中',
-//     config: 'test',
-//     group: '1'
-// }
-
 let isUpdating = false
 
 const Dashboard: React.FC = () => {
@@ -114,7 +95,7 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         window.eel.expose(updateInfo, 'updateInfo')
-        window.eel.expose(updateState, 'updateState')
+        window.eel.expose(updateLog, 'updateLog')
         window.eel.expose(updateWindows, 'updateWindows')
     }, [])
 
@@ -136,13 +117,15 @@ const Dashboard: React.FC = () => {
         })
     }
 
-    const updateState = val => {
-        // console.log(hwnd, status)
+    const updateLog = (hwnd, status) => {
         const finishUpdate = () => {
             setData(prevData => {
                 const updateData = prevData.map(row => {
-                    if (row.hwnd == val.hwnd) {
-                        return { ...row, ...val }
+                    if (row.hwnd == hwnd) {
+                        return {
+                            ...row,
+                            status
+                        }
                     }
                     return row
                 })
@@ -161,20 +144,20 @@ const Dashboard: React.FC = () => {
         }
     }
 
-    const updateWindows = val => {
-        handleUpdateWindow(val)
+    const getGroupConfig = () => {
+        let groupConfig = selectedRowKeys.map(i => hwnds[i])
+        groupConfig = groupConfig.map(hwnd => {
+            const { config } = data.find(item => item.hwnd === hwnd)
+            return { hwnd, config }
+        })
+        return groupConfig
     }
 
     const handleSelected = (selectedRowKeys: React.Key[]) => {
         setSelectedRowKeys(selectedRowKeys)
     }
 
-    const rowSelection: any = {
-        onChange: handleSelected,
-        selectedRowKeys
-    }
-
-    const handleUpdateWindow = async (val: number[]) => {
+    const updateWindows = async (val: number[]) => {
         let res
         if (!val) {
             res = await window.eel.get_hwnd_list()()
@@ -191,36 +174,74 @@ const Dashboard: React.FC = () => {
                 return item
             }
         })
-        setData(list => [...result])
-        setSelectedRowKeys(result.filter(item => item.hwnd).map((_, i) => i))
+        setData(prev => [...result])
+        setSelectedRowKeys(prev => result.filter(item => item.hwnd).map((_, i) => i))
     }
 
-    const handleStart = () => {
-        let selectHnwds = selectedRowKeys.map(i => hwnds[i])
-        selectHnwds = selectHnwds.map(hwnd => {
-            const { config } = data.find(item => item.hwnd === hwnd)
-            return { hwnd, config }
+    const handleConfig = (value, index) => {
+        setData(prev => {
+            const newData = prev.map((row, i) => {
+                if (index === i) {
+                    return {
+                        ...row,
+                        config: value
+                    }
+                }
+                return row
+            })
+            return newData
         })
-        window.eel.start(selectHnwds)
     }
 
-    const handleStop = () => {
+    const start = () => {
+        const groupConfig = getGroupConfig()
+        window.eel.start(groupConfig)
+    }
+
+    const stop = () => {
         const selectHnwds = selectedRowKeys.map(i => hwnds[i])
         window.eel.stopAll(selectHnwds)
     }
 
-    const handleStopAll = () => {
+    const stopAll = () => {
         window.eel.stopAll(hwnds)
     }
 
-    const handleOnekey = () => {
-        window.eel.onekey()
+    const oneKey = () => {
+        const groupConfig = data.map(row => {
+            return row?.config
+        })
+        console.log(groupConfig);
+        window.eel.onekey(groupConfig)
+    }
+
+    const rowSelection: any = {
+        onChange: handleSelected,
+        selectedRowKeys
     }
 
     return (
         <>
             <Table
-                columns={columns}
+                columns={columns.map(col => {
+                    if (col.key == 'config') {
+                        return {
+                            ...col,
+                            render: (_, record, index) => (
+                                <>
+                                    <Select
+                                        defaultValue={record.config}
+                                        style={{ width: 100 }}
+                                        options={configs}
+                                        onChange={value => handleConfig(value, index)}
+                                    />
+                                </>
+                            )
+                        }
+                    }
+                    return col
+                })}
+                // columns={columns}
                 rowSelection={{
                     type: 'checkbox',
                     ...rowSelection
@@ -231,19 +252,19 @@ const Dashboard: React.FC = () => {
                 size={'small'}
             />
             <div className="my-4">
-                <Button className="mr-4" onClick={() => handleUpdateWindow()}>
+                <Button className="mr-4" onClick={() => updateWindows()}>
                     刷新窗口
                 </Button>
-                <Button className="mr-4" onClick={handleOnekey}>
+                <Button className="mr-4" onClick={oneKey}>
                     一键
                 </Button>
-                <Button className="mr-4" onClick={handleStart}>
+                <Button className="mr-4" onClick={start}>
                     启动
                 </Button>
-                <Button className="mr-4" onClick={handleStop}>
+                {/* <Button className="mr-4" onClick={stop}>
                     停止
-                </Button>
-                <Button className="mr-4" onClick={handleStopAll}>
+                </Button> */}
+                <Button className="mr-4" onClick={stopAll}>
                     终止
                 </Button>
             </div>

@@ -6,15 +6,15 @@ class Mijing:
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def start(self):
+        self.logger.info(f'秘境开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('mj_wc'):
+            self.logger.info(f"秘境已完成")
+            self.btn.r()
             return
 
         self.btn.hotkey("hd")
@@ -23,13 +23,12 @@ class Mijing:
         self.btn.v(1, 31)
         sleep(0.5)
 
+        self.logger.info(f'秘境领取')
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_coor = self.match('hd_mjxy') or self.match('hd_mjxy1')
-                btn_coor = self.match('cj',
-                                      screen='imgTem/hd_mjxy') or self.match(
-                                          'cj', screen='imgTem/hd_mjxy1')
+                tem_coor = self.match('hd_mjxy')
+                btn_coor = self.match('cj', screen='imgTem/hd_mjxy')
                 if tem_coor and btn_coor:
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
@@ -40,24 +39,23 @@ class Mijing:
             else:
                 self.btn.v(-1)
 
-        join_list = ['mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_zctz', 'mj_tz']
+        join_list = ['mj_mjxy', 'mj_jr', 'qd', 'mj_one', 'mj_tz']
         # 'mj_mrh', 'mj_yjf', 'mj_esg',
 
         join = False
+        count = 0
+
         while not join:
             for item in join_list:
                 coor = self.smc(item, is_click=False)
                 if coor:
+                    count = 0
                     if item == 'mj_one':
                         self.btn.l(
                             (coor[0] + 46, coor[1] - 60, coor[2], coor[3]))
 
                     elif item == 'mj_jr':
                         self.btn.l(coor, max_x=500)
-
-                    elif item == 'mj_zctz':
-                        print('已经挑战过')
-                        return
 
                     elif item == 'mj_tz':
                         self.btn.l(coor)
@@ -68,14 +66,23 @@ class Mijing:
                         self.btn.l(coor)
 
                     sleep(0.5)
-                
+
+                elif item == 'mj_one':
+                    count += 1
+
+                if count == 5:
+                    self.logger.info(f'秘境已经挑战过')
+                    self.btn.r()
+                    return
+
                 sleep(1 / len(join_list))
 
         step_list = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
         # # , 'mj_lq', 'mj_gb'
 
-        sleep(3)
+        sleep(2)
         processing = True
+        self.logger.info(f'秘境进行中')
 
         while processing:
             for item in step_list:
@@ -105,6 +112,9 @@ class Mijing:
 
         while not self.smc('hd', is_click=False):
             self.smc('mj_lk')
+
+        self.logger.info(f'秘境完成')
+        return 1
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ from datetime import datetime
 import win32com.client
 import win32gui
 import json
-from loguru import logger
+import loguru
 from time import sleep
 
 from baotu import Baotu
@@ -17,32 +17,22 @@ from mijing import Mijing
 from shimen import Shimen
 from sjqy import SJ
 from smc import SMC
-from utils import hide_login, push_msg
+# from utils import hide_login
 from yunbiao import Yunbiao
 from zhuogui import Zhuogui
 from bangpai import Bangpai
 from gengzhong import GengZhong
 
-logger.add('run.log',
-           rotation="1 week",
-           encoding="utf-8",
-           retention="7 days",
-           backtrace=True,
-           catch=True,
-           enqueue=True)
-
 week = datetime.now().weekday()
 shell = win32com.client.Dispatch("WScript.Shell")
 
 
-@logger.catch()
 def daily_tasks(hwnd,
                 lock=None,
                 config_file=None,
                 memory=None,
                 updateInfo=None,
                 updateStatus=None):
-    global print
 
     with open(f'config/{config_file}.json', 'r') as f:
         json_data = f.read()
@@ -54,14 +44,6 @@ def daily_tasks(hwnd,
     btn = Btn(hwnd, lock)
     smc = SMC(capture, match, btn)
 
-    original_print = print
-
-    def updateState(*args, **kwds):
-        updateStatus({"hwnd": hwnd, "status": args[0]})
-        original_print(args[0])
-
-    print = updateState
-
     adb = {
         'screen': hwnd,
         'hwnd': hwnd,
@@ -69,20 +51,17 @@ def daily_tasks(hwnd,
         'match': match,
         'btn': btn,
         'smc': smc,
-        "original_print": original_print,
-        "print": print
     }
 
-    try:
-        shell.SendKeys('%')
-        win32gui.SetForegroundWindow(hwnd)
-        hide_login()
-    except Exception as e:
-        print(e)
+    # 置顶，隐藏登录窗口
+    # try:
+    #     shell.SendKeys('%')
+    #     win32gui.SetForegroundWindow(hwnd)
+    #     hide_login()
+    # except Exception as e:
+    #     print(e)
 
-    complex_task = Complex(adb)
-
-    name, level, gold, silver = complex_task.get_info()
+    name, level, gold, silver = Complex(adb).get_info()
 
     updateInfo({
         "hwnd": hwnd,
@@ -92,13 +71,15 @@ def daily_tasks(hwnd,
         "silver": silver,
     })
 
-    adb["name"] = name
+    logger = loguru.logger.bind(hwnd=hwnd, name=name)
+
+    adb["logger"] = logger
 
     complex_task = Complex(adb)
 
-    complex_task.leave_team()
-
     adb["task_finished"] = complex_task.task_finished
+
+    complex_task.leave_team()
 
     complex_task.singin()
 
@@ -109,7 +90,7 @@ def daily_tasks(hwnd,
     if int(level) >= 60:
         GengZhong(adb).start()
 
-    if config['leader'] != None:
+    if "leader" in config and config['leader'] != None:
         if config['leader']:
             memory.value = 1
             complex_task.join_team_leader()
@@ -117,8 +98,8 @@ def daily_tasks(hwnd,
             if week in [2, 4]:
                 FuBen(adb).leader('lyrm')
 
-            if week in [1, 3, 5, 6]:
-                FuBen(adb).leader('lls')
+            # if week in [1, 3, 5, 6]:
+            #     FuBen(adb).leader('lls')
 
             if week in [0, 3, 6]:
                 FuBen(adb).leader('ecy')
@@ -147,7 +128,6 @@ def daily_tasks(hwnd,
 
             complex_task.leave_team()
 
-
     if config["sm"]:
         Shimen(adb).start()
 
@@ -173,9 +153,9 @@ def daily_tasks(hwnd,
 
     complex_task.clean()
 
-    print(f"{name}账号完成")
+    logger.info(f"账号完成")
 
-    print = original_print
+    return 1
 
 
 if __name__ == "__main__":

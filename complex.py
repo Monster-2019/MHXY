@@ -26,6 +26,7 @@ from ocr import ocr
 #     "rebirth": skill_coor('2'),
 # }
 
+
 class Complex(object):
 
     def __init__(self, adb):
@@ -69,14 +70,10 @@ class Complex(object):
 
         sleep(1)
 
-        return (
-            name,
-            level,
-            gold,
-            silver
-        )
+        return (name, level, gold, silver)
 
     def clean(self):
+        self.logger.info(f"清理开始")
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -97,7 +94,7 @@ class Complex(object):
             if coor:
                 self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
                 self.btn.l((coor[0] + 513, coor[1] + 202, coor[2], coor[3]))
-                
+
             else:
                 self.btn.m(710, 410)
                 self.btn.v(-1, 6)
@@ -118,7 +115,8 @@ class Complex(object):
             'bb_sy7', 'bb_sy8', 'bb_sy9'
         ]  #'bb_jr'
         sell_list = [
-            'bb_gms', 'bb_sms', 'bb_hws', 'bb_kls', 'bb_jt', 'bb_zzs', 'bb_zzs1', 'bb_zf'
+            'bb_gms', 'bb_sms', 'bb_hws', 'bb_kls', 'bb_jt', 'bb_zzs',
+            'bb_zzs1', 'bb_zf'
         ]
         dq_list = [
             'bb_dq1', 'bb_dq2', 'bb_dq_mj1', 'bb_dq_mj2', 'bb_dq_zz1',
@@ -142,7 +140,6 @@ class Complex(object):
                 self.smc('bb_add_max', sleep_time=0.5)
                 self.smc('bb_cs', sleep_time=0.5)
 
-
             dq = self.match.match_tem_list(dq_list)
             if dq:
                 self.btn.l(dq, sleep_time=0.5)
@@ -158,9 +155,12 @@ class Complex(object):
                     self.btn.r()
                     break
 
-        print(f"清理完成")
+        self.logger.info(f"清理完成")
+
+        return 1
 
     def singin(self):
+        self.logger.info(f"刮奖开始")
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -183,7 +183,9 @@ class Complex(object):
         self.btn.r()
         self.btn.r()
 
-        print(f"刮奖完成")
+        self.logger.info(f"刮奖完成")
+
+        return 1
 
     def get_hyd(self):
         while not self.smc('hd', is_click=False):
@@ -201,7 +203,7 @@ class Complex(object):
         for coor in hyd_list:
             self.btn.l(coor, sleep_time=0.2)
 
-        print(f"账号: { self.name } 活跃度领取完成")
+        self.logger.info(f"活跃度领取完成")
 
     def join_team_leader(self):
         while not self.smc('hd', is_click=False):
@@ -232,7 +234,7 @@ class Complex(object):
             self.btn.r()
 
         self.leave_team()
-        
+
         self.btn.hotkey('hy')
         self.smc('lxr')
 
@@ -291,10 +293,11 @@ class Complex(object):
         sleep(1)
 
         return False
-    
+
     def culture(self):
         while True:
-            coor = self.smc('culture_t', simi=0.998) or self.smc('culture_d', simi=0.998)
+            coor = self.smc('culture_t', simi=0.998) or self.smc('culture_d',
+                                                                 simi=0.998)
             if coor:
                 sleep(0.2)
                 self.smc('culture_active')
@@ -326,5 +329,5 @@ if __name__ == '__main__':
         'btn': btn,
         'smc': smc,
     }
-    
+
     Complex(adb).join_team_leader()

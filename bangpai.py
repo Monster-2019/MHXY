@@ -6,11 +6,9 @@ class Bangpai(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]:
-            global print
-            print = adb["print"]
 
     def check_in(self):
+        self.logger.info(f'签到开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -29,7 +27,7 @@ class Bangpai(object):
 
                 sleep(1 / len(step_list))
 
-        print(f'{self.name}签到完成')
+        self.logger.info(f'签到完成')
 
     def changeTask(self, has_task=True):
         step_list = ["rw_dqrw", "rw_cgrw", "rw_bprw", "rw_fqrw", "qd"]

@@ -7,13 +7,10 @@ class GengZhong(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
         self.weekday = datetime.today().isoweekday()
 
     def sell(self):
-        print(f'{self.name}开始出售金银花')
+        self.logger.info(f'出售金银花')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -72,12 +69,12 @@ class GengZhong(object):
         self.btn.r()
         self.btn.r()
 
-        print(f"{self.name}出售完成")
+        self.logger.info(f"出售完成")
 
         return complete
 
     def start(self, isSell=False):
-        print(f'{self.name}开始耕种')
+        self.logger.info(f'耕种开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
@@ -98,17 +95,17 @@ class GengZhong(object):
 
         if is_sh:
             self.btn.l(is_sh)
-            print(f'{self.name}已成熟，可收获')
+            self.logger.info(f'已成熟，可收获')
         
         if is_zz:
-            print(f'{self.name}无作物，可耕种')
+            self.logger.info(f'无作物，可耕种')
 
         if not coor:
-            print('未识别到土地')
+            self.logger.info(f'未识别到土地')
             return
 
         if not is_sh and not is_zz:
-            print('成熟中')
+            self.logger.info(f'耕种还未成熟')
             self.btn.r()
             return
         
@@ -119,7 +116,7 @@ class GengZhong(object):
             sleep(3)
             self.smc('td_status', sleep_time=0.5)
 
-        print(f'{self.name}耕种中')
+        self.logger.info(f'耕种中')
         self.capture()
         tem_coor = self.match('gz_jyh')
         btn_coor = self.match('gz_add', screen='imgTem/gz_jyh')
@@ -134,7 +131,7 @@ class GengZhong(object):
 
             self.btn.r()
 
-        print(f'{self.name}完成耕种')
+        self.logger.info(f'耕种完成')
         if ((self.weekday - 1) % 2 == 0) or isSell:
             self.sell()
 

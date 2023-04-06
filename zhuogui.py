@@ -10,17 +10,15 @@ class Zhuogui(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]:
-            global print
-            print = adb["print"]
 
     def leader(self):
+        self.logger.info(f"捉鬼开始")
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
-        complete = self.task_finished('zg_wc')
-
-        if complete:
+        if self.task_finished('zg_wc'):
+            self.logger.info(f"捉鬼完成")
+            self.btn.r()
             return
 
         self.btn.hotkey('hd')
@@ -29,6 +27,7 @@ class Zhuogui(object):
         self.btn.v(1, 31)
         sleep(0.5)
 
+        self.logger.info(f"捉鬼领取")
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
@@ -45,15 +44,16 @@ class Zhuogui(object):
 
         self.loop(COUNT)
 
-        logger.info(f"捉鬼任务结束")
+        self.logger.info(f"捉鬼完成")
 
     def player(self):
         pass
 
     def loop(self, count=99):
+        self.logger.info(f"捉鬼进行中")
         step_list = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
         cur_count = 0
-        while cur_count < count:
+        while cur_count <= count:
             for item in step_list:
                 self.capture()
                 isHd = self.match('hd')
@@ -68,7 +68,7 @@ class Zhuogui(object):
                     else:
                         result = self.smc('qx')
                         if result:
-                            logger.info('完成')
+                            cur_count = 3
                             break
 
                 elif coor and item == 'zg_zgrw':
@@ -76,7 +76,7 @@ class Zhuogui(object):
                     sleep(2)
                     self.btn.r()
                     cur_count += 1
-                    print(f'开始刷第{cur_count}轮鬼')
+                    self.logger.info(f'开始刷第{cur_count}轮鬼')
 
                 elif isHd and not coor and item == 'zg_zg':
                     self.btn.m(900, 300)

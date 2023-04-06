@@ -48,9 +48,6 @@ class FuBen(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
         self.fb_img = empty
 
     def leader(self, fb):
@@ -58,10 +55,13 @@ class FuBen(object):
             self.btn.r()
 
         self.fb_img = eval(fb)
+        self.fb_name = self.fb_img['name']
+        self.logger.info(f'{self.fb_name}副本开始')
 
         complete = self.task_finished(self.fb_img['wc'])
 
         if complete:
+            self.logger.info(f'{self.fb_name}副本已完成')
             return
 
         self.btn.hotkey('hd')
@@ -70,13 +70,17 @@ class FuBen(object):
         self.btn.v(1, 31)
         sleep(0.5)
 
+        self.logger.info(f'{self.fb_name}副本领取')
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_x, tem_y, tem_w, tem_h = self.match(self.fb_img["hd"])
-                if tem_x:
+                print(111, self.fb_img["hd"])
+                coor = self.match(self.fb_img["hd"])
+                if coor:
+                    tem_x, tem_y, tem_w, tem_h = coor
                     x, y, w, h = self.match("cj",
-                                            screen="imgTem/" + self.fb_img["hd"])
+                                            screen="imgTem/" +
+                                            self.fb_img["hd"])
                     new_coor = (tem_x + x, tem_y + y, w, h)
                     if x:
                         self.btn.l(new_coor, sleep_time=1)
@@ -87,8 +91,9 @@ class FuBen(object):
                             for item in ['fb_xzfb', self.fb_img["xz"]]:
                                 r = self.smc(item, sleep_time=1)
                                 if r and item == self.fb_img["xz"]:
-                                    btn_coor = self.match(
-                                        'fb_jr', screen='imgTem/' + self.fb_img["xz"])
+                                    btn_coor = self.match('fb_jr',
+                                                          screen='imgTem/' +
+                                                          self.fb_img["xz"])
                                     if btn_coor != 0:
                                         new_coor = ((
                                             r[0] + btn_coor[0],
@@ -102,17 +107,20 @@ class FuBen(object):
                                                      simi=0.95,
                                                      is_click=False)
                                         if r:
+                                            self.logger.info(
+                                                f'{self.fb_name}副本已领取')
                                             processing = True
                                             break
 
                         break
             else:
-                self.B.v(-1)
+                self.btn.v(-1)
 
         step_list = [
             'zd_qx', 'sb', 'hd', 'fb_tgjq', self.fb_img["rw"], 'dh', 'djjx'
         ]
 
+        self.logger.info(f'{self.fb_name}副本进行中')
         while processing:
             for item in step_list:
                 if item == self.fb_img["rw"] or item == 'dh':
@@ -143,8 +151,8 @@ class FuBen(object):
                             self.capture()
                             coor = self.match('dh', simi=0.9)
                             if coor:
-                                new_coor = (coor[0] + 14, coor[1] + 64,
-                                            247, 41)
+                                new_coor = (coor[0] + 14, coor[1] + 64, 247,
+                                            41)
                                 self.btn.l(new_coor)
                                 sleep(0.3)
                             else:
@@ -165,9 +173,9 @@ class FuBen(object):
                         res = self.smc('hd')
                         if res:
                             processing = False
-                            logger.info('完成')
                             break
 
+        self.logger.info(f'{self.fb_name}副本完成')
         return 1
 
     def palyer(self):

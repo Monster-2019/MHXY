@@ -6,9 +6,6 @@ class Gongfang(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def kaogu(self):
         self.btn.hotkey("bb", sleep_time=1)
@@ -110,12 +107,10 @@ class Gongfang(object):
 
             for n in range(31):
                 if n % 10 == 0:
-                    print(123)
                     sleep(1)
                     self.capture()
                     tem_coor = self.match("hd_gfrw")
                     btn_coor = self.match("cj", screen="imgTem/hd_gfrw")
-                    print(tem_coor, btn_coor)
                     if tem_coor and btn_coor:
                         new_coor = ((tem_coor[0] + btn_coor[0],
                                      tem_coor[1] + btn_coor[1], btn_coor[2],

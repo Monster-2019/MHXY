@@ -6,9 +6,6 @@ class Baotu(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def has_cbt(self):
         while not self.smc('hd', is_click=False):
@@ -41,10 +38,11 @@ class Baotu(object):
 
     def dig(self):
         # 打开背包
-        print(f'{self.name}开始挖宝')
+        self.logger.info(f'挖宝开始')
         cbt_coor = self.has_cbt()
 
         if cbt_coor:
+            self.logger.info(f'挖宝进行中')
             self.btn.l(cbt_coor)
             self.btn.l(cbt_coor)
 
@@ -75,16 +73,16 @@ class Baotu(object):
                         sleep(4)
                         count = 0
 
-        print(f'{self.name}完成挖宝')
+        self.logger.info(f'挖宝完成')
         return 1
 
     def start(self):
-        print(f'{self.name}开始宝图任务')
+        self.logger.info(f'宝图开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('bt_wc'):
-            print(f'{self.name}宝图任务已完成')
+            self.logger.info(f'宝图完成')
             self.dig()
             return
 
@@ -97,7 +95,7 @@ class Baotu(object):
         processing = self.smc('rw_bt', simi=0.95)
 
         if not processing:
-            print(f'{self.name}领取宝图任务')
+            self.logger.info(f'宝图领取')
             for n in range(31):
                 if n % 10 == 0:
                     self.capture()
@@ -138,7 +136,7 @@ class Baotu(object):
         self.btn.r()
 
         if processing:
-            print(f'{self.name}宝图任务进行中')
+            self.logger.info(f'宝图进行中')
             step_list = ['bt_cbthdwc', 'rw_bt']
 
             while processing:
@@ -173,7 +171,7 @@ class Baotu(object):
 
                             sleep(5)
 
-        print(f'{self.name}完成宝图任务')
+        self.logger.info(f'宝图完成')
         self.dig()
 
 

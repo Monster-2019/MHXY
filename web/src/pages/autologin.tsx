@@ -85,7 +85,7 @@ export default function AutoLogin() {
                     return (
                         <Panel
                             header={`第${groupIndex + 1}组`}
-                            key={groupIndex}
+                            key={"group" + groupIndex}
                             extra={genExtra(groupIndex)}
                         >
                             <Row gutter={16} key={'group' + group}>

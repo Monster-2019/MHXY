@@ -6,21 +6,19 @@ import psutil
 import sys
 import threading
 import json
+import loguru
 from time import sleep
 from btn import Btn
-from run import daily_tasks
+from task import daily_tasks
 from login import login
 from multiprocessing import Value
 import tkinter as tk
 from tkinter import filedialog
 from utils import PauseableThread, push_msg
-# import loguru
 
-# loguru.logger.add(sys.stderr, format="{message}", )
-
-f = open(os.devnull, 'w')
-sys.stdout = f
-sys.stderr = f
+# f = open(os.devnull, 'w')
+# sys.stdout = f
+# sys.stderr = f
 
 import eel
 
@@ -28,7 +26,54 @@ conf = configparser.ConfigParser()
 path = os.path.join(os.getcwd(), "config.ini")
 conf.read(path, encoding='utf-8')
 
-timing_time = ''
+# timing_time = ''
+
+
+@eel.expose
+def get_all_log():
+    with open('app.log', 'r', encoding="utf-8") as log_file:
+        log_content = log_file.read()
+        return log_content
+
+
+def update_logs():
+    with open('app.log', 'r', encoding="utf-8") as log_file:
+        log_content = log_file.read()
+        eel.updateAllLog(log_content)
+
+
+def eel_log_sink(message):
+    hwnd = message.record["extra"]["hwnd"]
+    msg = message.record["message"]
+    eel.updateLog(hwnd, msg)
+    update_logs()
+
+
+logger_format = ("<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+                 "<level>{level: <6}</level> | "
+                 "{extra[hwnd]: <8} - {extra[name]: <10} - {message}")
+
+with open("app.log", mode="w", encoding="utf-8"):
+    pass
+
+loguru.logger.configure(handlers=[{
+    "sink": "app.log",
+    "encoding": "utf-8",
+    "enqueue": True,
+    "backtrace": True,
+    "catch": True,
+    "format": logger_format
+}, {
+    "sink": eel_log_sink,
+    "enqueue": True,
+    "backtrace": True,
+}],
+                        extra={
+                            "hwnd": "",
+                            "name": ""
+                        })
+
+logger = loguru.logger.bind(hwnd=0)
 
 
 @eel.expose
@@ -95,9 +140,33 @@ def set_software_file():
     return soft_path
 
 
+@eel.expose
+def get_auto_login_json():
+    with open('config/auto_login.json', 'r') as f:
+        json_data = f.read()
+        data = json.loads(json_data)
+        formatted_data = json.dumps(data, indent=2)
+    return formatted_data
+
+
+@eel.expose
+def set_auto_login_json(json_data):
+    with open('config/auto_login.json', 'w') as f:
+        json.dump(json_data, f, indent=2)
+
+
+def init_auto_login_json():
+    if not os.path.isfile('config/auto_login.json'):
+        with open('config/auto_login.json', 'w') as f:
+            json.dump({"accounts": []}, f)
+
+
+threads = dict()
+
+
 def overopen(hwnd_list=[]):
     if len(hwnd_list) == 5:
-        print('已经打开五个客户端')
+        logger.info('已打开客户端，退出软件')
         return
 
     os.system(f"start {conf.get('software_path', 'ssk')}")
@@ -114,22 +183,16 @@ def overopen(hwnd_list=[]):
         btn.l(((350, 150, 2, 2)))
         sleep(3)
 
-    print('已打开五个客户端')
+    logger.info('客户端打开完成')
     os.system('taskkill /F /IM mhxy.exe')
     return
 
 
-def auto_login(group, hwnds=None, **kwds):
-    if not hwnds:
-        hwnds = get_hwnd_list()
-    login(group, hwnds)
-
-
-threads = dict()
-
-
+@eel.expose
 def stop(hwnd):
     global threads
+    if hwnd not in threads:
+        return
     threads[hwnd].stop_thread()
 
 
@@ -146,55 +209,46 @@ def stopAll(hwnds):
 @eel.expose
 def start(groupConfig, **kwds):
     global threads
-    
+
     lock = threading.Lock()
     memory = Value('i', 0)
 
     for row in groupConfig:
         t = PauseableThread(target=daily_tasks,
-                            args=(row['hwnd'], lock, row['config'], memory, eel.updateInfo, eel.updateState))
+                            args=(row['hwnd'], lock, row['config'], memory,
+                                  eel.updateInfo))
         t.start()
         threads[row['hwnd']] = t
 
-    for key, value in threads.items():
-        value.join()
-
-    push_msg('已全部完成')
+    # for key, value in threads.items():
+    # value.join()
+    # push_msg('已全部完成')
 
 
 @eel.expose
-def onekey():
+def onekey(config):
+    logger.info("开始一键")
     account_json = get_auto_login_json()
     account_json = json.loads(account_json)["accounts"]
     for group in account_json:
         hwnds = get_hwnd_list()
         overopen(hwnds)
         hwnds = get_hwnd_list()
-        eel.updateWindows(hwnds)
-        auto_login(group, hwnds)
-        start(hwnds)
+        eel.updateWindows()
+
+        login(group, hwnds)
+
+        groupConfig = [{
+            "hwnd": hwnd,
+            "config": config[i]
+        } for i, hwnd in enumerate(hwnds)]
+
+        print(groupConfig)
+
+        start(groupConfig)
 
 
-@eel.expose
-def get_auto_login_json():
-    with open('config/auto_login.json', 'r') as f:
-        json_data = f.read()
-        data = json.loads(json_data)
-        formatted_data = json.dumps(data, indent=2)
-    return formatted_data
-
-
-@eel.expose
-def set_auto_login_json(json_data):
-    with open('config/auto_login.json', 'w') as f:
-        json.dump(json_data, f, indent=2)
-
-def init_auto_login_json():
-    if not os.path.isfile('config/auto_login.json'):
-        with open('config/auto_login.json', 'w') as f:
-            json.dump({"accounts": []}, f)
-
-
+@logger.catch
 def init_gui(develop):
     init_auto_login_json()
     if develop:
@@ -210,6 +264,7 @@ def init_gui(develop):
         port=9000,
         size=(1200, 410),
     )
+    print(app, eel_kwargs)
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html', '.css'])
     try:
         eel.start(page, mode=app, **eel_kwargs)

@@ -6,17 +6,14 @@ class Yunbiao(object):
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
-        if adb["print"]: 
-            global print 
-            print = adb["print"]
 
     def start(self):
-        print(f'{self.name}开始运镖')
+        self.logger.info(f'运镖开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
         if self.task_finished('yb_wc'):
-            print(f'{self.name}运镖已完成')
+            self.logger.info(f'运镖完成')
             self.btn.r()
             return
 
@@ -28,6 +25,7 @@ class Yunbiao(object):
 
         processing = False
 
+        self.logger.info(f'运镖领取')
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
@@ -47,7 +45,7 @@ class Yunbiao(object):
 
         count = 0
         step_list = ['yb_ys', 'qd']
-        print(f'{self.name}运镖进行中')
+        self.logger.info(f'运镖进行中')
         while processing:
             is_hd = self.smc('hd', is_click=False)
             if count >= 3 and is_hd:
@@ -62,7 +60,9 @@ class Yunbiao(object):
 
             sleep(1)
 
-        print(f'{self.name}完成运镖')
+        self.logger.info(f'运镖完成')
+
+        return 1
 
 
 if __name__ == '__main__':
