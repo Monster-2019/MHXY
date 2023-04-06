@@ -18,6 +18,7 @@ jobs:
                   node-version: 16
 
             - name: Cache Node.js packages
+              id: cache-npm
               uses: actions/cache@v2
               with:
                   path: ~/.npm
@@ -27,6 +28,7 @@ jobs:
                       ${{ runner.os }}-
 
             - name: Install Node.js dependencies
+              if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
               run: |
                   cd web
                   npm install
@@ -42,6 +44,7 @@ jobs:
                   python-version: '3.9'
 
             - name: Cache Python packages
+              id: cache-pip
               uses: actions/cache@v2
               with:
                   path: ~/.cache/pip
@@ -51,6 +54,7 @@ jobs:
                       ${{ runner.os }}-
 
             - name: Install Python dependencies
+              if: ${{ steps.cache-pip.outputs.cache-hit != 'true' }}
               run: |
                   pip install -r requirements.txt
                   pip install pyinstaller
