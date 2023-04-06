@@ -16,9 +16,10 @@ import tkinter as tk
 from tkinter import filedialog
 from utils import PauseableThread, push_msg
 
-# f = open(os.devnull, 'w')
-# sys.stdout = f
-# sys.stderr = f
+if len(sys.argv) == 2:
+    f = open(os.devnull, 'w')
+    sys.stdout = f
+    sys.stderr = f
 
 import eel
 
@@ -278,6 +279,4 @@ def init_gui(develop):
 
 
 if __name__ == "__main__":
-    import sys
-
     init_gui(develop=len(sys.argv) == 2)
