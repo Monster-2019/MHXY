@@ -279,4 +279,7 @@ def init_gui(develop):
 
 
 if __name__ == "__main__":
-    init_gui(develop=len(sys.argv) == 2)
+    try:
+        init_gui(develop=len(sys.argv) == 2)
+    except Exception as e:
+        logger.error(e)
