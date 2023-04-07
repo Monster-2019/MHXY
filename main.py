@@ -267,10 +267,7 @@ def init_gui(develop):
     )
     print(app, eel_kwargs)
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html', '.css'])
-    try:
-        eel.start(page, mode=app, **eel_kwargs)
-    except EnvironmentError as e:
-        pass
+    eel.start(page, mode=app, **eel_kwargs)
         # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
         # if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
         #     eel.start(page, mode='edge', **eel_kwargs)

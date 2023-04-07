@@ -13,23 +13,20 @@ SHARED_FOLDER = conf.get('software_path', 'tesseract_ocr')
 pytesseract.pytesseract.tesseract_cmd = SHARED_FOLDER  # your path may be different
 
 def ocr(path, lang="eng", **kwds):
-    try: 
-        config = f"-l {lang} --psm 7"
-        # config = r"-l eng --psm 7"
+    config = f"-l {lang} --psm 7"
+    # config = r"-l eng --psm 7"
 
-        image = cv.imread(path)
-        # image = cv.imread('./images/0.jpg', 0)
+    image = cv.imread(path)
+    # image = cv.imread('./images/0.jpg', 0)
 
-        text = pytesseract.image_to_string(image, config=config)
+    text = pytesseract.image_to_string(image, config=config)
 
-        # print(pytesseract.image_to_string(image, lang='chi_sim', config=config))
-        # print(pytesseract.image_to_string(image, lang='eng', config=config))
-        # print(pytesseract.image_to_string(image, lang='chi_sim+eng',
-        #                                   config=config))
+    # print(pytesseract.image_to_string(image, lang='chi_sim', config=config))
+    # print(pytesseract.image_to_string(image, lang='eng', config=config))
+    # print(pytesseract.image_to_string(image, lang='chi_sim+eng',
+    #                                   config=config))
 
-        return text
-    except Exception as e:
-        logger.error(e)
+    return text
 
 
 if __name__ == '__main__':

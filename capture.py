@@ -1,6 +1,3 @@
-from time import sleep
-
-import cv2 as cv
 import win32con
 import win32gui
 import win32ui
