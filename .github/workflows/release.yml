@@ -21,13 +21,13 @@ jobs:
               id: cache-npm
               uses: actions/cache@v2
               with:
-                  path: C:\Users\runneradmin\AppData\Roaming\npm
+                  path: web/node_modules
                   key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
                   restore-keys: |
                       ${{ runner.os }}-node-
 
             - name: Install Node.js dependencies
-              if: steps.cache-npm.outputs.cache-hit != 'true'
+              # if: steps.cache-npm.outputs.cache-hit != 'true'
               run: |
                   cd web
                   npm ci
