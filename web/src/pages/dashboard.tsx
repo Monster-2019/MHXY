@@ -3,9 +3,10 @@ import { Space, Table, Tag, Button, Select } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useRecoilState } from 'recoil'
 import { windowsState } from '../atoms'
+import { StopOutlined, ToTopOutlined } from '@ant-design/icons'
 
 interface DataType {
-    key: number
+    key?: number
     hwnd: string
     name: string
     level: string
@@ -13,7 +14,6 @@ interface DataType {
     silver: string
     status: string
     config: string
-    action?: any
 }
 
 const configs = [
@@ -72,14 +72,9 @@ const columns: ColumnsType<DataType> = [
     },
     {
         title: '操作',
-        dataIndex: 'tags',
-        key: 'tags',
-        width: 100,
-        render: () => (
-            <>
-                <Button size="small">置顶</Button>
-            </>
-        )
+        dataIndex: 'actions',
+        key: 'actions',
+        width: 100
     }
 ]
 
@@ -164,15 +159,17 @@ const Dashboard: React.FC = () => {
         } else {
             res = val
         }
-        const result = data.map((item, index) => {
-            if (res[index]) {
-                return {
-                    ...item,
-                    hwnd: res[index]
+        const result = data.map((role: DataType, i: number) => {
+            let newRole = {}
+            Object.keys(role).forEach((key: string) => {
+                if (key === 'key' || key === 'config') {
+                    newRole[key] = role[key]
+                } else {
+                    newRole[key] = ''
                 }
-            } else {
-                return item
-            }
+            })
+            if (res[i]) newRole['hwnd'] = res[i]
+            return newRole
         })
         setData(prev => [...result])
         setSelectedRowKeys(prev => result.filter(item => item.hwnd).map((_, i) => i))
@@ -211,7 +208,6 @@ const Dashboard: React.FC = () => {
         const groupConfig = data.map(row => {
             return row?.config
         })
-        console.log(groupConfig);
         window.eel.onekey(groupConfig)
     }
 
@@ -220,26 +216,57 @@ const Dashboard: React.FC = () => {
         selectedRowKeys
     }
 
+    const topWindow = (hwnd: string | number) => {
+        if (!hwnd) return
+        window.eel.topWindow(hwnd)
+    }
+
+    const stopWindow = (hwnd: string | number) => {
+        if (!hwnd) return
+        window.eel.stop(hwnd)
+    }
+
     return (
         <>
             <Table
                 columns={columns.map(col => {
-                    if (col.key == 'config') {
-                        return {
-                            ...col,
-                            render: (_, record, index) => (
-                                <>
-                                    <Select
-                                        defaultValue={record.config}
-                                        style={{ width: 100 }}
-                                        options={configs}
-                                        onChange={value => handleConfig(value, index)}
-                                    />
-                                </>
-                            )
-                        }
+                    switch (col.key) {
+                        case 'config':
+                            return {
+                                ...col,
+                                render: (_, record, index) => (
+                                    <>
+                                        <Select
+                                            defaultValue={record.config}
+                                            style={{ width: 100 }}
+                                            options={configs}
+                                            onChange={value => handleConfig(value, index)}
+                                        />
+                                    </>
+                                )
+                            }
+
+                        case 'actions':
+                            return {
+                                ...col,
+                                render: (_, record, index) => (
+                                    <div className="flex flex-row items-center">
+                                        <ToTopOutlined
+                                            style={{ fontSize: '18px' }}
+                                            className="mr-2"
+                                            onClick={e => topWindow(record.hwnd)}
+                                        />
+                                        <StopOutlined
+                                            style={{ fontSize: '16px' }}
+                                            onClick={e => stopWindow(record.hwnd)}
+                                        />
+                                    </div>
+                                )
+                            }
+
+                        default:
+                            return col
                     }
-                    return col
                 })}
                 // columns={columns}
                 rowSelection={{

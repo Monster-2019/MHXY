@@ -4,6 +4,8 @@ import win32com.client
 import win32gui
 import json
 import loguru
+import configparser
+import os
 from time import sleep
 
 from baotu import Baotu
@@ -22,17 +24,20 @@ from yunbiao import Yunbiao
 from zhuogui import Zhuogui
 from bangpai import Bangpai
 from gengzhong import GengZhong
+from gongfang import Gongfang
 
-week = datetime.now().weekday()
+week = datetime.now().isoweekday()
 shell = win32com.client.Dispatch("WScript.Shell")
+
+conf = configparser.ConfigParser()
+path = os.path.join(os.getcwd(), "config.ini")
 
 
 def daily_tasks(hwnd,
                 lock=None,
                 config_file=None,
                 memory=None,
-                updateInfo=None,
-                updateStatus=None):
+                updateInfo=None):
 
     with open(f'config/{config_file}.json', 'r') as f:
         json_data = f.read()
@@ -95,16 +100,16 @@ def daily_tasks(hwnd,
             memory.value = 1
             complex_task.join_team_leader()
 
-            if week in [2, 4]:
+            if week in [3, 5]:
                 FuBen(adb).leader('lyrm')
 
             # if week in [1, 3, 5, 6]:
             #     FuBen(adb).leader('lls')
 
-            if week in [0, 3, 6]:
+            if week in [1, 4, 7]:
                 FuBen(adb).leader('ecy')
 
-            if week in [0, 1, 2, 3, 4, 5]:
+            if week in [1, 2, 3, 4, 5, 6]:
                 FuBen(adb).leader('jcx')
 
             Zhuogui(adb).leader()
@@ -114,6 +119,7 @@ def daily_tasks(hwnd,
             complex_task.leave_team()
 
         else:
+            logger.info('')
             while True:
                 if memory.value == 1:
                     break
@@ -142,7 +148,7 @@ def daily_tasks(hwnd,
     if datetime.now().hour >= 11 and config["sj"]:
         SJ(adb).start()
 
-    if week <= 4 and datetime.now().hour >= 17 and config["kj"]:
+    if week <= 5 and datetime.now().hour >= 17 and config["kj"]:
         KJ(adb).start()
 
     if config["yb"]:
@@ -154,6 +160,16 @@ def daily_tasks(hwnd,
         GengZhong(adb).start(True)
 
     complex_task.clean()
+
+    conf.read(path, encoding='utf-8')
+
+    bp = int(conf.get('public', 'bp'))
+    if bp and week == bp:
+        bangpai.start()
+
+    gf = int(conf.get('public', 'gf'))
+    if gf and week == gf:
+        Gongfang(adb).start()
 
     logger.info(f"账号完成")
 

@@ -7,6 +7,7 @@ import sys
 import threading
 import json
 import loguru
+import win32com.client
 from time import sleep
 from btn import Btn
 from task import daily_tasks
@@ -28,6 +29,13 @@ path = os.path.join(os.getcwd(), "config.ini")
 conf.read(path, encoding='utf-8')
 
 # timing_time = ''
+shell = win32com.client.Dispatch("WScript.Shell")
+
+
+@eel.expose
+def topWindow(hwnd):
+    shell.SendKeys('%')
+    win32gui.SetForegroundWindow(hwnd)
 
 
 @eel.expose
@@ -142,6 +150,20 @@ def set_software_file():
 
 
 @eel.expose
+def get_public_config():
+    public = conf.items('public')
+    return public
+
+
+@eel.expose
+def set_public_config(config):
+    print(config)
+    for key, val in config.items():
+        conf.set('public', key, val)
+    conf.write(open('config.ini', 'w'))
+
+
+@eel.expose
 def get_auto_login_json():
     with open('config/auto_login.json', 'r') as f:
         json_data = f.read()
@@ -244,8 +266,6 @@ def onekey(config):
             "config": config[i]
         } for i, hwnd in enumerate(hwnds)]
 
-        print(groupConfig)
-
         start(groupConfig)
 
 
@@ -265,14 +285,13 @@ def init_gui(develop):
         port=9000,
         size=(1200, 410),
     )
-    print(app, eel_kwargs)
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html', '.css'])
     eel.start(page, mode=app, **eel_kwargs)
-        # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
-        # if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
-        #     eel.start(page, mode='edge', **eel_kwargs)
-        # else:
-        #     raise
+    # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
+    # if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
+    #     eel.start(page, mode='edge', **eel_kwargs)
+    # else:
+    #     raise
 
 
 if __name__ == "__main__":

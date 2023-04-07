@@ -1,7 +1,7 @@
 import { atom } from 'recoil'
 
 interface DataType {
-    key: number
+    key?: number
     hwnd: string
     name: string
     level: string
@@ -9,7 +9,6 @@ interface DataType {
     silver: string
     status: string
     config: string
-    action?: any
 }
 
 const emptyData: DataType = {

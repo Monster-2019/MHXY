@@ -8,8 +8,9 @@ export default function Root() {
     const list = [
         { label: '仪表盘', path: '/' },
         { label: '自动登录配置', path: '/autologin' },
-        { label: '其他配置', path: '/config' },
         { label: '自定义任务', path: '/custom_task' },
+        { label: '通用配置', path: '/public' },
+        { label: '其他配置', path: '/config' },
         { label: '日志', path: '/log' }
     ]
 

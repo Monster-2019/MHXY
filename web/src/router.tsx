@@ -6,6 +6,7 @@ const Config = lazy(() => import('./pages/config'))
 const CustomTask = lazy(() => import('./pages/customtask'))
 const AutoLogin = lazy(() => import('./pages/autologin'))
 const Log = lazy(() => import('./pages/log'))
+const Public = lazy(() => import('./pages/public'))
 
 const router = [
     {
@@ -31,6 +32,10 @@ const router = [
             {
                 path: '/log',
                 element: <Log />
+            },
+            {
+                path: '/public',
+                element: <Public />
             }
         ]
     }
