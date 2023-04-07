@@ -2,7 +2,8 @@ name: Eel Build and Publish
 
 on:
     push:
-        branchs: [main]
+        branches:
+            - 'main'
 
 jobs:
     build:
