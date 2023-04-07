@@ -1,6 +1,7 @@
 import win32con
 import win32gui
 import win32ui
+from loguru import logger
 
 COOR = {
     "btgm": ((412, 258), (135, 25)),
@@ -59,7 +60,7 @@ class CaptureScreen(object):
             mfcDC.DeleteDC()
             win32gui.ReleaseDC(self.hwnd, hwndDC)
         except Exception as e:
-            print('capture ', e)
+            logger.error('capture ', e)
             pass
 
     def __call__(self):
