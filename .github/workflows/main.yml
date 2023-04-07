@@ -1,0 +1,51 @@
+name: Eel Build and Publish
+
+on:
+    push:
+        branchs: [main]
+
+jobs:
+    build:
+        runs-on: windows-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: 16
+
+            - name: Cache Node.js packages
+              id: cache-npm
+              uses: actions/cache@v3
+              with:
+                  path: web/node_modules
+                  key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-
+
+            - name: Install Node.js dependencies
+              if: steps.cache-npm.outputs.cache-hit != 'true'
+              run: |
+                  cd web
+                  npm ci
+
+            - name: Set up Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: '3.9'
+
+            - name: Cache Python packages
+              id: cache-pip
+              uses: actions/cache@v3
+              with:
+                  path: ${{ env.pythonLocation }}/Lib/site-packages
+                  key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pip-
+
+            - name: Install Python dependencies
+              if: steps.cache-pip.outputs.cache-hit != 'true'
+              run: |
+                  pip install -r requirements.txt
