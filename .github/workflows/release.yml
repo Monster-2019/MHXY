@@ -22,7 +22,10 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: web/node_modules
-                  key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
+                  key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}-${{ github.ref }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}-
+                      ${{ runner.os }}-node-
 
             - name: Install Node.js dependencies
               if: steps.cache-npm.outputs.cache-hit != 'true'
@@ -45,7 +48,10 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: ${{ env.pythonLocation }}/Lib/site-packages
-                  key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+                  key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ github.ref }}
+                  restore-keys: |
+                      ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-
+                      ${{ runner.os }}-pip-
 
             - name: Install Python dependencies
               if: steps.cache-pip.outputs.cache-hit != 'true'
