@@ -22,9 +22,8 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: web/node_modules
-                  key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}-${{ github.ref }}
+                  key: ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}
                   restore-keys: |
-                      ${{ runner.os }}-node-${{ hashFiles('web/package-lock.json') }}-
                       ${{ runner.os }}-node-
 
             - name: Install Node.js dependencies
@@ -48,9 +47,8 @@ jobs:
               uses: actions/cache@v3
               with:
                   path: ${{ env.pythonLocation }}/Lib/site-packages
-                  key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-${{ github.ref }}
+                  key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
                   restore-keys: |
-                      ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}-
                       ${{ runner.os }}-pip-
 
             - name: Install Python dependencies
