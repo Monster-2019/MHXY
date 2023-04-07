@@ -97,13 +97,13 @@ def login(group, hwnds, **kwds):
         login_btn.l(coor['dropdown'], sleep_time=0.5)
         login_btn.l(coor['prevpage'])
 
-        select_account = login_smc(login_account, sleep_time=0.5)
+        select_account = login_smc(login_account, simi=0.998, sleep_time=0.5)
 
         if select_account:
             login_smc('join_game')
         else:
-            login_btn.l(coor['nextpage'])
-            select_account = login_smc(login_account, sleep_time=0.5)
+            login_btn.l(coor['nextpage'], sleep_time=0.5)
+            select_account = login_smc(login_account, simi=0.998, sleep_time=0.5)
             login_smc('join_game')
 
         game_login(hwnds[i], login_server)

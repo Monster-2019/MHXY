@@ -126,6 +126,8 @@ def daily_tasks(hwnd,
                     break
                 sleep(1)
 
+            smc('sb', sleep_time=0.5)
+
             complex_task.leave_team()
 
     if config["sm"]:

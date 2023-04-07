@@ -25,6 +25,10 @@ class Bangpai(object):
                     self.btn.r()
                     break
 
+                elif not coor and item == 'bp_fl':
+                    self.btn.hotkey('bp')
+                    continue
+
                 sleep(1 / len(step_list))
 
         self.logger.info(f'签到完成')
