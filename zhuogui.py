@@ -56,36 +56,34 @@ class Zhuogui(object):
         while cur_count <= count:
             for item in step_list:
                 self.capture()
-                isHd = self.match('hd')
+                is_hd = self.match('hd')
                 if item == 'zg_zg':
                     coor = self.match(item, simi=0.9)
                 else:
                     coor = self.match(item)
 
-                if coor and item == 'zg_zgwc':
-                    if cur_count < count:
-                        self.smc('qd')
-                    else:
-                        result = self.smc('qx')
-                        if result:
-                            cur_count = 3
-                            break
+                if coor:
+                    if item == 'zg_zg':
+                        self.btn.l(coor, min_x=380)
 
-                elif coor and item == 'zg_zgrw':
-                    self.btn.l(coor)
-                    sleep(2)
-                    self.btn.r()
-                    cur_count += 1
-                    self.logger.info(f'开始刷第{cur_count}轮鬼')
+                    if item == 'zg_zgwc':
+                        self.logger.info(f'结束第{cur_count}轮鬼')
+                        if cur_count < count:
+                            self.smc('qd')
+                        else:
+                            result = self.smc('qx')
+                            if result:
+                                cur_count = 3
+                                break
 
-                elif isHd and not coor and item == 'zg_zg':
-                    self.btn.m(900, 300)
-                    self.btn.v(1, 10)
+                    if item == 'zg_zgrw':
+                        self.btn.l(coor)
+                        sleep(2)
+                        self.btn.r()
+                        cur_count += 1
+                        self.logger.info(f'开始刷第{cur_count}轮鬼')
 
-                else:
-                    self.btn.l(coor)
-
-                sleep(0.1)
+                sleep(1 / len(step_list))
 
         return 1
 

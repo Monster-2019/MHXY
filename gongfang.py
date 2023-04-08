@@ -8,29 +8,30 @@ class Gongfang(object):
             self.__dict__[key] = val
 
     def kaogu(self):
+        self.logger.info('考古开始')
         self.btn.hotkey("bb", sleep_time=1)
         self.btn.m(707, 406)
         self.btn.v(1, 30)
 
-        page = 0
         # cz = 'bb_fjc'
         cz = "bb_lyc"
-        while True:
-            has_cz = self.smc(cz)
+        for i in range(6):
+            has_cz = self.smc(cz, is_click=False)
             if has_cz:
+                self.logger.info('考古进行中')
                 self.btn.l(has_cz)
                 self.btn.l(has_cz)
                 sleep(1)
                 break
-
             else:
-                page += 1
                 self.btn.m(707, 406)
                 self.btn.v(-1, 13)
                 sleep(0.3)
-                if page == 6:
-                    self.btn.r()
-                    return False
+
+            if i == 5:
+                self.logger.info('没有铲子，考古结束')
+                self.btn.r()
+                return False
 
         while True:
             r = self.smc("kg_ks", sleep_time=1)
@@ -39,44 +40,45 @@ class Gongfang(object):
                 self.btn.r()
                 break
 
+        self.logger.info('已考古0次')
         for i in range(10):
             while True:
                 coor = self.smc('wj', is_click=False)
                 if coor:
-                    if coor[0] + coor[1] < 920:
+                    if coor[0] + coor[2] < 920:
+                        self.logger.info(f'已考古{i + 1}次')
                         self.btn.l(coor, sleep_time=3)
                         break
 
+        self.logger.info('考古结束')
         return True
 
     def sell(self):
+        self.logger.info('考古售卖开始')
         self.btn.hotkey('bb')
 
-        page = 0
-        while True:
-            has_gd = self.smc('bb_gd')
+        for i in range(6):
+            has_gd = self.smc('bb_gf', is_click=False)
             if has_gd:
+                self.logger.info('考古售卖进行中')
                 self.btn.l(has_gd)
                 self.btn.l(has_gd)
-                sleep(1)
+                sleep(0.5)
+                self.btn.r()
                 break
-
             else:
-                page += 1
                 self.btn.m(707, 406)
                 self.btn.v(-1, 13)
                 sleep(0.3)
-                if page == 6:
-                    self.btn.r()
-                    return False
 
-        while True:
-            r = self.smc('kg_gdsm')
-            if r:
-                break
+            if i == 5:
+                self.logger.info('没有古董，售卖结束')
+                self.btn.r()
+                return False
 
         step_list = ["kg_zp", "kg_sm", "kg_smwc"]
 
+        self.logger.info('考古正在售卖')
         sell_status = False
         while not sell_status:
             for item in step_list:
@@ -87,23 +89,30 @@ class Gongfang(object):
                     self.btn.r()
                     break
 
+        self.logger.info('考古售卖完成')
+
+        return True
+
     def start(self):
+        self.logger.info(f'工坊开始')
         while not self.smc('hd', is_click=False):
             self.btn.r()
 
-        processing = self.smc('rw_kg', is_click=False, simi=0.95)
+        processing = self.smc('rw_kg', is_click=False, simi=0.9) or self.smc('rw_gf', is_click=False, simi=0.9)
 
         if not processing:
             if self.task_finished('gf_wc', 'jjxx'):
+                self.logger.info(f'工坊已完成')
+                self.btn.r()
                 return
+
+            self.logger.info(f'工坊领取中')
 
             self.btn.hotkey("hd")
             self.smc("jjxx", sleep_time=0.5)
             self.btn.m(590, 330)
             self.btn.v(1, 31)
             sleep(0.5)
-
-            processing = self.smc('rw_kg', simi=0.95)
 
             for n in range(31):
                 if n % 10 == 0:
@@ -121,8 +130,9 @@ class Gongfang(object):
 
                             while True:
                                 r = self.smc("gf_lqrw")
-                                sleep(1)
+                                sleep(0.5)
                                 if r:
+                                    self.logger.info(f'工坊已领取')
                                     break
 
                             break
@@ -132,9 +142,9 @@ class Gongfang(object):
 
         step_list = [
             "rw_kg",
+            "rw_gf",
             "gf_xz",
             "dh",
-            "dhda",
             "gfnot",
             "gfgm",
             "djjx",
@@ -142,84 +152,86 @@ class Gongfang(object):
             "sj",
         ]
 
-        while processing:
-            for item in step_list:
-                self.capture()
-                is_hd = self.match('hd')
-                if item == 'rw_kg' or item == 'dh':
-                    coor = self.match(item, simi=0.95)
-                else:
-                    coor = self.match(item)
-                if coor:
-                    if item == 'rw_kg':
-                        if coor[0] > 780:
-                            self.btn.l(coor)
-                        else:
-                            self.btn.r()
-                            self.btn.m(157, 686)
-                            self.btn.v(-1, 10)
+        count = 0
+        if processing:
+            self.logger.info(f'工坊进行中')
+            while processing:
+                for item in step_list:
+                    self.capture()
+                    is_hd = self.match('hd')
+                    if item == 'rw_kg' or item == 'rw_gf' or item == 'dh':
+                        coor = self.match(item, simi=0.9)
+                    else:
+                        coor = self.match(item)
+                    if coor:
+                        print(item, coor)
+                        if item == 'rw_kg' or item == 'rw_gf':
+                            self.btn.l(coor, min_x=800, min_y=150)
+                            sleep(0.5)
 
-                    elif item == "dh" or item == "dhda":
-                        while True:
-                            self.capture()
-                            coor = self.match(item, simi=0.95)
-                            if coor:
-                                new_coor = ((coor[0], coor[1] + 69, 87, 22))
+                        elif item == "dh":
+                            while True:
+                                self.capture()
+                                coor = self.match(item, simi=0.9)
+                                if coor:
+                                    new_coor = ((coor[0], coor[1] + 69, 87,
+                                                 22))
+                                    self.btn.l(new_coor)
+                                    sleep(0.3)
+                                else:
+                                    break
+
+                        elif item == "djjx":
+                            while True:
+                                res = self.smc("djjx", sleep_time=0.3)
+                                if res == 0:
+                                    break
+
+                        elif item == "gfgm":
+                            sleep(0.5)
+                            self.btn.l(coor)
+                            res = self.smc("gm_sb", is_click=False)
+                            if res:
+                                new_coor = ((308, 245, 294, 75))
                                 self.btn.l(new_coor)
-                                sleep(0.3)
-                            else:
-                                break
+                                self.btn.r()
+                                self.btn.r()
 
-                    elif item == "djjx":
-                        while True:
-                            res = self.smc("djjx", sleep_time=0.3)
-                            if res == 0:
-                                break
+                        elif item == "sy":
+                            if (coor[0] + coor[2]) < 920:
+                                self.btn.l(coor)
 
-                    elif item == "gfgm":
-                        sleep(0.5)
-                        self.btn.l(coor)
-                        res = self.smc("gm_sb", is_click=False)
-                        if res:
-                            new_coor = ((308, 245, 294, 75))
-                            self.btn.l(new_coor)
+                        elif item == "gfnot":
                             self.btn.r()
-                            self.btn.r()
+                            processing = False
+                            break
 
-                    elif item == "sy":
-                        if (coor[0] + coor[2]) < 920:
-                            self.btn.l(coor)
-
-                    elif item == "gfnot":
-                        self.btn.r()
-                        processing = False
-                        break
+                        else:
+                            self.btn.l(coor, min_x=300)
 
                     else:
-                        self.btn.l(coor, min_x=300)
+                        if item == "rw_kg" and is_hd:
+                            self.btn.m(900, 300)
+                            self.btn.v(-1, 10)
+                            sleep(0.5)
 
-                    sleep(0.1)
-
-                else:
-                    if item == "rw_kg" and is_hd:
-                        count = 0
-                        while True:
-                            complete = self.smc('rw_kg',
-                                                simi=0.95,
-                                                is_click=False)
-                            if complete:
+                            if self.smc('rw_kg', simi=0.9, min_x=800) or self.smc('rw_gf', simi=0.9):
                                 count = 0
+                                break
                             else:
                                 count += 1
 
-                            if count == 12:
+                            if count == 5:
+                                self.logger.info(f'工坊完成')
                                 processing = False
                                 break
 
-                            sleep(5)
+                            sleep(2)
 
-        res = self.kaogu()
-        if res:
+                    sleep(1 / len(step_list))
+
+        has_gd = self.kaogu()
+        if has_gd:
             self.sell()
 
 
@@ -230,6 +242,7 @@ if __name__ == "__main__":
     from btn import Btn
     from smc import SMC
     from complex import Complex
+    from loguru import logger
 
     hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'
@@ -245,7 +258,9 @@ if __name__ == "__main__":
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
 
-    Gongfang(adb, complex_task.task_finished).start()
+    Gongfang(adb).start()

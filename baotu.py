@@ -127,7 +127,9 @@ class Baotu(object):
                                 sleep(2)
 
                                 if count == 15:
-                                    break
+                                    processing = False
+                                    self.logger.info('退出宝图')
+                                    return
 
                             break
                 else:

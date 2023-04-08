@@ -103,8 +103,8 @@ def daily_tasks(hwnd,
             if week in [3, 5]:
                 FuBen(adb).leader('lyrm')
 
-            # if week in [1, 3, 5, 6]:
-            #     FuBen(adb).leader('lls')
+            if week in [2, 6, 7]:
+                FuBen(adb).leader('lls')
 
             if week in [1, 4, 7]:
                 FuBen(adb).leader('ecy')
