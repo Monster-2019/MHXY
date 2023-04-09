@@ -1,8 +1,6 @@
 import re
 from time import sleep
 
-from ocr import ocr
-
 # change_skill_coor = (1580, 1040, 2, 2)
 
 # skill_coor = {
@@ -44,6 +42,9 @@ class Complex(object):
 
         self.btn.hotkey('js')
         self.capture.custom_capture('name')
+
+        from ocr import ocr
+
         name_level = ocr(f'./images/{self.capture.screen}.jpg', lang="chi_sim")
         self.btn.r()
 
@@ -309,9 +310,10 @@ class Complex(object):
 
 if __name__ == '__main__':
     import win32gui
+
+    from btn import Btn
     from capture import CaptureScreen
     from match import Match
-    from btn import Btn
     from smc import SMC
 
     hwnd = win32gui.FindWindow(None, "梦幻西游：时空")

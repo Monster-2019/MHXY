@@ -1,6 +1,8 @@
-from time import sleep
 from random import randint
-import win32api, win32con
+from time import sleep
+
+import win32api
+import win32con
 
 JWM = {
     'bp': 66,

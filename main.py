@@ -1,20 +1,22 @@
-import os
 import configparser
-import win32gui
-import win32process
-import psutil
+import json
+import os
 import sys
 import threading
-import json
-import loguru
-import win32com.client
-from time import sleep
-from btn import Btn
-from task import daily_tasks
-from login import login
-from multiprocessing import Value
 import tkinter as tk
+from multiprocessing import Value
+from time import sleep
 from tkinter import filedialog
+
+import loguru
+import psutil
+import win32com.client
+import win32gui
+import win32process
+
+from btn import Btn
+from login import login
+from task import daily_tasks
 from utils import PauseableThread, push_msg
 
 if len(sys.argv) == 1:
@@ -186,7 +188,6 @@ def init_auto_login_json():
 
 threads = dict()
 
-
 def overopen(hwnd_list=[]):
     if len(hwnd_list) == 5:
         logger.info('已打开客户端，退出软件')
@@ -213,10 +214,13 @@ def overopen(hwnd_list=[]):
 
 @eel.expose
 def stop(hwnd):
+    print(hwnd)
     global threads
     if hwnd not in threads:
         return
     threads[hwnd].stop_thread()
+
+    del threads[hwnd]
 
 
 @eel.expose
@@ -242,6 +246,8 @@ def start(groupConfig, **kwds):
                                   eel.updateInfo))
         t.start()
         threads[row['hwnd']] = t
+
+    print(threads)
 
     # for key, value in threads.items():
     # value.join()

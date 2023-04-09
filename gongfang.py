@@ -237,12 +237,13 @@ class Gongfang(object):
 
 if __name__ == "__main__":
     import win32gui
-    from capture import CaptureScreen
-    from match import Match
-    from btn import Btn
-    from smc import SMC
-    from complex import Complex
     from loguru import logger
+
+    from btn import Btn
+    from capture import CaptureScreen
+    from complex import Complex
+    from match import Match
+    from smc import SMC
 
     hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Collapse, Button, Input, Row, Col, Form } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
+import { Collapse, Button, Input, Row, Col, Form, App } from 'antd'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
 const { Panel } = Collapse
 
@@ -15,6 +15,7 @@ const generateGroup = () => {
 
 export default function AutoLogin() {
     const [json, setJson] = useState([])
+    const { message } = App.useApp()
 
     useEffect(() => {
         getAutoLoginJson().then(autoLoginJson => {
@@ -24,7 +25,7 @@ export default function AutoLogin() {
                 accounts.push(generateGroup())
             }
             setJson(accounts)
-            handleSaveJson(accounts)
+            // handleSaveJson(accounts)
         })
     }, [])
 
@@ -33,11 +34,13 @@ export default function AutoLogin() {
             accounts: val || json
         }
         await window.eel.set_auto_login_json(data)
+        message.success("账号配置已保存")
     }
 
     const handleResetJson = () => {
         const newData = [generateGroup()]
         setJson(newData)
+        message.success("账号配置已重置")
         handleSaveJson(newData)
     }
 
@@ -64,18 +67,57 @@ export default function AutoLogin() {
         setJson(prev => [...prev, generateGroup()])
     }
 
-    const genExtra = groupIndex => (
-        <DeleteOutlined
-            onClick={event => {
-                alert(groupIndex)
-                setJson(prevJson => {
-                    const newJson = prevJson.filter((_, i) => {
-                        return !(i === groupIndex)
-                    })
+    const autoGroup = (groupIndex: number, e: Event) => {
+        e.stopPropagation()
+        const { account, server } = json[groupIndex][0]
+        const reg = /^\w*(\d{1,2})\w*$/
+        if (!account || !server) {
+            message.error('账号1未填写完整')
+            return
+        }
+        if (!reg.test(account)) {
+            message.error('账号1中没有数字，无法自动填充')
+            return
+        }
+        const index = Number(reg.exec(account)[1])
+        const newJson = new Array(5).fill({ account, server }).map((row, i) => {
+            const { account, server } = row
+            console.log(index, i)
+            return {
+                account: account.replace(index, index + i),
+                server: server.replace(index, index + i)
+            }
+        })
+        setJson(prev => {
+            const nextJson = prev.map((group, index) => {
+                if (index == groupIndex) {
                     return newJson
-                })
-            }}
-        />
+                }
+                return group
+            })
+            return nextJson
+        })
+    }
+
+    const delGroup = (groupIndex: number, e: Event) => {
+        e.stopPropagation()
+        setJson(prevJson => {
+            const newJson = prevJson.filter((_, i) => {
+                return !(i === groupIndex)
+            })
+            return newJson
+        })
+    }
+
+    const genExtra = (groupIndex: number) => (
+        <div className="flex flex-row items-center">
+            <EditOutlined
+                className="mr-2"
+                style={{ fontSize: '16px' }}
+                onClick={e => autoGroup(groupIndex, e)}
+            />
+            <DeleteOutlined style={{ fontSize: '16px' }} onClick={e => delGroup(groupIndex, e)} />
+        </div>
     )
 
     return (
@@ -85,35 +127,33 @@ export default function AutoLogin() {
                     return (
                         <Panel
                             header={`第${groupIndex + 1}组`}
-                            key={"group" + groupIndex}
+                            key={'group' + groupIndex}
                             extra={genExtra(groupIndex)}
                         >
-                            <Row gutter={16} key={'group' + group}>
-                                {group.map((user, i) => {
-                                    return (
-                                        <>
-                                            <Col span={12} className="mb-2" key={'a' + i}>
-                                                <Input
-                                                    value={json[groupIndex][i].account}
-                                                    placeholder="账号"
-                                                    onChange={e =>
-                                                        handleChange(e, groupIndex, i, 'account')
-                                                    }
-                                                />
-                                            </Col>
-                                            <Col span={12} className="mb-2" key={'s' + i}>
-                                                <Input
-                                                    value={json[groupIndex][i].server}
-                                                    placeholder="服务器"
-                                                    onChange={e =>
-                                                        handleChange(e, groupIndex, i, 'server')
-                                                    }
-                                                />
-                                            </Col>
-                                        </>
-                                    )
-                                })}
-                            </Row>
+                            {group.map((user, i) => {
+                                return (
+                                    <Row gutter={16} key={'row' + i}>
+                                        <Col span={12} className="mb-2">
+                                            <Input
+                                                value={json[groupIndex][i].account}
+                                                placeholder="账号"
+                                                onChange={e =>
+                                                    handleChange(e, groupIndex, i, 'account')
+                                                }
+                                            />
+                                        </Col>
+                                        <Col span={12} className="mb-2">
+                                            <Input
+                                                value={json[groupIndex][i].server}
+                                                placeholder="服务器"
+                                                onChange={e =>
+                                                    handleChange(e, groupIndex, i, 'server')
+                                                }
+                                            />
+                                        </Col>
+                                    </Row>
+                                )
+                            })}
                         </Panel>
                     )
                 })}
@@ -121,7 +161,9 @@ export default function AutoLogin() {
             <Button onClick={e => handleSaveJson()} className="mr-2">
                 保存
             </Button>
-            <Button onClick={handleResetJson} className="mr-2">重置</Button>
+            <Button onClick={handleResetJson} className="mr-2">
+                重置
+            </Button>
             <Button onClick={handleAdd}>添加一组</Button>
         </>
     )

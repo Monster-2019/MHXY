@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
+import { App } from 'antd'
 
 import Slider from './components/Slider'
 
 export default function Root() {
     const [count, setCount] = useState(0)
+
     const list = [
         { label: '仪表盘', path: '/' },
         { label: '自动登录配置', path: '/autologin' },
@@ -15,11 +17,13 @@ export default function Root() {
     ]
 
     return (
-        <div className="flex flex-row h-screen w-full box-border">
-            <Slider className="w-40 w-fi box-border flex-shrink-0" list={list} />
-            <div className="p-6 flex-1 box-border">
-                <Outlet />
+        <App>
+            <div className="flex flex-row h-screen w-full box-border">
+                <Slider className="w-40 w-fi box-border flex-shrink-0" list={list} />
+                <div className="p-6 flex-1 box-border">
+                    <Outlet />
+                </div>
             </div>
-        </div>
+        </App>
     )
 }

@@ -55,7 +55,7 @@ const columns: ColumnsType<DataType> = [
         width: 100
     },
     {
-        title: '状态',
+        title: '日志',
         dataIndex: 'status',
         key: 'status'
     },

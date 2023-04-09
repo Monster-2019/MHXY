@@ -1,30 +1,22 @@
-import cv2 as cv
-import pytesseract
 import configparser
 import os
-from loguru import logger
+
+import cv2 as cv
+import pytesseract
 
 conf = configparser.ConfigParser()
 path = os.path.join(os.getcwd(), "config.ini")
 conf.read(path, encoding='utf-8')
 
-SHARED_FOLDER = conf.get('software_path', 'tesseract_ocr')
-
-pytesseract.pytesseract.tesseract_cmd = SHARED_FOLDER  # your path may be different
+exe_file = conf.get('software_path', 'tesseract_ocr')
+pytesseract.pytesseract.tesseract_cmd = exe_file
 
 def ocr(path, lang="eng", **kwds):
     config = f"-l {lang} --psm 7"
-    # config = r"-l eng --psm 7"
 
     image = cv.imread(path)
-    # image = cv.imread('./images/0.jpg', 0)
 
     text = pytesseract.image_to_string(image, config=config)
-
-    # print(pytesseract.image_to_string(image, lang='chi_sim', config=config))
-    # print(pytesseract.image_to_string(image, lang='eng', config=config))
-    # print(pytesseract.image_to_string(image, lang='chi_sim+eng',
-    #                                   config=config))
 
     return text
 

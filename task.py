@@ -1,18 +1,21 @@
-from datetime import datetime
-
-import win32com.client
-import win32gui
-import json
-import loguru
 import configparser
+import json
 import os
+from datetime import datetime
 from time import sleep
 
+import loguru
+import win32com.client
+import win32gui
+
+from bangpai import Bangpai
 from baotu import Baotu
 from btn import Btn
 from capture import CaptureScreen
 from complex import Complex
 from fuben import FuBen
+from gengzhong import GengZhong
+from gongfang import Gongfang
 from kjxs import KJ
 from match import Match
 from mijing import Mijing
@@ -22,9 +25,6 @@ from smc import SMC
 # from utils import hide_login
 from yunbiao import Yunbiao
 from zhuogui import Zhuogui
-from bangpai import Bangpai
-from gengzhong import GengZhong
-from gongfang import Gongfang
 
 week = datetime.now().isoweekday()
 shell = win32com.client.Dispatch("WScript.Shell")
