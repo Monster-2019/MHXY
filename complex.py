@@ -214,7 +214,9 @@ class Complex(object):
 
         self.btn.hotkey('dw')
 
-        self.smc('cjdw', sleep_time=0.5)
+        sleep(1)
+
+        self.smc('cjdw', sleep_time=1)
 
         self.smc('dw_sq')
 
@@ -222,7 +224,7 @@ class Complex(object):
 
         while True:
             accept = self.smc('dw_js')
-            sleep(0.5)
+            sleep(1)
             if accept:
                 count += 1
             elif count >= 4:

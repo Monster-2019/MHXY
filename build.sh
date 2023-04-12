@@ -2,13 +2,8 @@
 
 if [[ ! $(uname -sr) == MINGW* ]]; then
     echo not windows
-    pwd
-    python -m eel main.py web/dist --add-data "images:images" --add-data "config.ini:." --noconfirm --noconsole --name mhxy_script
-    cat dist
-    # cd dist
-    # ls
-    # zip mhxy_script.zip mhxy_script
+    python -m eel main.py web/dist --add-data "images:images" --add-data "config.ini:." --add-data "config:config" --noconfirm --noconsole --uac-admin --name mhxy_script
 else 
-    python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --noconfirm --noconsole --name mhxy_script
     echo is windows
+    python -m eel main.py web/dist --add-data "images;images" --add-data "config.ini;." --add-data "config;config" --onefile --noconfirm --noconsole --uac-admin --name mhxy_script
 fi

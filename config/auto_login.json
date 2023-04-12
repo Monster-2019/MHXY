@@ -2,24 +2,24 @@
   "accounts": [
     [
       {
-        "account": "",
-        "server": ""
+        "account": "h1",
+        "server": "h1_xyxt"
       },
       {
-        "account": "",
-        "server": ""
+        "account": "h2",
+        "server": "h2_xyxt"
       },
       {
-        "account": "",
-        "server": ""
+        "account": "h3",
+        "server": "h3_xyxt"
       },
       {
-        "account": "",
-        "server": ""
+        "account": "h4",
+        "server": "h4_xyxt"
       },
       {
-        "account": "",
-        "server": ""
+        "account": "h5",
+        "server": "h5_xyxt"
       }
     ]
   ]

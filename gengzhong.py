@@ -109,11 +109,11 @@ class GengZhong(object):
             self.btn.r()
             return
         
-        sleep(3)
+        sleep(1)
 
         if is_sh:
-            self.btn.l((250, 250, 2, 2))
-            sleep(3)
+            self.btn.l((270, 270, 2, 2))
+            sleep(1)
             self.smc('td_status', sleep_time=0.5)
 
         self.logger.info(f'耕种中')
