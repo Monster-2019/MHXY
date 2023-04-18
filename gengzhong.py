@@ -85,7 +85,7 @@ class GengZhong(object):
         while not self.smc('hd', is_click=False):
             sleep(1)
 
-        coor = self.smc('td_status', sleep_time=2)
+        coor = self.smc('td_status', sleep_time=1)
 
         self.capture()
 

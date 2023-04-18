@@ -1,220 +1,110 @@
-import configparser
 import json
 import os
-import sys
-import threading
-import tkinter as tk
-from multiprocessing import Value
-from time import sleep
-from tkinter import filedialog
-
-import loguru
-import psutil
+import multiprocessing
 import win32com.client
 import win32gui
-import win32process
+import curses
 
-from btn import Btn
-from login import login
+from loguru import logger
+from login import auto_login
 from task import daily_tasks
-from utils import PauseableThread, push_msg
-
-if len(sys.argv) == 1:
-    f = open(os.devnull, 'w')
-    sys.stdout = f
-    sys.stderr = f
-
-import eel
-
-conf = configparser.ConfigParser()
-path = os.path.join(os.getcwd(), "config.ini")
-conf.read(path, encoding='utf-8')
-
-# timing_time = ''
-shell = win32com.client.Dispatch("WScript.Shell")
-
-
-@eel.expose
-def topWindow(hwnd):
-    shell.SendKeys('%')
-    win32gui.SetForegroundWindow(hwnd)
-
-
-@eel.expose
-def get_all_log():
-    with open('app.log', 'r', encoding="utf-8") as log_file:
-        log_content = log_file.read()
-        return log_content
-
-
-def update_logs():
-    with open('app.log', 'r', encoding="utf-8") as log_file:
-        log_content = log_file.read()
-        eel.updateAllLog(log_content)
-
-
-def eel_log_sink(message):
-    hwnd = message.record["extra"]["hwnd"]
-    msg = message.record["message"]
-    eel.updateLog(hwnd, msg)
-    update_logs()
-
+from utils import get_hwnds, get_json_file, push_msg, openmore, init_log_dir, PauseableThread
+from multiprocessing import Value, Pool, Lock, Queue, Manager
 
 logger_format = ("<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
                  "<level>{level: <6}</level> | "
                  "{extra[hwnd]: <8} - {extra[name]: <10} - {message}")
 
-with open("app.log", mode="w", encoding="utf-8"):
-    pass
-
-loguru.logger.configure(handlers=[{
+logger.configure(handlers=[{
     "sink": "app.log",
     "encoding": "utf-8",
     "enqueue": True,
     "backtrace": True,
     "catch": True,
     "format": logger_format
-}, {
-    "sink": eel_log_sink,
-    "enqueue": True,
-    "backtrace": True,
 }],
-                        extra={
-                            "hwnd": "",
-                            "name": ""
-                        })
-
-logger = loguru.logger.bind(hwnd=0)
-
-
-@eel.expose
-def get_hwnd_list():
-    # 查找所有标题为title的窗口句柄
-    handles = []
-
-    def callback(hwnd, handles):
-        if win32gui.IsWindowVisible(hwnd) and not win32gui.IsIconic(
-                hwnd) and '梦幻西游：时空' in win32gui.GetWindowText(hwnd):
-            handles.append({"hwnd": hwnd})
-
-        return True
-
-    win32gui.EnumWindows(callback, handles)
-
-    for handle in handles:
-        handle['start_time'] = get_start_time(handle['hwnd'])
-
-    handles = sorted(handles, key=lambda d: d['start_time'])
-
-    handles = [item["hwnd"] for item in handles]
-
-    return handles
+                 extra={
+                     "hwnd": "",
+                     "name": "",
+                     "lock": None,
+                     "process_id": 0
+                 })
 
 
-def get_start_time(hwnd):
-    _, pid = win32process.GetWindowThreadProcessId(hwnd)
-    process = psutil.Process(pid)
-    create_time = process.create_time()
-    return create_time
+def err_call_back(err):
+    print(f'出错啦~ error：{str(err)}')
 
 
-@eel.expose
-def get_software_path():
-    path = conf.items('software_path')
-    return path
-
-
-@eel.expose
-def set_software_path(path):
-    for key, val in path.items():
-        conf.set('software_path', key, val)
-    conf.write(open('config.ini', 'w'))
-
-
-@eel.expose
-def set_software_dir():
-    root = tk.Tk()
-    root.attributes('-topmost', True)  # Display the dialog in the foreground.
-    root.iconify()  # Hide the little window.
-    folder_path = filedialog.askdirectory()
-    root.destroy()
-    return folder_path
-
-
-@eel.expose
-def set_software_file():
-    root = tk.Tk()
-    root.attributes('-topmost', True)  # Display the dialog in the foreground.
-    root.iconify()  # Hide the little window.
-    soft_path = filedialog.askopenfilename()
-    root.destroy()
-    return soft_path
-
-
-@eel.expose
-def get_public_config():
-    public = conf.items('public')
-    return public
-
-
-@eel.expose
-def set_public_config(config):
-    print(config)
-    for key, val in config.items():
-        conf.set('public', key, val)
-    conf.write(open('config.ini', 'w'))
-
-
-@eel.expose
-def get_auto_login_json():
-    with open('config/auto_login.json', 'r') as f:
-        json_data = f.read()
-        data = json.loads(json_data)
-        formatted_data = json.dumps(data, indent=2)
-    return formatted_data
-
-
-@eel.expose
-def set_auto_login_json(json_data):
-    with open('config/auto_login.json', 'w') as f:
-        json.dump(json_data, f, indent=2)
-
-
-def init_auto_login_json():
-    if not os.path.isfile('config/auto_login.json'):
-        with open('config/auto_login.json', 'w') as f:
-            json.dump({"accounts": []}, f)
-
-
-threads = dict()
-
-def overopen(hwnd_list=[]):
-    if len(hwnd_list) == 5:
-        logger.info('已打开客户端，退出软件')
-        return
-
-    os.system(f"start {conf.get('software_path', 'ssk')}")
-    sleep(2)
+def init_terminal_print(queue):
+    stdscr = curses.initscr()
+    curses.noecho()
+    curses.cbreak()
+    curses.curs_set(0)
 
     while True:
-        hwnd = win32gui.FindWindow(None, 'UnityWndClass')
-        if hwnd:
-            break
-        sleep(1)
+        try:
+            id, message = queue.get()
+            stdscr.move(id, 0)
+            stdscr.clrtoeol()
+            stdscr.refresh()
+            string = str(id) + " | " + message
+            string = string.ljust(80, '.')
+            stdscr.addstr(id, 0, string)
+        except queue.Empty:
+            pass
 
-    btn = Btn(hwnd)
-    for i in range(5 - len(hwnd_list)):
-        btn.l(((350, 150, 2, 2)))
-        sleep(3)
-
-    logger.info('客户端打开完成')
-    os.system('taskkill /F /IM mhxy.exe')
-    return
+        stdscr.refresh()
 
 
-@eel.expose
+def exit_terminal_print():
+    curses.curs_set(1)
+    curses.nocbreak()
+    curses.echo()
+    curses.endwin()
+
+
+def start(groupConfig=[]):
+    try:
+        if not groupConfig:
+            hwnds = get_hwnds()
+            account_json = get_json_file('auto_login')
+            account_json = json.loads(account_json)["accounts"]
+            config = [[row['config'] for row in group]
+                      for group in account_json][0]
+            groupConfig = [{
+                "hwnd": hwnds[i],
+                "config": config[i]
+            } for i in range(len(hwnds))]
+
+        manager = Manager()
+        memory = manager.Value('i', 0)
+        lock = manager.Lock()
+        queue = manager.Queue()
+
+        pool = Pool(5)
+
+        for i, row in enumerate(groupConfig):
+            p = pool.apply_async(daily_tasks,
+                                 args=(row['hwnd'], row['config'], memory,
+                                       lock, queue, i),
+                                 error_callback=err_call_back)
+
+        terminal_print = PauseableThread(target=init_terminal_print,
+                                         args=(queue, ),
+                                         stop_func=exit_terminal_print)
+        terminal_print.start()
+
+        pool.close()
+        pool.join()
+
+        terminal_print.stop_thread()
+
+        push_msg('已全部完成')
+    except Exception as e:
+        print(e)
+
+
 def stop(hwnd):
-    print(hwnd)
     global threads
     if hwnd not in threads:
         return
@@ -223,49 +113,25 @@ def stop(hwnd):
     del threads[hwnd]
 
 
-@eel.expose
-def stopAll(hwnds):
-    if not hwnds:
-        hwnds = get_hwnd_list()
-    for hwnd in hwnds:
-        stop(hwnd)
-
-    push_msg('已终止')
+def end():
+    pass
 
 
-@eel.expose
-def start(groupConfig, **kwds):
-    global threads
-
-    lock = threading.Lock()
-    memory = Value('i', 0)
-
-    for row in groupConfig:
-        t = PauseableThread(target=daily_tasks,
-                            args=(row['hwnd'], lock, row['config'], memory,
-                                  eel.updateInfo))
-        t.start()
-        threads[row['hwnd']] = t
-
-    print(threads)
-
-    # for key, value in threads.items():
-    # value.join()
-    # push_msg('已全部完成')
-
-
-@eel.expose
-def onekey(config):
+def onekey(config=[]):
     logger.info("开始一键")
-    account_json = get_auto_login_json()
+    account_json = get_json_file('auto_login')
     account_json = json.loads(account_json)["accounts"]
+    if not account_json:
+        logger.info("没有配置自动登录账号")
+    if not config:
+        config = [[row['config'] for row in group]
+                  for group in account_json][0]
     for group in account_json:
-        hwnds = get_hwnd_list()
-        overopen(hwnds)
-        hwnds = get_hwnd_list()
-        eel.updateWindows()
+        hwnds = get_hwnds()
+        openmore(hwnds)
+        hwnds = get_hwnds()
 
-        login(group, hwnds)
+        auto_login(group, hwnds)
 
         groupConfig = [{
             "hwnd": hwnd,
@@ -275,33 +141,75 @@ def onekey(config):
         start(groupConfig)
 
 
-@logger.catch
-def init_gui(develop):
-    init_auto_login_json()
-    if develop:
-        directory = 'web/src'
-        app = 'chrome'
-        page = {'port': 5173}
-    else:
-        directory = 'web/dist'
-        app = 'chrome'
-        page = 'index.html'
-    eel_kwargs = dict(
-        host='localhost',
-        port=9000,
-        size=(1200, 410),
-    )
-    eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html', '.css'])
-    eel.start(page, mode=app, **eel_kwargs)
-    # If Chrome isn't found, fallback to Microsoft Edge on Win10 or greater
-    # if sys.platform in ['win32', 'win64'] and int(platform.release()) >= 10:
-    #     eel.start(page, mode='edge', **eel_kwargs)
-    # else:
-    #     raise
+shell = win32com.client.Dispatch("WScript.Shell")
+
+
+def top(hwnd):
+    shell.SendKeys('%')
+    win32gui.SetForegroundWindow(hwnd)
+
+
+func_map = {
+    # "gameWindows": get_hwnd_list,
+    "onekey": onekey,
+    "openmore": openmore,
+    "auto_login": auto_login,
+    "start": start,
+    "stop": stop,
+    "end": end,
+    "top": top,
+}
+
+func_list = [None, onekey, openmore, auto_login, start, stop, end]
+
+
+@logger.catch()
+def call_method(param, **kwds):
+    func_map.get(param, lambda: print("Invalid parameter"))(**kwds)
+
+
+def command_selection():
+    while True:
+        print("请选择你的选项:")
+        print("1. 一键日常")
+        print("2. 多开")
+        print("3. 自动登录")
+        print("4. 开始日常")
+        print("6. 结束脚本")
+        print("0. 退出")
+        choice = int(input("你的选择是: "))
+        if choice == 0:
+            break
+        elif choice in range(len(func_list)):
+            func_list[choice]()
+        else:
+            print("无效选项:", choice)
 
 
 if __name__ == "__main__":
+    init_log_dir()
+
+    import argparse
+
+    multiprocessing.freeze_support()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("func_name", nargs="?", choices=func_map.keys())
+    parser.add_argument("--params", dest='kwargs', nargs='*')
+    args = parser.parse_args()
+
     try:
-        init_gui(develop=len(sys.argv) == 2)
-    except Exception as e:
-        logger.error(e)
+        if args.func_name:
+            if args.kwargs:
+                kwargs = {
+                    k: v
+                    for k, v in (kv_str.split('=') for kv_str in args.kwargs)
+                }
+            else:
+                kwargs = {}
+            call_method(args.func_name, **kwargs)
+        else:
+            command_selection()
+            # start()
+    except KeyboardInterrupt:
+        os._exit(0)

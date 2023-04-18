@@ -31,11 +31,15 @@ class Zhuogui(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_x, tem_y, tem_w, tem_h = self.match('hd_zgrw')
-                if tem_x:
-                    x, y, w, h = self.match('cj', screen='imgTem/hd_zgrw')
-                    new_coor = (tem_x + x, tem_y + y, w, h)
-                    if x:
+                tem_coor = self.match('hd_zgrw', simi=0.995)
+                btn_coor = self.match('cj',
+                                      screen='imgTem/hd_zgrw',
+                                      simi=0.995)
+                if tem_coor and btn_coor:
+                    new_coor = ((tem_coor[0] + btn_coor[0],
+                                 tem_coor[1] + btn_coor[1], btn_coor[2],
+                                 btn_coor[3]))
+                    if new_coor:
                         self.btn.l(new_coor)
                         break
 

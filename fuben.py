@@ -71,10 +71,10 @@ class FuBen(object):
         sleep(0.5)
 
         self.logger.info(f'{self.fb_name}副本领取')
+        processing = False
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                print(111, self.fb_img["hd"])
                 coor = self.match(self.fb_img["hd"])
                 if coor:
                     tem_x, tem_y, tem_w, tem_h = coor
@@ -86,7 +86,6 @@ class FuBen(object):
                         self.btn.l(new_coor, sleep_time=1)
 
                         # 去完成或继续任务
-                        processing = False
                         while not processing:
                             for item in ['fb_xzfb', self.fb_img["xz"]]:
                                 r = self.smc(item, sleep_time=1)

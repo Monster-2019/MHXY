@@ -164,7 +164,6 @@ class Gongfang(object):
                     else:
                         coor = self.match(item)
                     if coor:
-                        print(item, coor)
                         if item == 'rw_kg' or item == 'rw_gf':
                             self.btn.l(coor, min_x=800, min_y=150)
                             sleep(0.5)

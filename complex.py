@@ -67,11 +67,12 @@ class Complex(object):
 
         self.btn.r()
 
-        print(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
+        # self.logger.info(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
 
         sleep(1)
 
-        return (name, level, gold, silver)
+        return (name.replace('\n', ''), level,
+                gold.replace('\n', ''), silver.replace('\n', ''))
 
     def clean(self):
         self.logger.info(f"清理开始")
@@ -317,6 +318,7 @@ if __name__ == '__main__':
     from capture import CaptureScreen
     from match import Match
     from smc import SMC
+    from loguru import logger
 
     hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'
@@ -332,6 +334,7 @@ if __name__ == '__main__':
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
 
-    Complex(adb).join_team_leader()
+    Complex(adb).clean()

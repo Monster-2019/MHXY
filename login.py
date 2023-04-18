@@ -1,5 +1,6 @@
 import os
 from time import sleep
+from loguru import logger
 
 import win32api
 import win32com.client
@@ -56,10 +57,10 @@ def game_login(hwnd, server):
 
             sleep(0.5)
 
-    print(f'已登录{server}服务器')
+    logger.info(f'已登录{server}服务器')
 
 
-def login(group, hwnds, **kwds):
+def auto_login(group, hwnds, **kwds):
     if len(hwnds) == 0:
         return
 
@@ -72,7 +73,7 @@ def login(group, hwnds, **kwds):
             login_list.append(hwnd)
 
     if not login_list:
-        print('已经全部登录')
+        logger.info('已经全部登录')
         return
 
     for i in range(len(hwnds)):
@@ -108,7 +109,7 @@ def login(group, hwnds, **kwds):
 
         game_login(hwnds[i], login_server)
 
-        print(f'账号 {login_account} 游戏登陆完成')
+        logger.info(f'账号 {login_account} 游戏登陆完成')
 
 
 if __name__ == "__main__":
@@ -125,7 +126,7 @@ if __name__ == "__main__":
         else:
             is_finish = True
 
-    login(0, hwnds)
+    auto_login(0, hwnds)
 
     # hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
 
@@ -133,4 +134,4 @@ if __name__ == "__main__":
 
     # CaptureScreen(3146098, 'mnq')()
     # res = Match('mnq')('h1', simi=0.999)
-    # print(res)
+    # logger.info(res)

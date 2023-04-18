@@ -10,3 +10,4 @@ cache
 build/*
 dist/*
 *.spec
+web

@@ -1,4 +1,5 @@
 from time import sleep
+from datetime import datetime
 
 
 class Bangpai(object):
@@ -22,6 +23,12 @@ class Bangpai(object):
                 coor = self.smc(item)
                 if coor and item == 'bp_check_finish':
                     complete = True
+                    week = datetime.now().isoweekday()
+                    if week == 2:
+                        self.smc('bp_lqfh')
+                        sleep(1)
+                        self.smc('bp_lq')
+                        sleep(0.5)
                     self.btn.r()
                     break
 
@@ -65,8 +72,13 @@ class Bangpai(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_coor = self.match("hd_bprw")
-                btn_coor = self.match('cj', screen='imgTem/hd_bprw')
+                complete = self.match('bp_wc')
+                if complete:
+                    return True
+                tem_coor = self.match("hd_bprw", simi=0.995)
+                btn_coor = self.match('cj',
+                                      screen='imgTem/hd_bprw',
+                                      simi=0.995)
                 if tem_coor and btn_coor:
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
@@ -150,14 +162,13 @@ class Bangpai(object):
                                     complete = self.changeTask()
                                     sleep(0.5)
                                     self.btn.r()
-                                    print(complete)
                                     sleep(0.5)
                                     if complete:
                                         processing = False
                                         break
                                     elif self.smc('bp_ql', simi=0.95):
                                         break
-                                    
+
                                     sleep(0.5)
 
                     sleep(1 / len(step_list))

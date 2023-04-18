@@ -32,16 +32,23 @@ shell = win32com.client.Dispatch("WScript.Shell")
 conf = configparser.ConfigParser()
 path = os.path.join(os.getcwd(), "config.ini")
 
+logger = loguru.logger
 
+
+@logger.catch()
 def daily_tasks(hwnd,
-                lock=None,
                 config_file=None,
                 memory=None,
-                updateInfo=None):
-
+                lock=None,
+                queue=None,
+                process_id=0):
     with open(f'config/{config_file}.json', 'r') as f:
         json_data = f.read()
         config = json.loads(json_data)
+
+    loguru.logger.add(lambda message: queue.put(
+        (message.record["extra"]["process_id"], message.record["message"])),
+                      format="{message}")
 
     hwnd = str(hwnd)
     capture = CaptureScreen(hwnd, hwnd)
@@ -68,15 +75,9 @@ def daily_tasks(hwnd,
 
     name, level, gold, silver = Complex(adb).get_info()
 
-    updateInfo({
-        "hwnd": hwnd,
-        "name": name,
-        "level": level,
-        "gold": gold,
-        "silver": silver,
-    })
+    logger = loguru.logger.bind(hwnd=hwnd, name=name, process_id=process_id)
 
-    logger = loguru.logger.bind(hwnd=hwnd, name=name)
+    logger.info(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
 
     adb["logger"] = logger
 
@@ -91,6 +92,7 @@ def daily_tasks(hwnd,
     bangpai = Bangpai(adb)
 
     bangpai.check_in()
+    level = level if level else 69
 
     if int(level) >= 60:
         GengZhong(adb).start()
@@ -99,6 +101,12 @@ def daily_tasks(hwnd,
         if config['leader']:
             memory.value = 1
             complex_task.join_team_leader()
+
+            sleep(1)
+
+            btn.hotkey('zz', sleep_time=1)
+            btn.l_key('zr2', sleep_time=0.5)
+            btn.r()
 
             if week in [3, 5]:
                 FuBen(adb).leader('lyrm')
@@ -111,6 +119,12 @@ def daily_tasks(hwnd,
 
             if week in [1, 2, 3, 4, 5, 6]:
                 FuBen(adb).leader('jcx')
+
+            sleep(1)
+
+            btn.hotkey('zz', sleep_time=1)
+            btn.l_key('zr1', sleep_time=0.5)
+            btn.r()
 
             Zhuogui(adb).leader()
 

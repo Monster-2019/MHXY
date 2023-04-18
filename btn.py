@@ -67,6 +67,27 @@ class Btn(object):
 
         return True
 
+    def l_key(self, key, sleep_time=0):
+        coor = FIXED_COOR[key]
+        if not coor:
+            return False
+        x, y, w, h = coor
+
+        click_x = x + randint(1, w)
+        click_y = y + randint(1, h)
+
+        win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN,
+                             win32con.MK_LBUTTON,
+                             win32api.MAKELONG(click_x, click_y))
+        sleep(0.01)
+        win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP,
+                             win32con.MK_LBUTTON,
+                             win32api.MAKELONG(click_x, click_y))
+
+        sleep(sleep_time)
+
+        return True
+
     def r(self):
         win32api.PostMessage(self.hwnd, win32con.WM_RBUTTONDOWN,
                              win32con.MK_RBUTTON,
@@ -111,14 +132,14 @@ class Btn(object):
     def d_vertical(self, coor):
         start_x, start_y, end_x, end_y = coor
         win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONDOWN,
-                                win32con.MK_LBUTTON,
-                                win32api.MAKELONG(start_x, start_y))
+                             win32con.MK_LBUTTON,
+                             win32api.MAKELONG(start_x, start_y))
         win32api.PostMessage(self.hwnd, win32con.WM_MOUSEMOVE, 0000,
-                                win32api.MAKELONG(end_x, end_y))
+                             win32api.MAKELONG(end_x, end_y))
         sleep(0.1)
         win32api.PostMessage(self.hwnd, win32con.WM_LBUTTONUP,
-                                win32con.MK_LBUTTON,
-                                win32api.MAKELONG(end_x, end_y))
+                             win32con.MK_LBUTTON,
+                             win32api.MAKELONG(end_x, end_y))
 
     def hotkey(self, char, sleep_time=0.5):
         key = JWM[char]
@@ -140,8 +161,8 @@ class Btn(object):
 
         sleep(sleep_time)
 
+
 if __name__ == "__main__":
-    print(123)
     btn = Btn(3146098)
     btn.d_vertical((640, 300, 640, 150))
     sleep(5)
