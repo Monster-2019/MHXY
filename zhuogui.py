@@ -53,7 +53,7 @@ class Zhuogui(object):
     def player(self):
         pass
 
-    def loop(self, count=99):
+    def loop(self, count=25):
         self.logger.info(f"捉鬼进行中")
         step_list = ['zg_zgrw', 'zg_zg', 'zg_zgwc']
         cur_count = 0
@@ -90,10 +90,10 @@ class Zhuogui(object):
                 sleep(1 / len(step_list))
 
         return 1
-
-
-if __name__ == '__main__':
+    
+def main():
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -115,8 +115,13 @@ if __name__ == '__main__':
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
 
-    Zhuogui(adb, complex_task.task_finished).loop()
+    Zhuogui(adb).loop()
     # Zhuogui().leader()
+
+if __name__ == '__main__':
+    main()

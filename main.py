@@ -11,6 +11,7 @@ from task import daily_tasks
 from utils import get_hwnds, get_json_file, push_msg, openmore, init_log_dir, PauseableThread
 from multiprocessing import Value, Pool, Lock, Queue, Manager
 from time import sleep
+from zhuogui import main as loop_zhuogui
 
 logger_format = ("<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
                  "<level>{level: <6}</level> | "
@@ -158,7 +159,7 @@ func_map = {
     "top": top,
 }
 
-func_list = [None, onekey, openmore, auto_login, start, stop, end]
+func_list = [None, onekey, openmore, auto_login, start, stop, end, loop_zhuogui]
 
 
 @logger.catch()
@@ -174,6 +175,7 @@ def command_selection():
         print("3. 自动登录")
         print("4. 开始日常")
         print("6. 结束脚本")
+        print("7. 队长无限鬼")
         print("0. 退出")
         choice = int(input("你的选择是: "))
         if choice == 0:
