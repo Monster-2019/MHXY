@@ -176,6 +176,58 @@ class Bangpai(object):
         self.logger.info(f'帮派完成')
 
         return 1
+    
+    def upgrade(self):
+        self.logger.info(f'帮派升级开始')
+        processing = True
+
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
+
+        if processing:
+            self.logger.info(f'帮派进行中')
+            step_list = ["bp_ql", "bp_zq", "bp_xw", "gm", "gm_shanghui", 'sy', "dh", "bp_bpwc"]
+
+            while processing:
+                for item in step_list:
+                    self.capture()
+                    if item == "bp_ql" or item == "bp_zq" or item == "bp_xw":
+                        coor = self.match(item, simi=0.95)
+                    else:
+                        coor = self.match(item)
+                    if coor:
+                        if item == 'gm' or item == "gm_shanghui":
+                            sleep(0.5)
+                            self.btn.l(coor)
+                            res = self.smc(item, is_click=False)
+                            if res:
+                                self.btn.r()
+
+                        elif item == "dh":
+                            while True:
+                                coor = self.smc(item, is_click=False)
+                                if coor:
+                                    new_coor = ((coor[0], coor[1] + 69, 87,
+                                                 22))
+                                    self.btn.l(new_coor)
+                                    sleep(0.3)
+                                else:
+                                    break
+
+                        elif item == "bp_bpwc":
+                            processing = False
+                            break
+
+                        else:
+                            self.btn.l(coor)
+
+                        sleep(0.2)
+
+                    sleep(1 / len(step_list))
+
+        self.logger.info(f'帮派完成')
+
+        return 1
 
 
 if __name__ == "__main__":
@@ -207,5 +259,5 @@ if __name__ == "__main__":
     complex_task = Complex(adb)
     adb['task_finished'] = complex_task.task_finished
 
-    Bangpai(adb).start()
+    Bangpai(adb).upgrade()
     # Bangpai(adb, complex_task.task_finished).check_in()

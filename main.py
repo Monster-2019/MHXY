@@ -10,6 +10,7 @@ from login import auto_login
 from task import daily_tasks
 from utils import get_hwnds, get_json_file, push_msg, openmore, init_log_dir, PauseableThread
 from multiprocessing import Value, Pool, Lock, Queue, Manager
+from time import sleep
 
 logger_format = ("<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
                  "<level>{level: <6}</level> | "
@@ -37,8 +38,6 @@ def err_call_back(err):
 
 def init_terminal_print(queue):
     stdscr = curses.initscr()
-    curses.noecho()
-    curses.cbreak()
     curses.curs_set(0)
 
     while True:
@@ -58,8 +57,6 @@ def init_terminal_print(queue):
 
 def exit_terminal_print():
     curses.curs_set(1)
-    curses.nocbreak()
-    curses.echo()
     curses.endwin()
 
 
@@ -84,10 +81,11 @@ def start(groupConfig=[]):
         pool = Pool(5)
 
         for i, row in enumerate(groupConfig):
-            p = pool.apply_async(daily_tasks,
-                                 args=(row['hwnd'], row['config'], memory,
-                                       lock, queue, i),
-                                 error_callback=err_call_back)
+            pool.apply_async(daily_tasks,
+                             args=(row['hwnd'], row['config'], memory, lock,
+                                   queue, i),
+                             error_callback=err_call_back)
+            sleep(1)
 
         terminal_print = PauseableThread(target=init_terminal_print,
                                          args=(queue, ),
