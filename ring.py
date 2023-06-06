@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 
 
 class Ring(object):
@@ -7,6 +7,30 @@ class Ring(object):
         for key, val in adb.items():
             self.__dict__[key] = val
 
+    def legend(self):
+        self.btn.hotkey('gj')
+
+        sleep(1)
+
+        self.btn.l((400, 340, 2, 2))
+
+        start = int(time())
+        end = int(time())
+        while end - start < 1200:
+            end = int(time())
+            res = self.smc('sj')
+            if res:
+                return True
+            sleep(1)
+
+        while True:
+            is_hd = self.smc('hd', is_click=False)
+            if is_hd:
+                self.btn.l((500, 450, 2, 2))
+                break
+
+        return False
+
     def start(self):
         self.logger.info(f"开始经验链")
 
@@ -14,14 +38,13 @@ class Ring(object):
             self.btn.r()
 
         processing = self.smc('rw_jyl', simi=0.9, is_click=False)
-        self.logger.info(processing)
 
         if not processing:
             if self.task_finished('jyl_wc'):
                 self.logger.info('经验链完成')
                 return
 
-        self.logger.info(f"经验链进行中")
+        self.logger.info(f"经验链领取")
 
         if not processing:
             self.btn.hotkey("hd")
@@ -51,6 +74,8 @@ class Ring(object):
                                         break
 
                             processing = True
+                            
+                            break
 
                 else:
                     self.btn.v(-1)
@@ -58,6 +83,8 @@ class Ring(object):
         if not processing:
             self.logger.info('未找到任务')
             return
+
+        self.logger.info(f"经验链进行中")
 
         step_list = ["rw_jyl_wc", "rw_jyl", "gm", "gm_1", 'btgm', "dh", "sj"]
 
@@ -67,7 +94,7 @@ class Ring(object):
                 self.capture()
                 is_hd = self.match('hd')
                 if item == 'dh' or item == 'rw_jyl':
-                    coor = self.match(item, simi=0.95)
+                    coor = self.match(item, simi=0.9)
                 else:
                     coor = self.match(item)
                 if coor:
@@ -93,34 +120,18 @@ class Ring(object):
                         res = self.smc('bt_sj') or self.smc(
                             'bt_jlh') or self.smc('bt_mgh')
                         if res:
-                            self.logger.info("高价物品，手动处理")
-                            return
+                            self.logger.info("高价物品，开始传说")
+                            self.btn.r()
 
-                            # self.btn.hotkey('gj')
-
-                            # while True:
-                            #     self.B.DBtn((900, 350, 130, 350))
-                            #     sleep(1)
-                            #     res = self.smc('gj_xysm')
-                            #     if res:
-                            #         break
-
-                            # start = int(time.time())
-                            # end = int(time.time())
-                            # while end - start < 1200:
-                            #     end = int(time.time())
-                            #     res = self.smc('sj')
-                            #     if res:
-                            #         CS = False
-                            #         break
-                            #     sleep(1)
-
-                            # self.btn.l(((500, 450), (2, 2)))
+                            has_legend = self.legend()
+                            if not has_legend:
+                                self.logger.info("传说失败，手动处理")
+                                return
 
                         else:
                             sleep(0.5)
                             self.btn.l(coor)
-                            sleep(0.1)
+                            sleep(0.5)
                             self.btn.r()
 
                     elif item == "gm_1":
@@ -144,11 +155,14 @@ class Ring(object):
                             self.logger.info('未找到任务，任务完成')
                             break
 
+                sleep(1 / len(step_list))
+
         self.logger.info(f"经验链结束")
 
 
-if __name__ == "__main__":
+def main():
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -170,7 +184,13 @@ if __name__ == "__main__":
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
 
-    Ring(adb, complex_task.task_finished).start()
+    Ring(adb).start()
+
+
+if __name__ == "__main__":
+    main()

@@ -24,6 +24,11 @@ logger.configure(handlers=[{
     "backtrace": True,
     "catch": True,
     "format": logger_format
+}, {
+    "sink": "error.log",
+    "level": "ERROR",
+    "encoding": "utf-8",
+    "format": logger_format
 }],
                  extra={
                      "hwnd": "",
@@ -159,7 +164,9 @@ func_map = {
     "top": top,
 }
 
-func_list = [None, onekey, openmore, auto_login, start, stop, end, loop_zhuogui]
+func_list = [
+    None, onekey, openmore, auto_login, start, stop, end, loop_zhuogui
+]
 
 
 @logger.catch()
@@ -211,5 +218,6 @@ if __name__ == "__main__":
         else:
             command_selection()
             # start()
-    except KeyboardInterrupt:
-        os._exit(0)
+    except Exception as e:
+        # os._exit(0)
+        logger.exception(e)

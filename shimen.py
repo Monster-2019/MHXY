@@ -45,6 +45,11 @@ class Shimen(object):
                                      btn_coor[3]))
                         self.btn.l(new_coor, sleep_time=1)
 
+                        is_not_auto = self.smc('sm_zd', is_click=False, simi=0.995)
+
+                        if is_not_auto:
+                            self.btn.l((is_not_auto[0], is_not_auto[1], 16, 16))
+
                         # 去完成或继续任务
                         while True:
                             self.capture()
@@ -61,92 +66,105 @@ class Shimen(object):
 
         if processing:
             self.logger.info(f'师门进行中')
-            step_list = [
-                "sm_mpgx",
-                "sm_sm",
-                "djjx",
-                "dh",
-                "dhda",
-                "gm",
-                "btgm",
-                "gfgm",
-                "sj",
-                "sy",
-                "sm_hdwp",
-                "sm_rwdh",
-                # "jm_gb",
-            ]
+            while True:
+                if self.smc("sm_wc_qd"):
+                    break
+                sleep(3)
 
-            while processing:
-                for item in step_list:
-                    self.capture()
-                    is_hd = self.match('hd')
-                    if item == "dh" or item == 'dhda' or item == "sm_sm":  #
-                        coor = self.match(item, simi=0.94)
-                    else:
-                        coor = self.match(item)
-                    if coor:
-                        if item == "dh" or item == "dhda":
-                            while True:
-                                coor = self.smc(item, is_click=False)
-                                if coor:
-                                    new_coor = ((coor[0], coor[1] + 69, 87,
-                                                 22))
-                                    self.btn.l(new_coor)
-                                    sleep(0.3)
-                                else:
-                                    break
-
-                            sleep(0.5)
-
-                        elif item == "djjx":
-                            while True:
-                                res = self.smc("djjx", sleep_time=0.2)
-                                if res:
-                                    break
-                            
-                            sleep(0.5)
-
-                        elif item == "btgm" or item == "gfgm":
-                            sleep(2)
-                            item_coor = (308, 245, 294, 75)
-                            self.btn.l(item_coor, sleep_time=0.5)
-                            self.btn.l(coor, sleep_time=1)
-
-                            if self.smc(item):
-                                self.btn.r()
-
-                        elif item == "sy":
-                            self.btn.l(coor, max_x=920)
-
-                        elif item == "sm_mpgx":
-                            self.smc("sm_jl")
-                            self.btn.r()
-                            processing = False
-                            break
-
-                        elif item == 'sm_sm' and is_hd:
-                            self.btn.l(coor, min_x=800)
-
-                        else:
-                            self.btn.l(coor, min_x=300)
-
-                        sleep(0.1)
-
-                    elif is_hd:
-                        if item == "sm_sm":
-                            if self.smc("hd", is_click=False):
-                                self.btn.r()
-                                self.btn.m(900, 300)
-                                self.btn.v(1, 10)
-                    
-                    sleep(1 / len(step_list))
-
+            self.btn.r()
             sleep(0.5)
+            self.btn.r()
+
             while True:
                 coor = self.smc('sy')
                 if not coor:
                     break
+            # step_list = [
+            #     "sm_mpgx",
+            #     "sm_sm",
+            #     "djjx",
+            #     "dh",
+            #     "dhda",
+            #     "gm",
+            #     "btgm",
+            #     "gfgm",
+            #     "sj",
+            #     "sy",
+            #     "sm_hdwp",
+            #     "sm_rwdh",
+            #     # "jm_gb",
+            # ]
+
+            # while processing:
+            #     for item in step_list:
+            #         self.capture()
+            #         is_hd = self.match('hd')
+            #         if item == "dh" or item == 'dhda' or item == "sm_sm":  #
+            #             coor = self.match(item, simi=0.94)
+            #         else:
+            #             coor = self.match(item)
+            #         if coor:
+            #             if item == "dh" or item == "dhda":
+            #                 while True:
+            #                     coor = self.smc(item, is_click=False)
+            #                     if coor:
+            #                         new_coor = ((coor[0], coor[1] + 69, 87,
+            #                                      22))
+            #                         self.btn.l(new_coor)
+            #                         sleep(0.3)
+            #                     else:
+            #                         break
+
+            #                 sleep(0.5)
+
+            #             elif item == "djjx":
+            #                 while True:
+            #                     res = self.smc("djjx", sleep_time=0.2)
+            #                     if res:
+            #                         break
+                            
+            #                 sleep(0.5)
+
+            #             elif item == "btgm" or item == "gfgm":
+            #                 sleep(2)
+            #                 item_coor = (308, 245, 294, 75)
+            #                 self.btn.l(item_coor, sleep_time=0.5)
+            #                 self.btn.l(coor, sleep_time=1)
+
+            #                 if self.smc(item):
+            #                     self.btn.r()
+
+            #             elif item == "sy":
+            #                 self.btn.l(coor, max_x=920)
+
+            #             elif item == "sm_mpgx":
+            #                 self.smc("sm_jl")
+            #                 self.btn.r()
+            #                 processing = False
+            #                 break
+
+            #             elif item == 'sm_sm' and is_hd:
+            #                 self.btn.l(coor, min_x=800)
+
+            #             else:
+            #                 self.btn.l(coor, min_x=300)
+
+            #             sleep(0.1)
+
+            #         elif is_hd:
+            #             if item == "sm_sm":
+            #                 if self.smc("hd", is_click=False):
+            #                     self.btn.r()
+            #                     self.btn.m(900, 300)
+            #                     self.btn.v(1, 10)
+                    
+            #         sleep(1 / len(step_list))
+
+            # sleep(0.5)
+            # while True:
+            #     coor = self.smc('sy')
+            #     if not coor:
+            #         break
 
         self.logger.info(f'师门完成')
         return 1

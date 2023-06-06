@@ -11,3 +11,4 @@ build/*
 dist/*
 *.spec
 web
+*.http
