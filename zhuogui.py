@@ -25,7 +25,7 @@ class Zhuogui(object):
         self.smc('rchd', sleep_time=0.5)
         self.btn.m(590, 330)
         self.btn.v(1, 31)
-        sleep(0.5)
+        sleep(1)
 
         self.logger.info(f"捉鬼领取")
         for n in range(31):

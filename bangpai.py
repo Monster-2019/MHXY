@@ -28,7 +28,7 @@ class Bangpai(object):
                         self.smc('bp_lqfh')
                         sleep(1)
                         self.smc('bp_lq')
-                        sleep(0.5)
+                        sleep(1)
                     self.btn.r()
                     break
 
@@ -58,14 +58,14 @@ class Bangpai(object):
                     sleep(0.2)
 
             self.btn.r()
-            sleep(0.5)
+            sleep(1)
             self.logger.info(f'已放弃帮派')
 
         self.btn.hotkey("hd")
         self.smc("rchd", sleep_time=0.5)
         self.btn.m(590, 330)
         self.btn.v(1, 31)
-        sleep(0.5)
+        sleep(1)
 
         # 匹配帮派任务
         self.logger.info(f'帮派领取中')
@@ -90,7 +90,7 @@ class Bangpai(object):
                         if self.smc('bp_lqrw'):
                             self.logger.info(f'帮派已更换')
                             return False
-                        sleep(0.5)
+                        sleep(1)
 
             else:
                 self.btn.v(-1)
@@ -112,7 +112,7 @@ class Bangpai(object):
 
         self.btn.m(900, 300)
         self.btn.v(1, 10)
-        sleep(0.5)
+        sleep(1)
 
         if self.smc.smc('bp_ql', simi=0.95, is_click=False):
             self.logger.info(f'帮派已领取')
@@ -137,7 +137,7 @@ class Bangpai(object):
                     if coor:
                         count = 0
                         if item == 'gm' or item == "gm_shanghui":
-                            sleep(0.5)
+                            sleep(1)
                             self.btn.l(coor)
                             res = self.smc(item, is_click=False)
                             if res:
@@ -160,16 +160,16 @@ class Bangpai(object):
                                 self.logger.info(f'非青龙，切换任务')
                                 while True:
                                     complete = self.changeTask()
-                                    sleep(0.5)
+                                    sleep(1)
                                     self.btn.r()
-                                    sleep(0.5)
+                                    sleep(1)
                                     if complete:
                                         processing = False
                                         break
                                     elif self.smc('bp_ql', simi=0.95):
                                         break
 
-                                    sleep(0.5)
+                                    sleep(1)
 
                     sleep(1 / len(step_list))
 
@@ -197,7 +197,7 @@ class Bangpai(object):
                         coor = self.match(item)
                     if coor:
                         if item == 'gm' or item == "gm_shanghui":
-                            sleep(0.5)
+                            sleep(1)
                             self.btn.l(coor)
                             res = self.smc(item, is_click=False)
                             if res:

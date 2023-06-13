@@ -63,7 +63,7 @@ class Gongfang(object):
                 self.logger.info('考古售卖进行中')
                 self.btn.l(has_gd)
                 self.btn.l(has_gd)
-                sleep(0.5)
+                sleep(1)
                 self.btn.r()
                 break
             else:
@@ -112,7 +112,7 @@ class Gongfang(object):
             self.smc("jjxx", sleep_time=0.5)
             self.btn.m(590, 330)
             self.btn.v(1, 31)
-            sleep(0.5)
+            sleep(1)
 
             for n in range(31):
                 if n % 10 == 0:
@@ -130,7 +130,7 @@ class Gongfang(object):
 
                             while True:
                                 r = self.smc("gf_lqrw")
-                                sleep(0.5)
+                                sleep(1)
                                 if r:
                                     self.logger.info(f'工坊已领取')
                                     break
@@ -166,7 +166,7 @@ class Gongfang(object):
                     if coor:
                         if item == 'rw_kg' or item == 'rw_gf':
                             self.btn.l(coor, min_x=800, min_y=150)
-                            sleep(0.5)
+                            sleep(1)
 
                         elif item == "dh":
                             while True:
@@ -187,7 +187,7 @@ class Gongfang(object):
                                     break
 
                         elif item == "gfgm":
-                            sleep(0.5)
+                            sleep(1)
                             self.btn.l(coor)
                             res = self.smc("gm_sb", is_click=False)
                             if res:
@@ -212,7 +212,7 @@ class Gongfang(object):
                         if item == "rw_kg" and is_hd:
                             self.btn.m(900, 300)
                             self.btn.v(-1, 10)
-                            sleep(0.5)
+                            sleep(1)
 
                             if self.smc('rw_kg', simi=0.9, min_x=800) or self.smc('rw_gf', simi=0.9):
                                 count = 0

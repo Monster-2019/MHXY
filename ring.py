@@ -113,7 +113,7 @@ class Ring(object):
                             else:
                                 break
 
-                        sleep(0.5)
+                        sleep(1)
 
                     elif item == "btgm":
                         sleep(2)
@@ -129,13 +129,13 @@ class Ring(object):
                                 return
 
                         else:
-                            sleep(0.5)
+                            sleep(1)
                             self.btn.l(coor)
-                            sleep(0.5)
+                            sleep(1)
                             self.btn.r()
 
                     elif item == "gm_1":
-                        sleep(0.5)
+                        sleep(1)
                         self.btn.l(coor)
                         sleep(0.1)
                         self.btn.r()

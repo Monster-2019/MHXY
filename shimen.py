@@ -72,7 +72,7 @@ class Shimen(object):
                 sleep(3)
 
             self.btn.r()
-            sleep(0.5)
+            sleep(1)
             self.btn.r()
 
             while True:
@@ -115,7 +115,7 @@ class Shimen(object):
             #                     else:
             #                         break
 
-            #                 sleep(0.5)
+            #                 sleep(1)
 
             #             elif item == "djjx":
             #                 while True:
@@ -123,7 +123,7 @@ class Shimen(object):
             #                     if res:
             #                         break
                             
-            #                 sleep(0.5)
+            #                 sleep(1)
 
             #             elif item == "btgm" or item == "gfgm":
             #                 sleep(2)
@@ -160,7 +160,7 @@ class Shimen(object):
                     
             #         sleep(1 / len(step_list))
 
-            # sleep(0.5)
+            # sleep(1)
             # while True:
             #     coor = self.smc('sy')
             #     if not coor:

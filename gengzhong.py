@@ -18,7 +18,7 @@ class GengZhong(object):
         self.smc('bb_zl', sleep_time=0.5)
         self.btn.m(720, 440)
         self.btn.v(1, 30)
-        sleep(0.5)
+        sleep(1)
 
         page = 1
         for n in range(61):

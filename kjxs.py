@@ -21,7 +21,7 @@ class KJ(object):
         self.smc("rchd", sleep_time=0.5)
         self.btn.m(590, 330)
         self.btn.v(1, 31)
-        sleep(0.5)
+        sleep(1)
 
         processing = False
 

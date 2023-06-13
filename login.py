@@ -47,7 +47,7 @@ def game_login(hwnd, server):
                     btn.l(coor)
 
                 elif item == server:
-                    sleep(0.5)
+                    sleep(1)
                     btn.l(coor)
                     status = True
                     break
@@ -55,7 +55,7 @@ def game_login(hwnd, server):
                 else:
                     btn.l(coor)
 
-            sleep(0.5)
+            sleep(1)
 
     logger.info(f'已登录{server}服务器')
 
