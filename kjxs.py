@@ -63,6 +63,7 @@ class KJ(object):
 
 if __name__ == '__main__':
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -84,6 +85,9 @@ if __name__ == '__main__':
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
-    KJ(adb, complex_task.task_finished).start()
+    adb['task_finished'] = complex_task.task_finished
+
+    KJ(adb).start()

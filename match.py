@@ -28,7 +28,7 @@ class Match(object):
         #     cv.destroyAllWindows()
 
         if debug:
-            print(tem, max_val, max_loc)
+            print(tem, max_val, max_loc, simi)
         if max_val > simi:
             w, h = img2.shape[::-1]
             x, y = max_loc
@@ -66,5 +66,5 @@ if __name__ == "__main__":
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     capture()
-    Match('0').match_tem('sm_sm', debug=True)
+    Match('0').match_tem('rw_jyl', debug=True)
     # Match('0').match_tem('dhda')

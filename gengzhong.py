@@ -113,7 +113,7 @@ class GengZhong(object):
 
         if is_sh:
             self.btn.l((270, 270, 2, 2))
-            sleep(1)
+            sleep(2)
             self.smc('td_status', sleep_time=0.5)
 
         self.logger.info(f'耕种中')
@@ -138,6 +138,7 @@ class GengZhong(object):
 
 if __name__ == "__main__":
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -159,8 +160,10 @@ if __name__ == "__main__":
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
 
-    GengZhong(adb, complex_task.task_finished).start()
+    GengZhong(adb).start()
     # GengZhong(adb, complex_task.task_finished).sell()

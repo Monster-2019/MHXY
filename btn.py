@@ -5,20 +5,21 @@ import win32api
 import win32con
 
 JWM = {
-    'bp': 66,
-    'hd': 67,
-    'fl': 68,
-    'bb': 69,
-    'hy': 70,
-    'gj': 71,
-    'xt': 74,
-    'dt': 77,
-    'jy': 78,
-    'jn': 83,
-    'dw': 84,
-    'js': 87,
-    'rw': 89,
-    'zz': 90
+    'bp': ord('B'),
+    'hd': ord('C'),
+    'fl': ord('D'),
+    'bb': ord('E'),
+    'hy': ord('F'),
+    'gj': ord('G'),
+    'xt': ord('J'),
+    'dt': ord('M'),
+    'jy': ord('N'),
+    'jn': ord('S'),
+    'dw': ord('T'),
+    'js': ord('W'),
+    'rw': ord('Y'),
+    'zz': ord('Z'),
+    'tab': win32con.VK_TAB,
 }
 
 FIXED_COOR = {
@@ -145,8 +146,8 @@ class Btn(object):
         key = JWM[char]
         if not key: return
 
-        if self.lock:
-            self.lock.acquire()
+        # if self.lock:
+            # self.lock.acquire()
 
         win32api.keybd_event(18, 0, 0, 0)
         win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, key, 0)
@@ -156,14 +157,23 @@ class Btn(object):
         win32api.keybd_event(18, 0, 0, 0)
         win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
 
-        if self.lock:
-            self.lock.release()
+        # if self.lock:
+            # self.lock.release()
 
         sleep(sleep_time)
 
+    def press(self, char):
+        key = JWM[char]
+        win32api.SendMessage(self.hwnd, win32con.WM_KEYDOWN, key, 0)
+        sleep(0.05)
+        win32api.SendMessage(self.hwnd, win32con.WM_KEYUP, key, 0)
+
 
 if __name__ == "__main__":
-    btn = Btn(3146098)
-    btn.d_vertical((640, 300, 640, 150))
-    sleep(5)
-    btn.l((640, 300, 2, 2))
+    import win32gui
+
+    hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
+    btn = Btn(hwnd)
+    for i in range(8):
+        btn.d_vertical((660, 350, 660, 0))
+        sleep(0.01)

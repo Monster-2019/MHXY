@@ -54,13 +54,13 @@ class Complex(object):
                 name = match.group(1)
                 level = int(match.group(2))
 
-        sleep(0.5)
+        sleep(1)
 
         self.btn.hotkey('bb')
         self.capture.custom_capture('gold')
         gold = ocr(f'./images/{self.capture.screen}.jpg')
 
-        sleep(0.5)
+        sleep(1)
 
         self.capture.custom_capture('silver')
         silver = ocr(f'./images/{self.capture.screen}.jpg')
@@ -71,8 +71,8 @@ class Complex(object):
 
         sleep(1)
 
-        return (name.replace('\n', ''), level,
-                gold.replace('\n', ''), silver.replace('\n', ''))
+        return (name.replace('\n', '').strip(), level,
+                gold.replace('\n', '').strip(), silver.replace('\n', '').strip())
 
     def clean(self):
         self.logger.info(f"清理开始")
@@ -100,7 +100,7 @@ class Complex(object):
             else:
                 self.btn.m(710, 410)
                 self.btn.v(-1, 6)
-                sleep(0.5)
+                sleep(1)
                 page += 1
                 if page == 8:
                     break
@@ -109,7 +109,7 @@ class Complex(object):
         self.btn.m(710, 410)
         self.btn.v(1, 50)
         self.btn.r()
-        sleep(0.5)
+        sleep(1)
         self.btn.hotkey('bb')
 
         use_list = [
@@ -151,7 +151,7 @@ class Complex(object):
             if not use and not sell and not dq:
                 self.btn.m(710, 410)
                 self.btn.v(-1, 6)
-                sleep(0.5)
+                sleep(1)
                 page += 1
                 if page == 8:
                     self.btn.r()
@@ -162,6 +162,7 @@ class Complex(object):
         return 1
 
     def singin(self):
+        print(111)
         self.logger.info(f"刮奖开始")
         while not self.smc('hd', is_click=False):
             self.btn.r()
@@ -266,7 +267,7 @@ class Complex(object):
 
         self.btn.r()
 
-        sleep(0.5)
+        sleep(1)
 
     def fight(self):
         pass
@@ -294,7 +295,7 @@ class Complex(object):
 
         self.btn.r()
 
-        sleep(1)
+        sleep(0.5)
 
         return False
 
@@ -309,6 +310,27 @@ class Complex(object):
             else:
                 break
         print('培养激活完成')
+
+    def is_still(self):
+        self.btn.press('tab')
+        sleep(1)
+        
+        coor = self.smc('figure', simi=0.9996, is_click=False)
+        if not coor:
+            return False
+
+        for i in range(20):
+            new_coor = self.smc('figure', simi=0.9996, is_click=False)
+            if not new_coor:
+                return False
+            if new_coor != coor:
+                self.smc('tab_close')
+                return False
+            
+            sleep(0.1)
+            
+        self.smc('tab_close')
+        return True
 
 
 if __name__ == '__main__':
@@ -337,4 +359,5 @@ if __name__ == '__main__':
         'logger': logger
     }
 
-    Complex(adb).clean()
+    result = Complex(adb).is_still()
+    print(result)

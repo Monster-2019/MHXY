@@ -1,70 +1,77 @@
 import json
-import os
 import multiprocessing
 import win32com.client
 import win32gui
-import curses
+import logging
 
 from loguru import logger
 from login import auto_login
 from task import daily_tasks
-from utils import get_hwnds, get_json_file, push_msg, openmore, init_log_dir, PauseableThread
-from multiprocessing import Value, Pool, Lock, Queue, Manager
+from utils import get_hwnds, get_json_file, push_msg, openmore, init_log_dir
+from multiprocessing import Manager, Process
 from time import sleep
 from zhuogui import main as loop_zhuogui
+from rich.live import Live
+from rich.table import Table
+from rich.console import Console
+
 
 logger_format = ("<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
                  "<level>{level: <6}</level> | "
-                 "{extra[hwnd]: <8} - {extra[name]: <10} - {message}")
+                 "{message}")
 
-logger.configure(handlers=[{
-    "sink": "app.log",
-    "encoding": "utf-8",
-    "enqueue": True,
-    "backtrace": True,
-    "catch": True,
-    "format": logger_format
-}, {
-    "sink": "error.log",
-    "level": "ERROR",
-    "encoding": "utf-8",
-    "format": logger_format
-}],
-                 extra={
-                     "hwnd": "",
-                     "name": "",
-                     "lock": None,
-                     "process_id": 0
-                 })
+logger = logging.getLogger('mhxy')
+logger.setLevel(logging.INFO)
 
+def generate_table(tableData):
+    table = Table()
+    table.add_column('ID')
+    table.add_column('Name')
+    table.add_column('Level')
+    table.add_column('Gold')
+    table.add_column('Sliver')
+    table.add_column('Status')
 
-def err_call_back(err):
-    print(f'出错啦~ error：{str(err)}')
+    for row in tableData:
+        table.add_row(*row)
+
+    return table
 
 
 def init_terminal_print(queue):
-    stdscr = curses.initscr()
-    curses.curs_set(0)
+    tabledata = [
+        ['0' if i == 0 else "" for i in range(6)],
+        ['1' if i == 0 else "" for i in range(6)],
+        ['2' if i == 0 else "" for i in range(6)],
+        ['3' if i == 0 else "" for i in range(6)],
+        ['4' if i == 0 else "" for i in range(6)],
+    ]
 
-    while True:
+    console = Console()
+    console.clear()
+    # logger = logging.getLogger('mhxy')
+
+    with Live(generate_table(tabledata), refresh_per_second=20) as live:
         try:
-            id, message = queue.get()
-            stdscr.move(id, 0)
-            stdscr.clrtoeol()
-            stdscr.refresh()
-            string = str(id) + " | " + message
-            string = string.ljust(80, '.')
-            stdscr.addstr(id, 0, string)
-        except queue.Empty:
-            pass
+            while True:
+                message = queue.get()
+                msg = message.msg
+                # print(111, msg, message)
+                if msg is None:
+                    break
+                id = message.id
+                if msg[0] == '(':
+                    fm_message = eval(msg)
+                    for i, val in enumerate(fm_message):
+                        tabledata[id][i + 1] = str(val)
+                else:
+                    tabledata[id][5] = str(msg)
 
-        stdscr.refresh()
+                live.update(generate_table(tabledata))
 
-
-def exit_terminal_print():
-    curses.curs_set(1)
-    curses.endwin()
-
+        except Exception as e:
+            print('e', e)
+        
 
 def start(groupConfig=[]):
     try:
@@ -83,29 +90,28 @@ def start(groupConfig=[]):
         memory = manager.Value('i', 0)
         lock = manager.Lock()
         queue = manager.Queue()
-
-        pool = Pool(5)
+        process_list = []
 
         for i, row in enumerate(groupConfig):
-            pool.apply_async(daily_tasks,
-                             args=(row['hwnd'], row['config'], memory, lock,
-                                   queue, i),
-                             error_callback=err_call_back)
+            p = Process(target=daily_tasks, args=(row['hwnd'], row['config'], memory, lock,
+                                   queue, i))
+            p.start()
+            process_list.append(p)
             sleep(1)
 
-        terminal_print = PauseableThread(target=init_terminal_print,
-                                         args=(queue, ),
-                                         stop_func=exit_terminal_print)
+        terminal_print = Process(target=init_terminal_print, args=(queue, ))
         terminal_print.start()
+        
+        for process in process_list:
+            process.join()
 
-        pool.close()
-        pool.join()
-
-        terminal_print.stop_thread()
+        terminal_print.terminate()
 
         push_msg('已全部完成')
-    except Exception as e:
-        print(e)
+    except KeyboardInterrupt:
+        for p in process_list:
+            p.terminate()
+        exit(0)
 
 
 def stop(hwnd):
@@ -169,12 +175,12 @@ func_list = [
 ]
 
 
-@logger.catch()
 def call_method(param, **kwds):
     func_map.get(param, lambda: print("Invalid parameter"))(**kwds)
 
 
 def command_selection():
+    choice = None
     while True:
         print("请选择你的选项:")
         print("1. 一键日常")
@@ -188,9 +194,11 @@ def command_selection():
         if choice == 0:
             break
         elif choice in range(len(func_list)):
-            func_list[choice]()
+            break
         else:
             print("无效选项:", choice)
+
+    func_list[choice]()
 
 
 if __name__ == "__main__":

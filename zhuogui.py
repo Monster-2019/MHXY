@@ -4,9 +4,7 @@ from loguru import logger
 
 COUNT = 2
 
-
 class Zhuogui(object):
-
     def __init__(self, adb):
         for key, val in adb.items():
             self.__dict__[key] = val
@@ -62,7 +60,7 @@ class Zhuogui(object):
                 self.capture()
                 is_hd = self.match('hd')
                 if item == 'zg_zg':
-                    coor = self.match(item, simi=0.9)
+                    coor = self.match(item, simi=0.95)
                 else:
                     coor = self.match(item)
 
@@ -90,6 +88,114 @@ class Zhuogui(object):
                 sleep(1 / len(step_list))
 
         return 1
+    
+    def auto_match(self):
+        self.logger.info(f"正在进行自动匹配")
+        self.btn.hotkey('hd')
+        self.smc('rchd', sleep_time=0.5)
+        self.btn.m(590, 330)
+        self.btn.v(1, 31)
+        sleep(1)
+
+        for n in range(31):
+            if n % 10 == 0:
+                self.capture()
+                tem_coor = self.match('hd_zgrw', simi=0.995)
+                btn_coor = self.match('cj',
+                                      screen='imgTem/hd_zgrw',
+                                      simi=0.995)
+                if tem_coor and btn_coor:
+                    new_coor = ((tem_coor[0] + btn_coor[0],
+                                 tem_coor[1] + btn_coor[1], btn_coor[2],
+                                 btn_coor[3]))
+                    self.btn.l(new_coor)
+                    sleep(2)
+
+                    self.smc('zg_auto_match')
+                    sleep(1)
+                    self.btn.r()
+                    self.btn.r()
+                    sleep(1)
+                    self.logger.info(f"正在匹配队伍")
+                    break
+
+            else:
+                self.btn.v(-1)
+
+        self.btn.hotkey('dw')
+
+        while True:
+            in_team = self.smc('tcdw', is_click=False)
+            if in_team:
+                self.logger.info(f"已匹配队伍")
+                self.smc('rw_gb')
+                break
+
+            sleep(1)
+
+        return True
+    
+    def has_zg(self):
+            status = False
+                # sleep(60)
+            self.btn.hotkey('rw', sleep_time=1)
+            self.smc('rw_dqrw', sleep_time=0.5)
+
+            has_cgrw = self.smc('rw_cgrw', sleep_time=0.5)
+            status = self.smc('rw_cgrw_zgrw', sleep_time=0.5)
+            if status or not has_cgrw:
+                self.smc('rw_gb')
+                return status
+
+            self.smc('rw_cgrw', sleep_time=0.5)
+            status = self.smc('rw_cgrw_zgrw', sleep_time=0.5)
+                    
+            self.smc('rw_gb')
+            return status
+    
+    def single(self):
+        self.logger.info(f"捉鬼开始")
+        while not self.smc('hd', is_click=False):
+            self.btn.r()
+
+        if self.task_finished('zg_wc'):
+            self.logger.info(f"捉鬼完成")
+            self.btn.r()
+            return
+        
+        self.logger.info(f"捉鬼进行中")
+
+        self.auto_match()
+
+        while True:
+            is_hd = self.smc('hd', is_click=False)
+
+            if is_hd:
+                for i in range(5):
+                    print(i)
+                    is_zg = self.smc('zg_zg', simi=0.95, is_click=False)
+                    if is_zg:
+                        break
+                    sleep(3)
+                
+                if i == 4:
+                    is_hd = self.smc('hd', is_click=False)
+                    has_zg = self.has_zg()
+                    if is_hd and not has_zg:
+                        self.btn.hotkey('dw')
+                        sleep(1)
+                        self.smc('tcdw')
+                        sleep(1)
+                        self.btn.r()
+                        sleep(1)
+                                
+                        zg_wc = self.task_finished('zg_wc')
+                        if zg_wc:
+                            return True
+                        else:
+                            self.auto_match()
+            
+            sleep(1)
     
 def main():
     import win32gui
@@ -120,8 +226,39 @@ def main():
     complex_task = Complex(adb)
     adb['task_finished'] = complex_task.task_finished
 
-    Zhuogui(adb).loop()
+    Zhuogui(adb).single()
+    # Zhuogui(adb).loop()
     # Zhuogui().leader()
 
 if __name__ == '__main__':
-    main()
+    import win32gui
+    from loguru import logger
+
+    from btn import Btn
+    from capture import CaptureScreen
+    from complex import Complex
+    from match import Match
+    from smc import SMC
+
+    hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
+    screen = '0'
+    capture = CaptureScreen(hwnd, screen)
+    match = Match(screen)
+    btn = Btn(hwnd)
+    smc = SMC(capture, match, btn)
+
+    adb = {
+        'screen': screen,
+        'hwnd': hwnd,
+        'capture': capture,
+        'match': match,
+        'btn': btn,
+        'smc': smc,
+        'logger': logger
+    }
+    complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
+    adb['is_still'] = complex_task.is_still
+
+    Zhuogui(adb).single()
+    # main()

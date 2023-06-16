@@ -37,6 +37,7 @@ class Baotu(object):
         return ()
 
     def dig(self):
+        sleep(1)
         # 打开背包
         self.logger.info(f'挖宝开始')
         cbt_coor = self.has_cbt()
@@ -49,29 +50,21 @@ class Baotu(object):
             sleep(5)
 
             while cbt_coor:
-                self.capture()
-                is_hd = self.match('hd')
-                coor = self.match('sy')
+                is_hd = self.smc('hd', is_click=False)
 
                 if is_hd:
-                    count = 0
-                    while True:
+                    for i in range(30):
                         coor = self.smc('sy', is_click=False)
-                        if coor:
+                        if coor and coor[0] + coor[2] < 920:
+                            self.btn.l(coor)
+                            sleep(4)
                             break
-                        else:
-                            count += 1
+                        sleep(1)
+                    
+                    if i == 29:
+                        cbt_coor = self.has_cbt()
 
-                        if count == 12:
-                            cbt_coor = self.has_cbt()
-                            break
-
-                        sleep(5)
-
-                    if coor and coor[0] + coor[2] < 920:
-                        self.btn.l(coor)
-                        sleep(4)
-                        count = 0
+                sleep(3)
 
         self.logger.info(f'挖宝完成')
         return 1
@@ -86,92 +79,65 @@ class Baotu(object):
             self.dig()
             return
 
-        self.btn.hotkey("hd")
-        self.smc("rchd", sleep_time=0.5)
-        self.btn.m(590, 330)
-        self.btn.v(1, 31)
-        sleep(0.5)
-
         processing = self.smc('rw_bt', simi=0.95)
 
         if not processing:
             self.logger.info(f'宝图领取')
+
+            self.btn.hotkey("hd")
+            self.smc("rchd", sleep_time=0.5)
+            self.btn.m(590, 330)
+            self.btn.v(1, 31)
+            sleep(0.5)
+
             for n in range(31):
                 if n % 10 == 0:
                     self.capture()
-                    tem_coor = self.match("hd_btrw") or self.match("hd_btrw1")
-                    if tem_coor:
-                        btn_coor = self.match(
-                            "cj", screen="imgTem/hd_btrw") or self.match(
-                                "cj", screen="imgTem/hd_btrw1")
+                    tem_coor = self.match("hd_btrw")
+                    btn_coor = self.match("cj", screen="imgTem/hd_btrw")
+                    if tem_coor and btn_coor:
                         new_coor = ((
                             tem_coor[0] + btn_coor[0],
                             tem_coor[1] + btn_coor[1],
                             btn_coor[2],
                             btn_coor[3],
                         ))
-                        if btn_coor:
-                            self.btn.l(new_coor)
-                            processing = True
-                            sleep(5)
+                        self.btn.l(new_coor)
 
-                            count = 0
-                            while True:
-                                if self.smc('bt_ttwf'):
-                                    sleep(0.5)
-                                    self.btn.r()
-                                    break
-                                else:
-                                    count += 1
+                        sleep(5)
 
-                                sleep(2)
-
-                                if count == 15:
-                                    processing = False
-                                    self.logger.info('退出宝图')
-                                    return
-
-                            break
-                else:
-                    self.btn.v(-1)
-
-        self.btn.r()
-
-        if processing:
-            self.logger.info(f'宝图进行中')
-            step_list = ['bt_cbthdwc', 'rw_bt']
-
-            while processing:
-                for item in step_list:
-                    self.capture()
-                    is_hd = self.match('hd')
-                    if item == 'rw_bt':
-                        coor = self.match(item, simi=0.9)
-                    else:
-                        coor = self.match(item)
-                    if coor and is_hd:
-                        if item == 'bt_cbthdwc':
-                            processing = False
-                            break
-
-                        else:
-                            self.btn.l(coor, min_x=800)
-                            sleep(5)
-
-                    elif item == 'rw_bt' and not coor and is_hd:
-                        count = 0
                         while True:
-                            is_hd = self.smc('hd', is_click=False)
-                            if not is_hd:
-                                count = 0
-                            else:
-                                count += 1
-
-                            if count == 12:
-                                processing = False
+                            if self.smc('bt_ttwf'):
+                                sleep(1)
+                                self.btn.r()
+                                sleep(1)
+                                self.smc('rw_bt')
+                                processing = True
                                 break
 
                             sleep(5)
+
+                        break
+                else:
+                    self.btn.v(-1)
+
+        if processing:
+            self.logger.info(f'宝图进行中')
+
+            while processing:
+                is_hd = self.smc('hd', is_click=False)
+
+                if is_hd:
+                    for i in range(6):
+                        has_rw = self.smc('rw_bt', simi=0.95, is_click=False)
+                        if has_rw:
+                            break
+                        sleep(5)
+                    
+                    if i == 5:
+                        processing = False
+
+                sleep(3)
 
         self.logger.info(f'宝图完成')
         self.dig()
@@ -179,6 +145,7 @@ class Baotu(object):
 
 if __name__ == '__main__':
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -194,14 +161,16 @@ if __name__ == '__main__':
     smc = SMC(capture, match, btn)
 
     adb = {
-        'name': "debug",
         'screen': screen,
         'hwnd': hwnd,
         'capture': capture,
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
+    adb['is_still'] = complex_task.is_still
 
-    Baotu(adb, complex_task.task_finished).start()
+    Baotu(adb).start()

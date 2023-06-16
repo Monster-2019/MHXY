@@ -77,41 +77,47 @@ class Mijing:
 
                 sleep(1 / len(join_list))
 
-        step_list = ['sb', 'mj_tg', 'mj_mjxyrw', 'mj_lb', 'mj_jrzd', 'mj_gb']
+        step_list = ['mj_jrzd', 'mj_lb', 'mj_gb']
         # # , 'mj_lq', 'mj_gb'
 
-        sleep(2)
         processing = True
         self.logger.info(f'秘境进行中')
 
-        while processing:
-            for item in step_list:
-                is_hd = self.smc('hd', is_click=False)
-                if is_hd:
-                    processing = False
-                    break
+        sleep(3)
 
-                coor = self.match(item)
+        self.smc('mj_mjxyrw')
+
+        while processing:
+            is_end = self.smc('sb') or self.smc('mj_tg') or self.smc('hd')
+            if is_end:
+                processing = False
+                break
+
+            is_lk = self.smc('mj_lk', is_click=False)
+            if not is_lk:
+                sleep(3)
+                continue
+            
+            for item in step_list:
+                coor = self.smc(item, is_click=False)
 
                 if coor:
-                    if item == 'sb' or item == 'mj_tg':
+                    if item == 'mj_lb':
                         self.btn.l(coor)
-                        # self.btn.l(((520, 380), (10, 10)))
-                        processing = False
-                        break
-
-                    elif item == 'mj_mjxyrw':
-                        self.btn.l(coor, sleep_time=2, min_x=700)
+                        sleep(3)
+                        self.btn.r()
+                        sleep(1)
+                        self.smc('mj_mjxyrw')
 
                     else:
-                        self.btn.l(coor, min_x=350)
+                        self.btn.l(coor)
 
-                    sleep(0.1)
-
-                sleep(1 / len(step_list))
+                sleep(1)
+            sleep(3)
 
         while not self.smc('hd', is_click=False):
             self.smc('mj_lk')
+            sleep(1)
 
         self.logger.info(f'秘境完成')
         return 1
@@ -119,6 +125,7 @@ class Mijing:
 
 if __name__ == '__main__':
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -140,7 +147,10 @@ if __name__ == '__main__':
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
+    adb['is_still'] = complex_task.is_still
 
-    Mijing(adb, complex_task.task_finished).start()
+    Mijing(adb).start()

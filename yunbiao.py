@@ -29,16 +29,15 @@ class Yunbiao(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                tem_coor = self.match('hd_yb1') or self.match('hd_yb')
+                tem_coor = self.match('hd_yb')
                 btn_coor = self.match('cj', screen='imgTem/hd_yb')
                 if tem_coor and btn_coor:
                     new_coor = ((tem_coor[0] + btn_coor[0],
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))
-                    if btn_coor:
-                        self.btn.l(new_coor)
-                        processing = True
-                        break
+                    self.btn.l(new_coor)
+                    processing = True
+                    break
 
             else:
                 self.btn.v(-1)
@@ -67,6 +66,7 @@ class Yunbiao(object):
 
 if __name__ == '__main__':
     import win32gui
+    from loguru import logger
 
     from btn import Btn
     from capture import CaptureScreen
@@ -88,7 +88,9 @@ if __name__ == '__main__':
         'match': match,
         'btn': btn,
         'smc': smc,
+        'logger': logger
     }
     complex_task = Complex(adb)
+    adb['task_finished'] = complex_task.task_finished
 
-    Yunbiao(adb, complex_task.task_finished).start()
+    Yunbiao(adb).start()

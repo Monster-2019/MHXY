@@ -4,10 +4,11 @@ import os
 from datetime import datetime
 from time import sleep
 
-import loguru
 import win32com.client
 import win32gui
+import logging
 
+from loguru import logger
 from bangpai import Bangpai
 from baotu import Baotu
 from btn import Btn
@@ -25,6 +26,7 @@ from smc import SMC
 # from utils import hide_login
 from yunbiao import Yunbiao
 from zhuogui import Zhuogui
+from logging.handlers import QueueHandler
 
 week = datetime.now().isoweekday()
 shell = win32com.client.Dispatch("WScript.Shell")
@@ -32,10 +34,11 @@ shell = win32com.client.Dispatch("WScript.Shell")
 conf = configparser.ConfigParser()
 path = os.path.join(os.getcwd(), "config.ini")
 
-logger = loguru.logger
+class MyLoggerAdapter(logging.LoggerAdapter):
+    def process(self, msg, kwargs):
+        kwargs["extra"] = {"id": self.extra.get("id")}
+        return msg, kwargs
 
-
-@logger.catch()
 def daily_tasks(hwnd,
                 config_file=None,
                 memory=None,
@@ -46,9 +49,13 @@ def daily_tasks(hwnd,
         json_data = f.read()
         config = json.loads(json_data)
 
-    loguru.logger.add(lambda message: queue.put(
-        (message.record["extra"]["process_id"], message.record["message"])),
-                      format="{message}")
+    # loguru.logger.add(lambda message: queue.put(
+    #     (message.record["extra"]["process_id"], message.record["message"])))
+    # logger.configure(handlers=[{"sink": queue.put}])
+    logger = logging.getLogger('mhxy')
+    logger.addHandler(QueueHandler(queue))
+    logger.setLevel(logging.INFO)
+    logger = MyLoggerAdapter(logger, { "id": process_id })
 
     hwnd = str(hwnd)
     capture = CaptureScreen(hwnd, hwnd)
@@ -63,6 +70,7 @@ def daily_tasks(hwnd,
         'match': match,
         'btn': btn,
         'smc': smc,
+        "logger": logger
     }
 
     # 置顶，隐藏登录窗口
@@ -75,15 +83,18 @@ def daily_tasks(hwnd,
 
     name, level, gold, silver = Complex(adb).get_info()
 
-    logger = loguru.logger.bind(hwnd=hwnd, name=name, process_id=process_id)
+    logger.info((name, str(level), gold, silver))
 
-    logger.info(f"账号:{name}, 等级:{level}级, 金币:{gold}, 银币:{silver}")
+    # for i in range(10):
+    #     logger.info(i)
+    #     sleep(1)
 
-    adb["logger"] = logger
+    # return 
 
     complex_task = Complex(adb)
 
     adb["task_finished"] = complex_task.task_finished
+    adb["is_still"] = complex_task.is_still
 
     complex_task.leave_team()
 

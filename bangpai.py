@@ -72,7 +72,7 @@ class Bangpai(object):
         for n in range(31):
             if n % 10 == 0:
                 self.capture()
-                complete = self.match('bp_wc')
+                complete = self.match('bp_wc', simi=0.995)
                 if complete:
                     return True
                 tem_coor = self.match("hd_bprw", simi=0.995)
@@ -99,43 +99,48 @@ class Bangpai(object):
         return True
 
     def start(self):
-        self.logger.info(f'帮派开始')
-        processing = False
+        # self.logger.info(f'帮派开始')
+        # processing = False
 
-        while not self.smc('hd', is_click=False):
-            self.btn.r()
+        # while not self.smc('hd', is_click=False):
+        #     self.btn.r()
 
-        if self.task_finished('bp_wc'):
-            self.logger.info(f'帮派完成')
-            self.btn.r()
-            return
+        # if self.task_finished('bp_wc'):
+        #     self.logger.info(f'帮派完成')
+        #     self.btn.r()
+        #     return
 
-        self.btn.m(900, 300)
-        self.btn.v(1, 10)
-        sleep(1)
+        # self.btn.m(900, 300)
+        # self.btn.v(1, 10)
+        # sleep(1)
 
         if self.smc.smc('bp_ql', simi=0.95, is_click=False):
             self.logger.info(f'帮派已领取')
             processing = True
 
-        if not processing:
-            processing = not self.changeTask(False)
+        # if not processing:
+        #     processing = not self.changeTask(False)
 
         if processing:
             self.logger.info(f'帮派进行中')
-            step_list = ["bp_ql", "gm", "gm_shanghui", "dh_bprw", "bp_bpwc"]
+            step_list = ["gm", "gm_shanghui", "dh_bprw", "bp_bpwc", "qltzg"]
 
-            count = 0
             while processing:
+                is_hd = self.smc('hd', is_click=False)
+                if is_hd:
+                    for i in range(5):
+                        has_ql = self.smc('bp_ql', is_click=False)
+                        if has_ql:
+                            break
+                        sleep(2)
+                    
+                    if i == 4:
+                        processing = not self.changeTask()
+                
                 for item in step_list:
                     self.capture()
-                    is_hd = self.match('hd')
-                    if item == "bp_ql":
-                        coor = self.match(item, simi=0.95)
-                    else:
-                        coor = self.match(item)
+                    coor = self.match(item)
                     if coor:
-                        count = 0
                         if item == 'gm' or item == "gm_shanghui":
                             sleep(1)
                             self.btn.l(coor)
@@ -147,29 +152,13 @@ class Bangpai(object):
                             processing = False
                             break
 
+                        elif item == 'qltzg':
+                            self.smc('bp_ql')
+
                         else:
                             self.btn.l(coor)
 
                         sleep(0.2)
-
-                    else:
-                        if item == 'bp_ql' and is_hd:
-                            count += 1
-
-                            if count == 10:
-                                self.logger.info(f'非青龙，切换任务')
-                                while True:
-                                    complete = self.changeTask()
-                                    sleep(1)
-                                    self.btn.r()
-                                    sleep(1)
-                                    if complete:
-                                        processing = False
-                                        break
-                                    elif self.smc('bp_ql', simi=0.95):
-                                        break
-
-                                    sleep(1)
 
                     sleep(1 / len(step_list))
 
@@ -259,5 +248,5 @@ if __name__ == "__main__":
     complex_task = Complex(adb)
     adb['task_finished'] = complex_task.task_finished
 
-    Bangpai(adb).upgrade()
+    Bangpai(adb).start()
     # Bangpai(adb, complex_task.task_finished).check_in()
