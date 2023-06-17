@@ -1,6 +1,6 @@
 from time import sleep
 
-from loguru import logger
+
 
 COUNT = 2
 
@@ -90,7 +90,7 @@ class Zhuogui(object):
         return 1
     
     def auto_match(self):
-        self.logger.info(f"正在进行自动匹配")
+        self.logger.info(f"开始自动匹配")
         self.btn.hotkey('hd')
         self.smc('rchd', sleep_time=0.5)
         self.btn.m(590, 330)
@@ -109,14 +109,13 @@ class Zhuogui(object):
                                  tem_coor[1] + btn_coor[1], btn_coor[2],
                                  btn_coor[3]))
                     self.btn.l(new_coor)
-                    sleep(2)
+                    sleep(1)
 
                     self.smc('zg_auto_match')
                     sleep(1)
                     self.btn.r()
                     self.btn.r()
-                    sleep(1)
-                    self.logger.info(f"正在匹配队伍")
+                    sleep(5)
                     break
 
             else:
@@ -132,26 +131,26 @@ class Zhuogui(object):
                 break
 
             sleep(1)
-
+        
         return True
     
     def has_zg(self):
-            status = False
-                # sleep(60)
-            self.btn.hotkey('rw', sleep_time=1)
-            self.smc('rw_dqrw', sleep_time=0.5)
+        status = False
+            # sleep(60)
+        self.btn.hotkey('rw', sleep_time=1)
+        self.smc('rw_dqrw', sleep_time=0.5)
 
-            has_cgrw = self.smc('rw_cgrw', sleep_time=0.5)
-            status = self.smc('rw_cgrw_zgrw', sleep_time=0.5)
-            if status or not has_cgrw:
-                self.smc('rw_gb')
-                return status
-
-            self.smc('rw_cgrw', sleep_time=0.5)
-            status = self.smc('rw_cgrw_zgrw', sleep_time=0.5)
-                    
+        has_cgrw = self.smc('rw_cgrw', sleep_time=0.5)
+        status = self.smc('rw_cgrw_zgrw', sleep_time=0.5)
+        if status or not has_cgrw:
             self.smc('rw_gb')
             return status
+
+        self.smc('rw_cgrw', sleep_time=0.5)
+        status = self.smc('rw_cgrw_zgrw', sleep_time=0.5)
+                
+        self.smc('rw_gb')
+        return status
     
     def single(self):
         self.logger.info(f"捉鬼开始")
@@ -167,39 +166,43 @@ class Zhuogui(object):
 
         self.auto_match()
 
+        count = 0
         while True:
-            is_hd = self.smc('hd', is_click=False)
-
-            if is_hd:
-                for i in range(5):
-                    print(i)
-                    is_zg = self.smc('zg_zg', simi=0.95, is_click=False)
-                    if is_zg:
+            if count >= 20:
+                self.leave_team()
+                break
+            for i in range(30):
+                sleep(1)
+                is_hd = self.smc('hd', is_click=False)
+                is_fight = self.smc('qx', is_click=False)
+                if is_hd:
+                    continue
+                if is_fight:
+                    while True:
+                        is_fight = self.smc('qx', is_click=False)
+                        if not is_fight:
+                            break
+                    count += 1
+                    self.logger.info(f"已进行{count}回合抓鬼")
+                    break
+            else:
+                has_zg = self.has_zg()
+                if not has_zg:
+                    self.leave_team()
+                                    
+                    zg_wc = self.task_finished('zg_wc')
+                    if zg_wc:
                         break
-                    sleep(3)
-                
-                if i == 4:
-                    is_hd = self.smc('hd', is_click=False)
-                    has_zg = self.has_zg()
-                    if is_hd and not has_zg:
-                        self.btn.hotkey('dw')
-                        sleep(1)
-                        self.smc('tcdw')
-                        sleep(1)
-                        self.btn.r()
-                        sleep(1)
-                                
-                        zg_wc = self.task_finished('zg_wc')
-                        if zg_wc:
-                            return True
-                        else:
-                            self.auto_match()
+                    else:
+                        self.auto_match()
             
             sleep(1)
+
+        self.logger.info(f"捉鬼任务完成")
     
 def main():
     import win32gui
-    from loguru import logger
+    
 
     from btn import Btn
     from capture import CaptureScreen
@@ -232,7 +235,7 @@ def main():
 
 if __name__ == '__main__':
     import win32gui
-    from loguru import logger
+    
 
     from btn import Btn
     from capture import CaptureScreen
@@ -259,6 +262,7 @@ if __name__ == '__main__':
     complex_task = Complex(adb)
     adb['task_finished'] = complex_task.task_finished
     adb['is_still'] = complex_task.is_still
+    adb['leave_team'] = complex_task.leave_team
 
     Zhuogui(adb).single()
     # main()

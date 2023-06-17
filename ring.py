@@ -96,79 +96,76 @@ class Ring(object):
 
         count = 0
         while processing:
-            is_hd = self.smc('hd', is_click=False)
-            if is_hd:
-                for item in step_list:
-                    print(123, item)
-                    if item == 'dh':
-                        coor = self.smc(item, simi=0.9, is_click=False)
-                    else:
-                        coor = self.smc(item, is_click=False)
-                    if coor:
-                        print(item, coor)
-                        if item == "dh":
-                            sleep(1)
-                            while True:
-                                coor = self.smc(item, is_click=False)
-                                if coor:
-                                    new_coor = ((coor[0], coor[1] + 69, 87, 22))
-                                    self.btn.l(new_coor)
-                                    sleep(0.3)
-                                else:
-                                    break
-
-                            sleep(1)
-
-                        elif item == "btgm":
-                            sleep(1)
-                            res = self.smc('bt_sj') or self.smc(
-                                'bt_jlh') or self.smc('bt_mgh')
-                            if res:
-                                self.logger.info("高价物品，开始传说")
-                                self.btn.r()
-
-                                has_legend = self.legend()
-                                if not has_legend:
-                                    self.logger.info("传说失败，手动处理")
-                                    return
-
+            for item in step_list:
+                # print(123, item)
+                if item == 'dh':
+                    coor = self.smc(item, simi=0.9, is_click=False)
+                else:
+                    coor = self.smc(item, is_click=False)
+                if coor:
+                    count = 0
+                    if item == "dh":
+                        sleep(0.5)
+                        while True:
+                            coor = self.smc(item, is_click=False)
+                            if coor:
+                                new_coor = ((coor[0], coor[1] + 69, 87, 22))
+                                self.btn.l(new_coor)
+                                sleep(0.3)
                             else:
-                                self.btn.l(coor)
-                                sleep(1)
-                                self.btn.r()
+                                break
+
+                        sleep(0.5)
+
+                    elif item == "btgm":
+                        sleep(1)
+                        res = self.smc('bt_sj') or self.smc(
+                            'bt_jlh') or self.smc('bt_mgh')
+                        print('高价', res)
+                        if res:
+                            self.logger.info("高价物品，开始传说")
+                            self.btn.r()
+
+                            has_legend = self.legend()
+                            if not has_legend:
+                                self.logger.info("传说失败，手动处理")
+                                return
 
                         else:
                             self.btn.l(coor)
+                            sleep(1)
+                            self.btn.r()
 
-                    sleep(1 / len(step_list))
-                else:
-                    count += 1
-                    print('count', count)
-                    if count < 15:
-                        continue
-                    # for i in range(5):
-                    #     if self.smc('rw_jyl', simi=0.9):
-                    #         break
-                    #     sleep(2)
-                    # else:
-                    #     continue
-                
-                count = 0
-                is_still = self.is_still()
-                if is_still:
-                    print('is_still', is_still)
-                    sleep(1)
-                    has_jyl = self.smc('rw_jyl', simi=0.9)
-                    print('has_jyl', has_jyl)
-                    if not has_jyl:
-                        processing = True
+                    else:
+                        self.btn.l(coor)
+
+                sleep(1 / len(step_list))
+            else:
+                count += 1
+                print('count', count)
+                if count < 15:
+                    continue
+                # for i in range(5):
+                #     if self.smc('rw_jyl', simi=0.9):
+                #         break
+                #     sleep(2)
+                # else:
+                #     continue
+            
+            count = 0
+            is_still = self.is_still()
+            if is_still:
+                sleep(1)
+                has_jyl = self.smc('rw_jyl', simi=0.9)
+                if not has_jyl:
+                    processing = True
 
         self.logger.info(f"经验链完成")
 
 
 def main():
     import win32gui
-    from loguru import logger
+    
 
     from btn import Btn
     from capture import CaptureScreen

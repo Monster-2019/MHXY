@@ -14,7 +14,7 @@ class Match(object):
     def __init__(self, screen):
         self.screen = screen
 
-    def match_tem(self, tem, screen=None, simi=default_simi, debug=False, **kwds):
+    def match_tem(self, tem, screen=None, simi=default_simi, debug=False, min_x=0, min_y=0, max_x=2000, max_y=1000, **kwds):
         s = screen or self.screen
         img1 = cv.imread("./images/" + s + ".jpg", 0)
         img2 = cv.imread("./images/imgTem/" + tem + ".jpg", 0)
@@ -29,12 +29,11 @@ class Match(object):
 
         if debug:
             print(tem, max_val, max_loc, simi)
-        if max_val > simi:
-            w, h = img2.shape[::-1]
-            x, y = max_loc
-            return (x, y, w, h)
-
-        return ()
+        if max_val < simi:
+            return ()
+        w, h = img2.shape[::-1]
+        x, y = max_loc
+        return (x, y, w, h) if min_x < x < max_x and min_y < y < max_y else ()
 
     def match_tem_list(self, tem_list, screen=None, simi=default_simi, **kwds):
         # s = screen or self.screen
@@ -66,5 +65,5 @@ if __name__ == "__main__":
     screen = '0'
     capture = CaptureScreen(hwnd, screen)
     capture()
-    Match('0').match_tem('rw_jyl', debug=True)
+    Match('0').match_tem('gm_1', debug=True)
     # Match('0').match_tem('dhda')

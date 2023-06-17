@@ -8,7 +8,7 @@ import win32com.client
 import win32gui
 import logging
 
-from loguru import logger
+
 from bangpai import Bangpai
 from baotu import Baotu
 from btn import Btn
@@ -49,9 +49,6 @@ def daily_tasks(hwnd,
         json_data = f.read()
         config = json.loads(json_data)
 
-    # loguru.logger.add(lambda message: queue.put(
-    #     (message.record["extra"]["process_id"], message.record["message"])))
-    # logger.configure(handlers=[{"sink": queue.put}])
     logger = logging.getLogger('mhxy')
     logger.addHandler(QueueHandler(queue))
     logger.setLevel(logging.INFO)
@@ -95,6 +92,7 @@ def daily_tasks(hwnd,
 
     adb["task_finished"] = complex_task.task_finished
     adb["is_still"] = complex_task.is_still
+    adb["leave_team"] = complex_task.leave_team
 
     complex_task.leave_team()
 

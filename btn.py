@@ -103,12 +103,12 @@ class Btn(object):
             for i in range(count):
                 win32api.SendMessage(self.hwnd, win32con.WM_MOUSEWHEEL,
                                      win32api.MAKELONG(0, 120), 0)
-                sleep(0.05)
+                sleep(0.01)
         elif zdelta < 0:
             for i in range(count):
                 win32api.SendMessage(self.hwnd, win32con.WM_MOUSEWHEEL,
                                      win32api.MAKELONG(0, -120), 0)
-                sleep(0.05)
+                sleep(0.01)
 
     def m(self, x, y):
         win32api.SendMessage(self.hwnd, win32con.WM_MOUSEMOVE, 0000,

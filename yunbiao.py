@@ -66,7 +66,7 @@ class Yunbiao(object):
 
 if __name__ == '__main__':
     import win32gui
-    from loguru import logger
+    
 
     from btn import Btn
     from capture import CaptureScreen

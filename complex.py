@@ -258,8 +258,8 @@ class Complex(object):
         self.btn.r()
 
     def leave_team(self):
-        while not self.smc('hd', is_click=False):
-            self.btn.r()
+        # while not self.smc('hd', is_click=False):
+            # self.btn.r()
 
         self.btn.hotkey('dw', sleep_time=1)
 
@@ -299,18 +299,6 @@ class Complex(object):
 
         return False
 
-    def culture(self):
-        while True:
-            coor = self.smc('culture_t', simi=0.998) or self.smc('culture_d',
-                                                                 simi=0.998)
-            if coor:
-                sleep(0.2)
-                self.smc('culture_active')
-                sleep(0.3)
-            else:
-                break
-        print('培养激活完成')
-
     def is_still(self):
         self.btn.press('tab')
         sleep(1)
@@ -340,7 +328,7 @@ if __name__ == '__main__':
     from capture import CaptureScreen
     from match import Match
     from smc import SMC
-    from loguru import logger
+    
 
     hwnd = win32gui.FindWindow(None, "梦幻西游：时空")
     screen = '0'

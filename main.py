@@ -4,7 +4,7 @@ import win32com.client
 import win32gui
 import logging
 
-from loguru import logger
+
 from login import auto_login
 from task import daily_tasks
 from utils import get_hwnds, get_json_file, push_msg, openmore, init_log_dir

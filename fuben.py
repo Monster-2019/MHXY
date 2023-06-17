@@ -1,6 +1,6 @@
 from time import sleep
 
-from loguru import logger
+
 
 empty = {
     "name": "",

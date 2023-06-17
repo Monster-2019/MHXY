@@ -24,7 +24,7 @@ def push_msg(msg):
     import requests
     url = 'https://push.dongxin.co/v1/message/send'
     params = {
-        "token": "54ae34e322deb80bb8d26e70",
+        "token": "aa625b3a82edd843e819bb72",
         "title": "梦幻西游脚本完成提醒",
         "content": msg,
         "template": "text"
@@ -77,7 +77,7 @@ def get_json_file(filename):
 def openmore(hwnd_list=[]):
     import configparser
     import os
-    from loguru import logger
+    
     from time import sleep
     from btn import Btn
 
@@ -121,7 +121,6 @@ def init_log_dir():
 
 
 class PauseableThread(threading.Thread):
-
     def __init__(self, target, args=(), stop_func=None):
         super(PauseableThread, self).__init__()
         self.target = target
@@ -156,6 +155,18 @@ class PauseableThread(threading.Thread):
     def stop_thread(self):
         self.stop = True
 
+def culture(self):
+    while True:
+        coor = self.smc('culture_t', simi=0.998) or self.smc('culture_d',
+                                                                simi=0.998)
+        if coor:
+            sleep(0.2)
+            self.smc('culture_active')
+            sleep(0.3)
+        else:
+            break
+    print('培养激活完成')
+
 
 if __name__ == "__main__":
-    hide_login()
+    push_msg('已全部完成')

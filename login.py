@@ -1,6 +1,6 @@
 import os
 from time import sleep
-from loguru import logger
+
 
 import win32api
 import win32com.client

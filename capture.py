@@ -1,7 +1,7 @@
 import win32con
 import win32gui
 import win32ui
-from loguru import logger
+
 
 COOR = {
     "btgm": ((412, 258), (135, 25)),
